@@ -1,17 +1,15 @@
 module Main exposing (main)
 
 import Browser
-import Browser.Dom
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput, onSubmit)
 import List
-import Note exposing (Note, NoteId)
 import Model exposing (..)
-import Page exposing (..)
+import Note exposing (Note, NoteId)
 import NotesList exposing (..)
 import OpaqueDict exposing (OpaqueDict)
-import Task
+import Page exposing (..)
 import Tuple
 
 
@@ -30,12 +28,6 @@ main =
 
 
 -- MODEL
-
-
-
-resetNoteForm : Note
-resetNoteForm =
-    { title = "" }
 
 
 insertInitialNotesList : OpaqueDict NoteId Note -> OpaqueDict NoteId Note
@@ -88,7 +80,6 @@ type Msg
     = NotesListMsgContainer NotesListMsg
     | CreateNoteFormMsgContainer CreateNoteFormMsg
     | EditNoteFormMsgContainer EditNoteFormMsg
-    | NoOp
 
 
 type EditNoteFormMsg
@@ -101,23 +92,6 @@ type CreateNoteFormMsg
     = InputNewNoteTitle String
     | CreateNote Note
     | CancelCreate
-
-
-move : k -> OpaqueDict k v -> OpaqueDict k v -> ( OpaqueDict k v, OpaqueDict k v )
-move k dictFrom dictTo =
-    let
-        elem =
-            OpaqueDict.get k dictFrom
-
-        newFrom =
-            OpaqueDict.remove k dictFrom
-
-        newTo =
-            elem
-                |> Maybe.map (\e -> OpaqueDict.insert k e dictTo)
-                |> Maybe.withDefault dictTo
-    in
-    ( newFrom, newTo )
 
 
 editNote : NoteId -> Note -> OpaqueDict NoteId Note -> OpaqueDict NoteId Note
@@ -145,60 +119,12 @@ applyIfEditNotePage model fn =
             model
 
 
-createNoteAutofocusId =
-    "create-note-autofocus"
-
-
-editNoteAutofocusId =
-    "edit-note-autofocus"
-
-
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        NotesListMsgContainer (Tick noteId) ->
-            let
-                ( newPending, newDone ) =
-                    move noteId model.pending model.done
-            in
-            ( { model
-                | pending = newPending
-                , done = newDone
-              }
-            , Cmd.none
-            )
-
-        NotesListMsgContainer (Untick noteId) ->
-            let
-                ( newDone, newPending ) =
-                    move noteId model.done model.pending
-            in
-            ( { model
-                | pending = newPending
-                , done = newDone
-              }
-            , Cmd.none
-            )
-
-        NotesListMsgContainer OpenCreateNote ->
-            ( { model
-                | currentPage = CreateNotePage resetNoteForm
-              }
-            , Task.attempt (\_ -> NoOp) (Browser.Dom.focus createNoteAutofocusId)
-            )
-
-        NotesListMsgContainer (OpenEditNote noteId note) ->
-            ( { model | currentPage = EditNotePage noteId note }
-            , Task.attempt (\_ -> NoOp) (Browser.Dom.focus editNoteAutofocusId)
-            )
-
-        NotesListMsgContainer (RemoveNote noteId) ->
-            ( { model
-                | pending = OpaqueDict.remove noteId model.pending
-                , done = OpaqueDict.remove noteId model.done
-              }
-            , Cmd.none
-            )
+        NotesListMsgContainer notesListMsg ->
+            NotesList.update notesListMsg model
+                |> Tuple.mapSecond (Cmd.map NotesListMsgContainer)
 
         CreateNoteFormMsgContainer (InputNewNoteTitle title) ->
             ( applyIfCreateNotePage model
@@ -239,9 +165,6 @@ update msg model =
 
         EditNoteFormMsgContainer CancelEdit ->
             ( { model | currentPage = ListPage }, Cmd.none )
-
-        _ ->
-            ( model, Cmd.none )
 
 
 

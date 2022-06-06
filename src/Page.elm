@@ -7,3 +7,11 @@ type Page
     = ListPage
     | CreateNotePage Note
     | EditNotePage NoteId Note
+
+
+createNoteAutofocusId =
+    "create-note-autofocus"
+
+
+editNoteAutofocusId =
+    "edit-note-autofocus"
