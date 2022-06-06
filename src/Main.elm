@@ -21,7 +21,7 @@ import Tuple
 
 
 main =
-    Browser.element
+    Browser.document
         { init = init
         , view = view
         , update = update
@@ -256,9 +256,19 @@ noteDictToList dict =
         |> List.sortBy (Tuple.second >> .title)
 
 
-view : Model -> Html Msg
+background =
+  div [ class "background" ] []
+
+viewPage : Html Msg -> Browser.Document Msg
+viewPage body =
+  { title = "Elm Shopping List"
+  , body = [background, body]
+  }
+
+view : Model -> Browser.Document Msg
 view model =
-    case model.currentPage of
+  let
+    page = case model.currentPage of
         ListPage ->
             notesListView model
 
@@ -267,7 +277,13 @@ view model =
 
         EditNotePage noteId note ->
             editNoteView noteId note |> Html.map EditNoteFormMsgContainer
+  in
+    viewPage page
 
+flip fn = \a b -> fn b a
+
+classStrList : List String -> Attribute Msg
+classStrList = List.map (flip Tuple.pair True) >> classList
 
 createNoteButtonView : Html Msg
 createNoteButtonView =
@@ -294,8 +310,8 @@ editNoteView id note =
 
 notesListView : Model -> Html Msg
 notesListView model =
-    div []
-        [ ul []
+    div [ class "fullscreen" ]
+        [ ul [ classStrList [ "reset-ul" ] ]
             (List.concat
                 [ noteDictToList model.pending |> List.map pendingNoteView
                 , noteDictToList model.done |> List.map doneNoteView
@@ -307,8 +323,8 @@ notesListView model =
 
 pendingNoteView : ( NoteId, Note ) -> Html Msg
 pendingNoteView ( noteId, note ) =
-    li []
-        [ text note.title
+    li [ classStrList [ "reset-li", "item" ] ]
+        [ span [] [ text note.title ]
         , button [ onClick (RemoveNote noteId) ] [ text "🗑️" ]
         , button [ onClick (OpenEditNote noteId note) ] [ text "✏️" ]
         ]
