@@ -11,13 +11,6 @@ import Tuple
 
 
 -- MAIN
--- background: radial-gradient(ellipse 130% 60% at bottom right, #3b023a, 50%, transparent), linear-gradient(rgb(16,2,16), rgb(16,2,16))
--- radial-gradient(ellipse 110% 40% at bottom right, #3b023a, 50%, transparent), radial-gradient(ellipse 180% 160% at -80% -80%, #a35200, transparent), rgb(16,2,16)
-
-
--- radial-gradient(ellipse 110% 40% at bottom right, #3b023a, 50%, transparent),
--- radial-gradient(ellipse 180% 160% at -80% -80%, #f57a00, transparent),
--- rgb(16,2,16)
 
 
 main =
@@ -257,33 +250,41 @@ noteDictToList dict =
 
 
 background =
-  div [ class "background" ] []
+    div [ class "background" ] []
+
 
 viewPage : Html Msg -> Browser.Document Msg
 viewPage body =
-  { title = "Elm Shopping List"
-  , body = [background, body]
-  }
+    { title = "Elm Shopping List"
+    , body = [ background, body ]
+    }
+
 
 view : Model -> Browser.Document Msg
 view model =
-  let
-    page = case model.currentPage of
-        ListPage ->
-            notesListView model
+    let
+        page =
+            case model.currentPage of
+                ListPage ->
+                    notesListView model
 
-        CreateNotePage note ->
-            createNoteView note |> Html.map CreateNoteFormMsgContainer
+                CreateNotePage note ->
+                    createNoteView note |> Html.map CreateNoteFormMsgContainer
 
-        EditNotePage noteId note ->
-            editNoteView noteId note |> Html.map EditNoteFormMsgContainer
-  in
+                EditNotePage noteId note ->
+                    editNoteView noteId note |> Html.map EditNoteFormMsgContainer
+    in
     viewPage page
 
-flip fn = \a b -> fn b a
+
+flip fn =
+    \a b -> fn b a
+
 
 classStrList : List String -> Attribute Msg
-classStrList = List.map (flip Tuple.pair True) >> classList
+classStrList =
+    List.map (flip Tuple.pair True) >> classList
+
 
 createNoteButtonView : Html Msg
 createNoteButtonView =
