@@ -35,7 +35,14 @@ body {
 
 .item {
     display: flex;
+    align-items: center;
     border-bottom: 1px solid #f57a00;
     padding: 10px;
+    color: #f57a00;
+    font-size: 1.3rem;
+}
+
+.noteTitle {
+    flex-grow: 1;
 }
 

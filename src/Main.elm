@@ -335,7 +335,7 @@ notesListView model =
 pendingNoteView : ( NoteId, Note ) -> Html Msg
 pendingNoteView ( noteId, note ) =
     li [ classStrList [ "reset-li", "item" ] ]
-        [ span [] [ text note.title ]
+        [ span [ class "noteTitle" ] [ text note.title ]
         , button [ onClick (RemoveNote noteId) ] [ text "🗑️" ]
         , button [ onClick (OpenEditNote noteId note) ] [ text "✏️" ]
         ]
