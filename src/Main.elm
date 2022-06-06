@@ -7,8 +7,8 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput, onSubmit)
 import List
 import OpaqueDict exposing (OpaqueDict)
-import Tuple
 import Task
+import Tuple
 
 
 
@@ -66,11 +66,42 @@ resetNoteForm =
     { title = "" }
 
 
+insertInitialNotesList : OpaqueDict NoteId Note -> OpaqueDict NoteId Note
+insertInitialNotesList dict =
+    [ "ous"
+    , "fuet"
+    , "patatones"
+    , "iogurts"
+    , "galetes"
+    , "xocolata"
+    , "tonyina"
+    , "pebrots"
+    , "albergínies"
+    , "formatge fresc"
+    , "mozzarella"
+    , "patates fregides"
+    , "cola"
+    , "llet"
+    , "pa d'hamburguesa"
+    , "torrades"
+    , "pa de motlle"
+    , "cuixot dolç"
+    , "avellanes"
+    , "salsitxes"
+    , "fesols"
+    , "tomàquets"
+    , "arròs"
+    , "pasta seca"
+    ]
+        |> List.indexedMap (\i note -> OpaqueDict.insert (intToNoteId i) (Note note))
+        |> List.foldl (\fn newDict -> fn newDict) dict
+
+
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( { pending = OpaqueDict.empty noteIdToString
+    ( { pending = OpaqueDict.empty noteIdToString |> insertInitialNotesList
       , done = OpaqueDict.empty noteIdToString
-      , idCounter = 0
+      , idCounter = 100
       , currentPage = ListPage
       }
     , Cmd.none
@@ -146,8 +177,13 @@ applyIfEditNotePage model fn =
             model
 
 
-createNoteAutofocusId = "create-note-autofocus"
-editNoteAutofocusId = "edit-note-autofocus"
+createNoteAutofocusId =
+    "create-note-autofocus"
+
+
+editNoteAutofocusId =
+    "edit-note-autofocus"
+
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -236,7 +272,8 @@ update msg model =
         EditNoteFormMsgContainer CancelEdit ->
             ( { model | currentPage = ListPage }, Cmd.none )
 
-        _ -> (model, Cmd.none)
+        _ ->
+            ( model, Cmd.none )
 
 
 
