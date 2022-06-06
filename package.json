@@ -1,0 +1,31 @@
+{
+  "name": "shopping-list-elm",
+  "version": "1.0.0",
+  "description": "A shopping list app written in Elm.",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "parcel src/index.html",
+    "build": "parcel build src/index.html",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marc-llop/shopping-list-elm.git"
+  },
+  "keywords": [
+    "elm",
+    "shopping",
+    "list"
+  ],
+  "author": "marc-llop",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/marc-llop/shopping-list-elm/issues"
+  },
+  "homepage": "https://github.com/marc-llop/shopping-list-elm#readme",
+  "devDependencies": {
+    "@parcel/transformer-elm": "^2.4.1",
+    "elm": "^0.19.1-5",
+    "parcel": "^2.4.1"
+  }
+}
