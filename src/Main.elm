@@ -6,6 +6,8 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput, onSubmit)
 import List
+import Note exposing (Note, NoteId)
+import NotesList exposing (..)
 import OpaqueDict exposing (OpaqueDict)
 import Task
 import Tuple
@@ -26,25 +28,6 @@ main =
 
 
 -- MODEL
-
-
-type NoteId
-    = NoteId String
-
-
-noteIdToString : NoteId -> String
-noteIdToString (NoteId id) =
-    id
-
-
-intToNoteId : Int -> NoteId
-intToNoteId n =
-    NoteId (String.fromInt n)
-
-
-type alias Note =
-    { title : String
-    }
 
 
 type alias Model =
@@ -93,14 +76,14 @@ insertInitialNotesList dict =
     , "arròs"
     , "pasta seca"
     ]
-        |> List.indexedMap (\i note -> OpaqueDict.insert (intToNoteId i) (Note note))
+        |> List.indexedMap (\i note -> OpaqueDict.insert (Note.intToNoteId i) (Note note))
         |> List.foldl (\fn newDict -> fn newDict) dict
 
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( { pending = OpaqueDict.empty noteIdToString |> insertInitialNotesList
-      , done = OpaqueDict.empty noteIdToString
+    ( { pending = OpaqueDict.empty Note.noteIdToString |> insertInitialNotesList
+      , done = OpaqueDict.empty Note.noteIdToString
       , idCounter = 100
       , currentPage = ListPage
       }
@@ -113,11 +96,7 @@ init _ =
 
 
 type Msg
-    = Tick NoteId
-    | Untick NoteId
-    | OpenCreateNote
-    | OpenEditNote NoteId Note
-    | RemoveNote NoteId
+    = NotesListMsgContainer NotesListMsg
     | CreateNoteFormMsgContainer CreateNoteFormMsg
     | EditNoteFormMsgContainer EditNoteFormMsg
     | NoOp
@@ -188,7 +167,7 @@ editNoteAutofocusId =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Tick noteId ->
+        NotesListMsgContainer (Tick noteId) ->
             let
                 ( newPending, newDone ) =
                     move noteId model.pending model.done
@@ -200,7 +179,7 @@ update msg model =
             , Cmd.none
             )
 
-        Untick noteId ->
+        NotesListMsgContainer (Untick noteId) ->
             let
                 ( newDone, newPending ) =
                     move noteId model.done model.pending
@@ -212,19 +191,19 @@ update msg model =
             , Cmd.none
             )
 
-        OpenCreateNote ->
+        NotesListMsgContainer OpenCreateNote ->
             ( { model
                 | currentPage = CreateNotePage resetNoteForm
               }
             , Task.attempt (\_ -> NoOp) (Browser.Dom.focus createNoteAutofocusId)
             )
 
-        OpenEditNote noteId note ->
+        NotesListMsgContainer (OpenEditNote noteId note) ->
             ( { model | currentPage = EditNotePage noteId note }
             , Task.attempt (\_ -> NoOp) (Browser.Dom.focus editNoteAutofocusId)
             )
 
-        RemoveNote noteId ->
+        NotesListMsgContainer (RemoveNote noteId) ->
             ( { model
                 | pending = OpaqueDict.remove noteId model.pending
                 , done = OpaqueDict.remove noteId model.done
@@ -246,7 +225,7 @@ update msg model =
                 | currentPage = ListPage
                 , pending =
                     OpaqueDict.insert
-                        (intToNoteId model.idCounter)
+                        (Note.intToNoteId model.idCounter)
                         note
                         model.pending
                 , idCounter = model.idCounter + 1
@@ -287,13 +266,6 @@ subscriptions model =
 
 
 -- VIEW
--- Returns the (id, note) pairs alphabetically sorted by note title
-
-
-noteDictToList : OpaqueDict NoteId Note -> List ( NoteId, Note )
-noteDictToList dict =
-    OpaqueDict.toList dict
-        |> List.sortBy (Tuple.second >> .title)
 
 
 background =
@@ -313,7 +285,7 @@ view model =
         page =
             case model.currentPage of
                 ListPage ->
-                    notesListView model
+                    notesListView model |> Html.map NotesListMsgContainer
 
                 CreateNotePage note ->
                     createNoteView note |> Html.map CreateNoteFormMsgContainer
@@ -322,20 +294,6 @@ view model =
                     editNoteView noteId note |> Html.map EditNoteFormMsgContainer
     in
     viewPage page
-
-
-flip fn =
-    \a b -> fn b a
-
-
-classStrList : List String -> Attribute Msg
-classStrList =
-    List.map (flip Tuple.pair True) >> classList
-
-
-createNoteButtonView : Html Msg
-createNoteButtonView =
-    button [ onClick OpenCreateNote ] [ text "+" ]
 
 
 createNoteView : Note -> Html CreateNoteFormMsg
@@ -354,29 +312,3 @@ editNoteView noteId note =
         , button [ type_ "submit" ] [ text "Save note" ]
         , button [ type_ "button", onClick CancelEdit ] [ text "Cancel edit" ]
         ]
-
-
-notesListView : Model -> Html Msg
-notesListView model =
-    div [ class "fullscreen" ]
-        [ ul [ classStrList [ "reset-ul" ] ]
-            (List.concat
-                [ noteDictToList model.pending |> List.map pendingNoteView
-                , noteDictToList model.done |> List.map doneNoteView
-                ]
-            )
-        , createNoteButtonView
-        ]
-
-
-pendingNoteView : ( NoteId, Note ) -> Html Msg
-pendingNoteView ( noteId, note ) =
-    li [ classStrList [ "reset-li", "item" ] ]
-        [ span [ class "noteTitle" ] [ text note.title ]
-        , button [ onClick (RemoveNote noteId) ] [ text "🗑️" ]
-        , button [ onClick (OpenEditNote noteId note) ] [ text "✏️" ]
-        ]
-
-
-doneNoteView =
-    pendingNoteView
