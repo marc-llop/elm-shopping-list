@@ -5,6 +5,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput, onSubmit)
 import List
 import Note exposing (Note, NoteId)
+import Model exposing (Model)
 import OpaqueDict exposing (OpaqueDict)
 import Utils exposing (classStrList)
 
@@ -17,7 +18,7 @@ type NotesListMsg
     | RemoveNote NoteId
 
 
-notesListView : { a | pending : OpaqueDict NoteId Note, done : OpaqueDict NoteId Note } -> Html NotesListMsg
+notesListView : Model -> Html NotesListMsg
 notesListView { pending, done } =
     div [ class "fullscreen" ]
         [ ul [ classStrList [ "reset-ul" ] ]

@@ -7,6 +7,8 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput, onSubmit)
 import List
 import Note exposing (Note, NoteId)
+import Model exposing (..)
+import Page exposing (..)
 import NotesList exposing (..)
 import OpaqueDict exposing (OpaqueDict)
 import Task
@@ -29,19 +31,6 @@ main =
 
 -- MODEL
 
-
-type alias Model =
-    { pending : OpaqueDict NoteId Note
-    , done : OpaqueDict NoteId Note
-    , idCounter : Int
-    , currentPage : Page
-    }
-
-
-type Page
-    = ListPage
-    | CreateNotePage Note
-    | EditNotePage NoteId Note
 
 
 resetNoteForm : Note
