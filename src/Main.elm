@@ -1,12 +1,14 @@
 module Main exposing (main)
 
 import Browser
+import Browser.Dom
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput, onSubmit)
 import List
 import OpaqueDict exposing (OpaqueDict)
 import Tuple
+import Task
 
 
 
@@ -87,6 +89,7 @@ type Msg
     | RemoveNote NoteId
     | CreateNoteFormMsgContainer CreateNoteFormMsg
     | EditNoteFormMsgContainer EditNoteFormMsg
+    | NoOp
 
 
 type EditNoteFormMsg
@@ -143,6 +146,9 @@ applyIfEditNotePage model fn =
             model
 
 
+createNoteAutofocusId = "create-note-autofocus"
+editNoteAutofocusId = "edit-note-autofocus"
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -174,11 +180,13 @@ update msg model =
             ( { model
                 | currentPage = CreateNotePage resetNoteForm
               }
-            , Cmd.none
+            , Task.attempt (\_ -> NoOp) (Browser.Dom.focus createNoteAutofocusId)
             )
 
         OpenEditNote noteId note ->
-            ( { model | currentPage = EditNotePage noteId note }, Cmd.none )
+            ( { model | currentPage = EditNotePage noteId note }
+            , Task.attempt (\_ -> NoOp) (Browser.Dom.focus editNoteAutofocusId)
+            )
 
         RemoveNote noteId ->
             ( { model
@@ -227,6 +235,8 @@ update msg model =
 
         EditNoteFormMsgContainer CancelEdit ->
             ( { model | currentPage = ListPage }, Cmd.none )
+
+        _ -> (model, Cmd.none)
 
 
 
@@ -294,16 +304,16 @@ createNoteButtonView =
 createNoteView : Note -> Html CreateNoteFormMsg
 createNoteView newNote =
     Html.form [ onSubmit (CreateNote newNote) ]
-        [ input [ onInput InputNewNoteTitle, value newNote.title ] []
+        [ input [ onInput InputNewNoteTitle, value newNote.title, id createNoteAutofocusId ] []
         , button [ type_ "submit" ] [ text "Add note" ]
         , button [ type_ "button", onClick CancelCreate ] [ text "Cancel" ]
         ]
 
 
 editNoteView : NoteId -> Note -> Html EditNoteFormMsg
-editNoteView id note =
-    Html.form [ onSubmit (EditNote id note) ]
-        [ input [ onInput InputEditedNoteTitle, value note.title ] []
+editNoteView noteId note =
+    Html.form [ onSubmit (EditNote noteId note) ]
+        [ input [ onInput InputEditedNoteTitle, value note.title, id editNoteAutofocusId ] []
         , button [ type_ "submit" ] [ text "Save note" ]
         , button [ type_ "button", onClick CancelEdit ] [ text "Cancel edit" ]
         ]
