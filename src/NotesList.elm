@@ -1,9 +1,11 @@
 module NotesList exposing (NotesListMsg(..), notesListView, update)
 
 import Browser.Dom
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Html.Events exposing (onClick, onInput, onSubmit)
+import Css exposing (..)
+import Html
+import Html.Styled exposing (..)
+import Html.Styled.Attributes exposing (..)
+import Html.Styled.Events exposing (onClick, onInput, onSubmit)
 import List
 import Model exposing (Model)
 import Note exposing (Note, NoteId)
@@ -95,10 +97,17 @@ move k dictFrom dictTo =
     ( newFrom, newTo )
 
 
+resetUlStyle : List Style
+resetUlStyle =
+    [ margin zero
+    , padding zero
+    ]
+
+
 notesListView : Model -> Html NotesListMsg
 notesListView { pending, done } =
     div [ class "fullscreen" ]
-        [ ul [ classStrList [ "reset-ul" ] ]
+        [ ul [ css resetUlStyle ]
             (List.concat
                 [ noteDictToList pending |> List.map pendingNoteView
                 , noteDictToList done |> List.map doneNoteView
@@ -118,9 +127,25 @@ noteDictToList dict =
         |> List.sortBy (Tuple.second >> .title)
 
 
+resetLiStyle : List Style
+resetLiStyle =
+    [ listStyle none ]
+
+
+itemStyle : List Style
+itemStyle =
+    [ displayFlex
+    , alignItems center
+    , padding (px 10)
+    , fontSize (rem 1.3)
+    , color (hex "f57a00")
+    , borderBottom3 (px 1) solid (hex "f57a00")
+    ]
+
+
 pendingNoteView : ( NoteId, Note ) -> Html NotesListMsg
 pendingNoteView ( noteId, note ) =
-    li [ classStrList [ "reset-li", "item" ] ]
+    li [ css (List.concat [ resetLiStyle, itemStyle ]) ]
         [ span [ class "noteTitle" ] [ text note.title ]
         , button [ onClick (RemoveNote noteId) ] [ text "🗑️" ]
         , button [ onClick (OpenEditNote noteId note) ] [ text "✏️" ]

@@ -1,9 +1,10 @@
 module Main exposing (main)
 
 import Browser
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Html.Events exposing (onClick, onInput, onSubmit)
+import Html
+import Html.Styled exposing (..)
+import Html.Styled.Attributes exposing (..)
+import Html.Styled.Events exposing (onClick, onInput, onSubmit)
 import List
 import Model exposing (..)
 import Note exposing (Note, NoteId)
@@ -187,7 +188,7 @@ background =
 viewPage : Html Msg -> Browser.Document Msg
 viewPage body =
     { title = "Elm Shopping List"
-    , body = [ background, body ]
+    , body = [ background, body ] |> List.map toUnstyled
     }
 
 
@@ -197,20 +198,20 @@ view model =
         page =
             case model.currentPage of
                 ListPage ->
-                    notesListView model |> Html.map NotesListMsgContainer
+                    notesListView model |> Html.Styled.map NotesListMsgContainer
 
                 CreateNotePage note ->
-                    createNoteView note |> Html.map CreateNoteFormMsgContainer
+                    createNoteView note |> Html.Styled.map CreateNoteFormMsgContainer
 
                 EditNotePage noteId note ->
-                    editNoteView noteId note |> Html.map EditNoteFormMsgContainer
+                    editNoteView noteId note |> Html.Styled.map EditNoteFormMsgContainer
     in
     viewPage page
 
 
 createNoteView : Note -> Html CreateNoteFormMsg
 createNoteView newNote =
-    Html.form [ onSubmit (CreateNote newNote) ]
+    Html.Styled.form [ onSubmit (CreateNote newNote) ]
         [ input [ onInput InputNewNoteTitle, value newNote.title, id createNoteAutofocusId ] []
         , button [ type_ "submit" ] [ text "Add note" ]
         , button [ type_ "button", onClick CancelCreate ] [ text "Cancel" ]
@@ -219,7 +220,7 @@ createNoteView newNote =
 
 editNoteView : NoteId -> Note -> Html EditNoteFormMsg
 editNoteView noteId note =
-    Html.form [ onSubmit (EditNote noteId note) ]
+    Html.Styled.form [ onSubmit (EditNote noteId note) ]
         [ input [ onInput InputEditedNoteTitle, value note.title, id editNoteAutofocusId ] []
         , button [ type_ "submit" ] [ text "Save note" ]
         , button [ type_ "button", onClick CancelEdit ] [ text "Cancel edit" ]
