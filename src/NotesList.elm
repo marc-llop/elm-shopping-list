@@ -1,4 +1,4 @@
-module NotesList exposing (NotesListMsg(..), notesListView, update)
+module NotesList exposing (NotesListMsg(..), move, notesListView, update)
 
 import Browser.Dom
 import Css exposing (..)
@@ -106,7 +106,7 @@ resetUlStyle =
 
 notesListView : Model -> Html NotesListMsg
 notesListView { pending, done } =
-    div [ class "fullscreen" ]
+    div [ css [ Css.width (pct 100) ] ]
         [ ul [ css resetUlStyle ]
             (List.concat
                 [ noteDictToList pending |> List.map pendingNoteView
@@ -143,10 +143,14 @@ itemStyle =
     ]
 
 
+noteTitleStyle =
+    [ flexGrow (int 1) ]
+
+
 pendingNoteView : ( NoteId, Note ) -> Html NotesListMsg
 pendingNoteView ( noteId, note ) =
     li [ css (List.concat [ resetLiStyle, itemStyle ]) ]
-        [ span [ class "noteTitle" ] [ text note.title ]
+        [ span [ css noteTitleStyle ] [ text note.title ]
         , button [ onClick (RemoveNote noteId) ] [ text "🗑️" ]
         , button [ onClick (OpenEditNote noteId note) ] [ text "✏️" ]
         ]
