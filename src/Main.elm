@@ -12,6 +12,7 @@ import NotesList exposing (..)
 import OpaqueDict exposing (OpaqueDict)
 import Page exposing (..)
 import Tuple
+import Ui.Button exposing (ButtonType(..))
 
 
 
@@ -213,8 +214,8 @@ createNoteView : Note -> Html CreateNoteFormMsg
 createNoteView newNote =
     Html.Styled.form [ onSubmit (CreateNote newNote) ]
         [ input [ onInput InputNewNoteTitle, value newNote.title, id createNoteAutofocusId ] []
-        , button [ type_ "submit" ] [ text "Add note" ]
-        , button [ type_ "button", onClick CancelCreate ] [ text "Cancel" ]
+        , Ui.Button.button { buttonType = Submit, label = "Add note" }
+        , Ui.Button.button { buttonType = Button CancelCreate, label = "Cancel" }
         ]
 
 
@@ -222,6 +223,6 @@ editNoteView : NoteId -> Note -> Html EditNoteFormMsg
 editNoteView noteId note =
     Html.Styled.form [ onSubmit (EditNote noteId note) ]
         [ input [ onInput InputEditedNoteTitle, value note.title, id editNoteAutofocusId ] []
-        , button [ type_ "submit" ] [ text "Save note" ]
-        , button [ type_ "button", onClick CancelEdit ] [ text "Cancel edit" ]
+        , Ui.Button.button { buttonType = Submit, label = "Save note" }
+        , Ui.Button.button { buttonType = Button CancelEdit, label = "Cancel edit" }
         ]
