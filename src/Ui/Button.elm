@@ -163,7 +163,7 @@ docs =
 
         -- withMargin = styled [ ]
     in
-    chapter "Buttons"
+    chapter "Button"
         |> renderComponentList
             [ ( "Default", stylableButton props )
             , ( "Hovered", stylableButton { props | customStyle = hoverStyles } )
