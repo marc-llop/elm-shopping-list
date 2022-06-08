@@ -27,24 +27,30 @@ buttonStyles =
     , property "box-shadow" (shadow 10 neutral300 ++ ", " ++ insetShadow 10 neutral300)
     , cursor pointer
     , buttonTransition 200
-    , hover
-        [ borderColor (hex accentGreen100)
-        , color (hex accentGreen100)
-        , property "text-shadow" greenBlueShadow
-        , property "box-shadow" greenBlueInsetShadow
-        , buttonTransition 50
-        , focus [ outline3 (px 3) solid (hex accentGreen100) ]
-        ]
-    , active
-        [ borderColor (hex white)
-        , color (hex white)
-        , property "text-shadow" whiteShadow
-        , property "box-shadow" whiteInsetShadow
-        , focus [ outline none ]
-        ]
+    , hover hoverStyles
+    , active activeStyles
     , focus
         [ outline3 (px 3) solid (hex neutral300)
         ]
+    ]
+
+
+hoverStyles =
+    [ borderColor (hex accentGreen100)
+    , color (hex accentGreen100)
+    , property "text-shadow" greenBlueShadow
+    , property "box-shadow" greenBlueInsetShadow
+    , buttonTransition 50
+    , focus [ outline3 (px 3) solid (hex accentGreen100) ]
+    ]
+
+
+activeStyles =
+    [ borderColor (hex white)
+    , color (hex white)
+    , property "text-shadow" whiteShadow
+    , property "box-shadow" whiteInsetShadow
+    , focus [ outline none ]
     ]
 
 
@@ -160,5 +166,6 @@ docs =
     chapter "Buttons"
         |> renderComponentList
             [ ( "Default", stylableButton props )
-            , ( "With other text", stylableButton { props | label = "Hi" } )
+            , ( "Hovered", stylableButton { props | customStyle = hoverStyles } )
+            , ( "Active", stylableButton { props | customStyle = activeStyles } )
             ]
