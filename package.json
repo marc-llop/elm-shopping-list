@@ -7,7 +7,8 @@
     "start": "parcel src/index.html",
     "build": "parcel build src/index.html",
     "test": "elm-test src/**/*Test.elm",
-    "lint": "lint-staged"
+    "lint": "lint-staged",
+    "elmbook": "elm-live src/Ui/Book.elm --pushstate --open"
   },
   "lint-staged": {
     "*.elm": [
@@ -34,6 +35,7 @@
     "@parcel/transformer-elm": "^2.4.1",
     "elm": "^0.19.1-5",
     "elm-format": "^0.8.5",
+    "elm-live": "^4.0.2",
     "elm-test": "^0.19.1-revision7",
     "husky": "^8.0.1",
     "lint-staged": "^13.0.0",
