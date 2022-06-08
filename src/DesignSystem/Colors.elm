@@ -1,6 +1,10 @@
 module DesignSystem.Colors exposing (..)
 
 
+white =
+    "ffffff"
+
+
 accentGreen900 =
     "001a0f"
 
@@ -203,3 +207,71 @@ neutral150 =
 
 neutral100 =
     "ffefdf"
+
+
+backgroundPurple900 =
+    "0b000b"
+
+
+backgroundPurple850 =
+    "160115"
+
+
+backgroundPurple800 =
+    "210120"
+
+
+backgroundPurple750 =
+    "2c022b"
+
+
+backgroundPurple700 =
+    "360236"
+
+
+backgroundPurple650 =
+    "410340"
+
+
+backgroundPurple600 =
+    "4c034b"
+
+
+backgroundPurple550 =
+    "570456"
+
+
+backgroundPurple500 =
+    "61045f"
+
+
+backgroundPurple450 =
+    "8d068b"
+
+
+backgroundPurple400 =
+    "b908b6"
+
+
+backgroundPurple350 =
+    "e40ae1"
+
+
+backgroundPurple300 =
+    "f625f2"
+
+
+backgroundPurple250 =
+    "f851f5"
+
+
+backgroundPurple200 =
+    "fa7cf7"
+
+
+backgroundPurple150 =
+    "fba8fa"
+
+
+backgroundPurple100 =
+    "fdd3fc"
