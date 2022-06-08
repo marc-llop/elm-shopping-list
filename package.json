@@ -4,7 +4,7 @@
   "description": "A shopping list app written in Elm.",
   "main": "src/index.js",
   "scripts": {
-    "start": "parcel src/index.html",
+    "start": "PARCEL_ELM_NO_DEBUG=1 parcel src/index.html",
     "build": "parcel build src/index.html",
     "test": "elm-test src/**/*Test.elm",
     "lint": "lint-staged",
