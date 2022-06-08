@@ -1,8 +1,9 @@
-module Ui.Button exposing (button, docs)
+module Ui.Button exposing (ButtonType(..), button, docs)
 
 import Css exposing (..)
 import Css.Transitions exposing (easeOut, transition)
 import DesignSystem.Colors exposing (..)
+import ElmBook exposing (Msg)
 import ElmBook.Actions exposing (logAction)
 import ElmBook.Chapter exposing (chapter, renderComponentList)
 import ElmBook.ElmCSS exposing (Chapter)
@@ -101,11 +102,48 @@ whiteInsetShadow =
         |> String.join ", "
 
 
-button : { label : String, onUse : msg, customStyle : List Style } -> Html msg
-button { label, onUse, customStyle } =
+type ButtonType msg
+    = Submit
+    | Button msg
+
+
+stylableButton :
+    { label : String
+    , buttonType : ButtonType msg
+    , customStyle : List Style
+    }
+    -> Html msg
+stylableButton { label, buttonType, customStyle } =
+    let
+        htmlOnClick =
+            Html.Styled.Events.onClick
+
+        htmlType =
+            Html.Styled.Attributes.type_
+
+        attrs =
+            case buttonType of
+                Submit ->
+                    [ htmlType "submit" ]
+
+                Button msg ->
+                    [ htmlOnClick msg, htmlType "button" ]
+
+        joinedStyles =
+            css (List.concat [ buttonStyles, customStyle ])
+    in
     Html.Styled.button
-        [ css (List.concat [ buttonStyles, customStyle ]), onClick onUse ]
+        (joinedStyles :: attrs)
         [ span [] [ text label ] ]
+
+
+button :
+    { label : String
+    , buttonType : ButtonType msg
+    }
+    -> Html msg
+button { label, buttonType } =
+    stylableButton { label = label, buttonType = buttonType, customStyle = [] }
 
 
 docs : Chapter x
@@ -113,14 +151,14 @@ docs =
     let
         props =
             { label = "Accept"
-            , onUse = logAction "Button clicked"
-            , customStyle = []
+            , buttonType = Button (logAction "Button clicked")
+            , customStyle = [ margin (px 20) ]
             }
 
         -- withMargin = styled [ ]
     in
     chapter "Buttons"
         |> renderComponentList
-            [ ( "Default", button props )
-            , ( "With other text", button { props | label = "Hi" } )
+            [ ( "Default", stylableButton props )
+            , ( "With other text", stylableButton { props | label = "Hi" } )
             ]
