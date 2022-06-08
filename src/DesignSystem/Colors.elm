@@ -1,5 +1,11 @@
 module DesignSystem.Colors exposing (..)
 
+import Css exposing (..)
+import ElmBook.Chapter exposing (chapter, renderComponentList)
+import ElmBook.ElmCSS exposing (Chapter)
+import Html.Styled exposing (..)
+import Html.Styled.Attributes exposing (css)
+
 
 white =
     "ffffff"
@@ -275,3 +281,116 @@ backgroundPurple150 =
 
 backgroundPurple100 =
     "fdd3fc"
+
+
+shadeShowcase : ( String, String ) -> Html msg
+shadeShowcase ( name, color ) =
+    div
+        [ css
+            [ backgroundColor (hex color)
+            , displayFlex
+            , width (px 50)
+            , height (px 50)
+            , alignItems center
+            , justifyContent center
+            , textShadow4 zero zero (px 5) (hex white)
+            ]
+        ]
+        [ text name ]
+
+
+colorShowcase : List ( String, String ) -> Html msg
+colorShowcase colors =
+    div [ css [ displayFlex, flexDirection row ] ]
+        (colors |> List.map shadeShowcase)
+
+
+docs : Chapter x
+docs =
+    chapter "Colors"
+        |> renderComponentList
+            [ ( "neutral"
+              , colorShowcase
+                    [ ( "100", neutral100 )
+                    , ( "150", neutral150 )
+                    , ( "200", neutral200 )
+                    , ( "250", neutral250 )
+                    , ( "300", neutral300 )
+                    , ( "350", neutral350 )
+                    , ( "400", neutral400 )
+                    , ( "450", neutral450 )
+                    , ( "500", neutral500 )
+                    , ( "550", neutral550 )
+                    , ( "600", neutral600 )
+                    , ( "650", neutral650 )
+                    , ( "700", neutral700 )
+                    , ( "750", neutral750 )
+                    , ( "800", neutral800 )
+                    , ( "850", neutral850 )
+                    , ( "900", neutral900 )
+                    ]
+              )
+            , ( "accentGreen"
+              , colorShowcase
+                    [ ( "100", accentGreen100 )
+                    , ( "150", accentGreen150 )
+                    , ( "200", accentGreen200 )
+                    , ( "250", accentGreen250 )
+                    , ( "300", accentGreen300 )
+                    , ( "350", accentGreen350 )
+                    , ( "400", accentGreen400 )
+                    , ( "450", accentGreen450 )
+                    , ( "500", accentGreen500 )
+                    , ( "550", accentGreen550 )
+                    , ( "600", accentGreen600 )
+                    , ( "650", accentGreen650 )
+                    , ( "700", accentGreen700 )
+                    , ( "750", accentGreen750 )
+                    , ( "800", accentGreen800 )
+                    , ( "850", accentGreen850 )
+                    , ( "900", accentGreen900 )
+                    ]
+              )
+            , ( "accentBlue"
+              , colorShowcase
+                    [ ( "100", accentBlue100 )
+                    , ( "150", accentBlue150 )
+                    , ( "200", accentBlue200 )
+                    , ( "250", accentBlue250 )
+                    , ( "300", accentBlue300 )
+                    , ( "350", accentBlue350 )
+                    , ( "400", accentBlue400 )
+                    , ( "450", accentBlue450 )
+                    , ( "500", accentBlue500 )
+                    , ( "550", accentBlue550 )
+                    , ( "600", accentBlue600 )
+                    , ( "650", accentBlue650 )
+                    , ( "700", accentBlue700 )
+                    , ( "750", accentBlue750 )
+                    , ( "800", accentBlue800 )
+                    , ( "850", accentBlue850 )
+                    , ( "900", accentBlue900 )
+                    ]
+              )
+            , ( "backgroundPurple"
+              , colorShowcase
+                    [ ( "100", backgroundPurple100 )
+                    , ( "150", backgroundPurple150 )
+                    , ( "200", backgroundPurple200 )
+                    , ( "250", backgroundPurple250 )
+                    , ( "300", backgroundPurple300 )
+                    , ( "350", backgroundPurple350 )
+                    , ( "400", backgroundPurple400 )
+                    , ( "450", backgroundPurple450 )
+                    , ( "500", backgroundPurple500 )
+                    , ( "550", backgroundPurple550 )
+                    , ( "600", backgroundPurple600 )
+                    , ( "650", backgroundPurple650 )
+                    , ( "700", backgroundPurple700 )
+                    , ( "750", backgroundPurple750 )
+                    , ( "800", backgroundPurple800 )
+                    , ( "850", backgroundPurple850 )
+                    , ( "900", backgroundPurple900 )
+                    ]
+              )
+            ]

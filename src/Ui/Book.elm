@@ -1,6 +1,7 @@
 module Ui.Book exposing (main)
 
-import ElmBook exposing (withChapters, withThemeOptions)
+import DesignSystem.Colors
+import ElmBook exposing (withChapterGroups, withThemeOptions)
 import ElmBook.ElmCSS exposing (Book, Chapter, book)
 import ElmBook.ThemeOptions
 import Ui.Button
@@ -11,6 +12,13 @@ main =
         |> withThemeOptions
             [ ElmBook.ThemeOptions.preferDarkMode
             ]
-        |> withChapters
-            [ Ui.Button.docs
+        |> withChapterGroups
+            [ ( "Design Tokens"
+              , [ DesignSystem.Colors.docs
+                ]
+              )
+            , ( "Components"
+              , [ Ui.Button.docs
+                ]
+              )
             ]
