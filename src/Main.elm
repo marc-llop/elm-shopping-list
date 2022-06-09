@@ -64,12 +64,13 @@ insertInitialNotesList dict =
         |> List.foldl (\fn newDict -> fn newDict) dict
 
 
-init : () -> ( Model, Cmd Msg )
-init _ =
+init : { backgroundTextureUrl : String } -> ( Model, Cmd Msg )
+init { backgroundTextureUrl } =
     ( { pending = OpaqueDict.empty Note.noteIdToString |> insertInitialNotesList
       , done = OpaqueDict.empty Note.noteIdToString
       , idCounter = 100
       , currentPage = ListPage
+      , backgroundTextureUrl = backgroundTextureUrl
       }
     , Cmd.none
     )
@@ -183,7 +184,7 @@ subscriptions model =
 -- VIEW
 
 
-background =
+background imgUrl =
     div
         [ css
             [ position fixed
@@ -195,15 +196,16 @@ background =
                     ++ "radial-gradient(ellipse 180% 160% at -80% -80%, #f57a00, transparent),"
                     ++ "#100210"
                 )
+            , Css.backgroundImage (Css.url imgUrl)
             ]
         ]
         []
 
 
-viewPage : Html Msg -> Browser.Document Msg
-viewPage body =
+viewPage : Model -> Html Msg -> Browser.Document Msg
+viewPage model body =
     { title = "Elm Shopping List"
-    , body = [ background, body ] |> List.map toUnstyled
+    , body = [ background model.backgroundTextureUrl, body ] |> List.map toUnstyled
     }
 
 
@@ -221,7 +223,7 @@ view model =
                 EditNotePage noteId note ->
                     editNoteView noteId note |> Html.Styled.map EditNoteFormMsgContainer
     in
-    viewPage page
+    viewPage model page
 
 
 createNoteView : Note -> Html CreateNoteFormMsg

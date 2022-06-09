@@ -10,4 +10,5 @@ type alias Model =
     , done : OpaqueDict NoteId Note
     , idCounter : Int
     , currentPage : Page
+    , backgroundTextureUrl : String
     }

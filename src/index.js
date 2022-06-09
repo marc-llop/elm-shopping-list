@@ -1,3 +1,11 @@
 import { Elm } from "./Main.elm";
 
-Elm.Main.init({ node: document.getElementById("root") });
+const backgroundTextureUrl = new URL(
+    'assets/SeemlessBlackbrushed.png',
+    import.meta.url
+).href
+
+Elm.Main.init({
+    node: document.getElementById("root"),
+    flags: {backgroundTextureUrl}
+});
