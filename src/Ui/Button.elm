@@ -20,28 +20,28 @@ buttonStyles =
     , padding2 (px 10) (px 20)
     , justifyContent center
     , fontSize (rem 1.2)
-    , color (hex neutral300)
+    , color (hex neutral.s300)
     , backgroundColor transparent
-    , border3 (px 2) solid (hex neutral100)
+    , border3 (px 2) solid (hex neutral.s100)
     , borderRadius (px 10)
-    , property "box-shadow" (shadow 10 neutral300 ++ ", " ++ insetShadow 10 neutral300)
+    , property "box-shadow" (shadow 10 neutral.s300 ++ ", " ++ insetShadow 10 neutral.s300)
     , cursor pointer
     , buttonTransition 200
     , hover hoverStyles
     , active activeStyles
     , focus
-        [ outline3 (px 3) solid (hex neutral300)
+        [ outline3 (px 3) solid (hex neutral.s300)
         ]
     ]
 
 
 hoverStyles =
-    [ borderColor (hex accentGreen100)
-    , color (hex accentGreen100)
+    [ borderColor (hex accentGreen.s100)
+    , color (hex accentGreen.s100)
     , property "text-shadow" greenBlueShadow
     , property "box-shadow" greenBlueInsetShadow
     , buttonTransition 50
-    , focus [ outline3 (px 3) solid (hex accentGreen100) ]
+    , focus [ outline3 (px 3) solid (hex accentGreen.s100) ]
     ]
 
 
@@ -74,36 +74,36 @@ insetShadow size color =
 
 
 greenBlueShadow =
-    [ shadow 10 accentGreen500
-    , shadow 15 accentBlue650
-    , shadow 20 accentBlue650
+    [ shadow 10 accentGreen.s500
+    , shadow 15 accentBlue.s650
+    , shadow 20 accentBlue.s650
     ]
         |> String.join ", "
 
 
 greenBlueInsetShadow =
-    [ shadow 10 accentGreen500
-    , shadow 15 accentBlue650
-    , shadow 20 accentBlue650
-    , insetShadow 10 accentGreen500
-    , insetShadow 15 accentBlue650
-    , insetShadow 20 accentBlue650
+    [ shadow 10 accentGreen.s500
+    , shadow 15 accentBlue.s650
+    , shadow 20 accentBlue.s650
+    , insetShadow 10 accentGreen.s500
+    , insetShadow 15 accentBlue.s650
+    , insetShadow 20 accentBlue.s650
     ]
         |> String.join ", "
 
 
 whiteShadow =
-    [ shadow 10 backgroundPurple100
-    , shadow 15 accentBlue150
+    [ shadow 10 backgroundPurple.s100
+    , shadow 15 accentBlue.s150
     ]
         |> String.join ", "
 
 
 whiteInsetShadow =
-    [ shadow 10 backgroundPurple100
-    , shadow 15 accentBlue150
-    , insetShadow 10 backgroundPurple100
-    , insetShadow 15 accentBlue150
+    [ shadow 10 backgroundPurple.s100
+    , shadow 15 accentBlue.s150
+    , insetShadow 10 backgroundPurple.s100
+    , insetShadow 15 accentBlue.s150
     ]
         |> String.join ", "
 
