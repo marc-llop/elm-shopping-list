@@ -1,5 +1,6 @@
 module Main exposing (main)
 
+import Background exposing (background)
 import Browser
 import Css exposing (fixed, height, int, pct, position, property, width, zIndex)
 import Html
@@ -182,24 +183,6 @@ subscriptions model =
 
 
 -- VIEW
-
-
-background imgUrl =
-    div
-        [ css
-            [ position fixed
-            , zIndex (int -1)
-            , Css.width (pct 100)
-            , Css.height (pct 100)
-            , Css.property "background"
-                ("radial-gradient(ellipse 110% 40% at bottom right, #3b023a, 50%, transparent),"
-                    ++ "radial-gradient(ellipse 180% 160% at -80% -80%, #f57a00, transparent),"
-                    ++ "#100210"
-                )
-            , Css.backgroundImage (Css.url imgUrl)
-            ]
-        ]
-        []
 
 
 viewPage : Model -> Html Msg -> Browser.Document Msg
