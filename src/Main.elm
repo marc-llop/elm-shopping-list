@@ -9,7 +9,7 @@ import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onClick, onInput, onSubmit)
 import List
 import Model exposing (..)
-import Note exposing (Note, NoteId)
+import Note exposing (Note, NoteId, NoteIdPair)
 import NotesList exposing (..)
 import OpaqueDict exposing (OpaqueDict)
 import Page exposing (..)
@@ -201,7 +201,7 @@ view model =
                     notesListView model |> Html.Styled.map NotesListMsgContainer
 
                 CreateNotePage note ->
-                    createNoteView note |> Html.Styled.map CreateNoteFormMsgContainer
+                    createNoteView model note |> Html.Styled.map CreateNoteFormMsgContainer
 
                 EditNotePage noteId note ->
                     editNoteView noteId note |> Html.Styled.map EditNoteFormMsgContainer
@@ -209,12 +209,47 @@ view model =
     viewPage model page
 
 
-createNoteView : Note -> Html CreateNoteFormMsg
-createNoteView newNote =
+createNoteView : Model -> Note -> Html CreateNoteFormMsg
+createNoteView model newNote =
     Html.Styled.form [ onSubmit (CreateNote newNote) ]
         [ input [ onInput InputNewNoteTitle, value newNote.title, id createNoteAutofocusId ] []
         , Ui.Button.button { buttonType = Submit, label = "Add note" }
         , Ui.Button.button { buttonType = Button CancelCreate, label = "Cancel" }
+        , matchesList model newNote
+        ]
+
+
+noteView : NoteIdPair -> Html CreateNoteFormMsg
+noteView ( noteId, note ) =
+    li []
+        [ span [] [ text note.title ]
+        ]
+
+
+matchesTitle : String -> NoteIdPair -> Bool
+matchesTitle title ( id, note ) =
+    if String.isEmpty title then
+        True
+
+    else
+        String.startsWith title note.title
+
+
+matchesList : Model -> Note -> Html CreateNoteFormMsg
+matchesList model newNote =
+    let
+        notesList =
+            allNotes model
+
+        matches =
+            matchesTitle newNote.title
+
+        allMatchedNotes =
+            List.filter matches notesList
+    in
+    div [ css [ Css.width (pct 100) ] ]
+        [ ul []
+            (List.map noteView allMatchedNotes)
         ]
 
 

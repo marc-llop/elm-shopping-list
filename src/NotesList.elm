@@ -2,13 +2,14 @@ module NotesList exposing (NotesListMsg(..), move, notesListView, update)
 
 import Browser.Dom
 import Css exposing (..)
+import DesignSystem.Colors exposing (neutral)
 import Html
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onClick, onInput, onSubmit)
 import List
 import Model exposing (Model)
-import Note exposing (Note, NoteId)
+import Note exposing (Note, NoteId, NoteIdPair)
 import OpaqueDict exposing (OpaqueDict)
 import Page exposing (..)
 import Task
@@ -121,7 +122,7 @@ notesListView { pending, done } =
 -- Returns the (id, note) pairs alphabetically sorted by note title
 
 
-noteDictToList : OpaqueDict NoteId Note -> List ( NoteId, Note )
+noteDictToList : OpaqueDict NoteId Note -> List NoteIdPair
 noteDictToList dict =
     OpaqueDict.toList dict
         |> List.sortBy (Tuple.second >> .title)
@@ -138,8 +139,8 @@ itemStyle =
     , alignItems center
     , padding (px 10)
     , fontSize (rem 1.3)
-    , color (hex "f57a00")
-    , borderBottom3 (px 1) solid (hex "f57a00")
+    , color (hex neutral.s450)
+    , borderBottom3 (px 1) solid (hex neutral.s450)
     ]
 
 

@@ -18,3 +18,7 @@ intToNoteId n =
 type alias Note =
     { title : String
     }
+
+
+type alias NoteIdPair =
+    ( NoteId, Note )
