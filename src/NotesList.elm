@@ -1,14 +1,15 @@
-module NotesList exposing (NotesListMsg(..), move, notesListView, update)
+module NotesList exposing (NotesListMsg(..), notesListView, update)
 
 import Browser.Dom
 import Css exposing (..)
 import DesignSystem.Colors exposing (neutral)
+import ElmBook exposing (Msg)
 import Html
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onClick, onInput, onSubmit)
 import List
-import Model exposing (Model)
+import Model exposing (Model, move)
 import Note exposing (..)
 import OpaqueDict exposing (OpaqueDict)
 import Page exposing (..)
@@ -31,7 +32,7 @@ update msg model =
         ( Tick noteId, ListPage ) ->
             let
                 ( newPending, newDone ) =
-                    move noteId model.pending model.done
+                    Model.move noteId model.pending model.done
             in
             ( { model
                 | pending = newPending
@@ -43,7 +44,7 @@ update msg model =
         ( Untick noteId, ListPage ) ->
             let
                 ( newDone, newPending ) =
-                    move noteId model.done model.pending
+                    Model.move noteId model.done model.pending
             in
             ( { model
                 | pending = newPending
@@ -79,23 +80,6 @@ update msg model =
 resetNoteForm : Note
 resetNoteForm =
     { title = "" }
-
-
-move : k -> OpaqueDict k v -> OpaqueDict k v -> ( OpaqueDict k v, OpaqueDict k v )
-move k dictFrom dictTo =
-    let
-        elem =
-            OpaqueDict.get k dictFrom
-
-        newFrom =
-            OpaqueDict.remove k dictFrom
-
-        newTo =
-            elem
-                |> Maybe.map (\e -> OpaqueDict.insert k e dictTo)
-                |> Maybe.withDefault dictTo
-    in
-    ( newFrom, newTo )
 
 
 resetUlStyle : List Style
@@ -136,17 +120,23 @@ noteDictToList dict =
         |> List.sortBy (Tuple.second >> .title)
 
 
-pendingNoteView : ( NoteId, Note ) -> Html NotesListMsg
-pendingNoteView ( noteId, note ) =
-    li [ css noteStyle ]
+noteView : List Style -> (NoteId -> NotesListMsg) -> ( NoteId, Note ) -> Html NotesListMsg
+noteView styles clickMsg ( noteId, note ) =
+    li [ css styles, onClick (clickMsg noteId) ]
         [ span [ css noteTitleStyle ] [ text note.title ]
         , button [ onClick (RemoveNote noteId) ] [ text "🗑️" ]
         , button [ onClick (OpenEditNote noteId note) ] [ text "✏️" ]
         ]
 
 
+pendingNoteView : ( NoteId, Note ) -> Html NotesListMsg
+pendingNoteView =
+    noteView (noteStyle Pending) Tick
+
+
+doneNoteView : ( NoteId, Note ) -> Html NotesListMsg
 doneNoteView =
-    pendingNoteView
+    noteView (noteStyle Done) Untick
 
 
 createNoteButtonView : Html NotesListMsg

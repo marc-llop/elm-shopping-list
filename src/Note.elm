@@ -1,7 +1,7 @@
 module Note exposing (..)
 
 import Css exposing (..)
-import DesignSystem.Colors exposing (neutral)
+import DesignSystem.Colors exposing (backgroundPurple, neutral)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
 
@@ -34,15 +34,30 @@ resetLiStyle =
     [ listStyle none ]
 
 
-noteStyle : List Style
-noteStyle =
+type NoteState
+    = Pending
+    | Done
+
+
+noteStyle : NoteState -> List Style
+noteStyle state =
     resetLiStyle
         ++ [ displayFlex
            , alignItems center
            , padding (px 10)
            , fontSize (rem 1.3)
-           , color (hex neutral.s450)
+           , color
+                (hex
+                    (case state of
+                        Pending ->
+                            neutral.s450
+
+                        Done ->
+                            backgroundPurple.s400
+                    )
+                )
            , borderBottom3 (px 1) solid (hex neutral.s450)
+           , cursor pointer
            ]
 
 

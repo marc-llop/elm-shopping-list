@@ -96,6 +96,7 @@ type EditNoteFormMsg
 type CreateNoteFormMsg
     = InputNewNoteTitle String
     | CreateNote Note
+    | RetickNote NoteId
     | CancelCreate
 
 
@@ -149,6 +150,19 @@ update msg model =
                         note
                         model.pending
                 , idCounter = model.idCounter + 1
+              }
+            , Cmd.none
+            )
+
+        CreateNoteFormMsgContainer (RetickNote noteId) ->
+            let
+                ( newDone, newPending ) =
+                    move noteId model.done model.pending
+            in
+            ( { model
+                | currentPage = ListPage
+                , pending = newPending
+                , done = newDone
               }
             , Cmd.none
             )
@@ -221,7 +235,7 @@ createNoteView model newNote =
 
 noteView : NoteIdPair -> Html CreateNoteFormMsg
 noteView ( noteId, note ) =
-    li [ css noteStyle ]
+    li [ css (noteStyle Note.Pending), onClick (RetickNote noteId) ]
         [ span [ css noteTitleStyle ] [ text note.title ]
         ]
 
