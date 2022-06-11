@@ -2,14 +2,14 @@ module Main exposing (main)
 
 import Background exposing (background)
 import Browser
-import Css exposing (fixed, height, int, pct, position, property, width, zIndex)
+import Css exposing (fixed, fullWidth, height, int, pct, position, property, width, zIndex)
 import Html
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onClick, onInput, onSubmit)
 import List
 import Model exposing (..)
-import Note exposing (Note, NoteId, NoteIdPair)
+import Note exposing (Note, NoteId, NoteIdPair, noteStyle, noteTitleStyle)
 import NotesList exposing (..)
 import OpaqueDict exposing (OpaqueDict)
 import Page exposing (..)
@@ -211,7 +211,7 @@ view model =
 
 createNoteView : Model -> Note -> Html CreateNoteFormMsg
 createNoteView model newNote =
-    Html.Styled.form [ onSubmit (CreateNote newNote) ]
+    Html.Styled.form [ onSubmit (CreateNote newNote), css [ Css.width (pct 100) ] ]
         [ input [ onInput InputNewNoteTitle, value newNote.title, id createNoteAutofocusId ] []
         , Ui.Button.button { buttonType = Submit, label = "Add note" }
         , Ui.Button.button { buttonType = Button CancelCreate, label = "Cancel" }
@@ -221,8 +221,8 @@ createNoteView model newNote =
 
 noteView : NoteIdPair -> Html CreateNoteFormMsg
 noteView ( noteId, note ) =
-    li []
-        [ span [] [ text note.title ]
+    li [ css noteStyle ]
+        [ span [ css noteTitleStyle ] [ text note.title ]
         ]
 
 
@@ -248,14 +248,14 @@ matchesList model newNote =
             List.filter matches notesList
     in
     div [ css [ Css.width (pct 100) ] ]
-        [ ul []
+        [ ul [ css [ Css.margin Css.zero, Css.padding Css.zero ] ]
             (List.map noteView allMatchedNotes)
         ]
 
 
 editNoteView : NoteId -> Note -> Html EditNoteFormMsg
 editNoteView noteId note =
-    Html.Styled.form [ onSubmit (EditNote noteId note) ]
+    Html.Styled.form [ onSubmit (EditNote noteId note), css [ Css.width (pct 100) ] ]
         [ input [ onInput InputEditedNoteTitle, value note.title, id editNoteAutofocusId ] []
         , Ui.Button.button { buttonType = Submit, label = "Save note" }
         , Ui.Button.button { buttonType = Button CancelEdit, label = "Cancel edit" }

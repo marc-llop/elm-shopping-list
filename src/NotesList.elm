@@ -9,7 +9,7 @@ import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onClick, onInput, onSubmit)
 import List
 import Model exposing (Model)
-import Note exposing (Note, NoteId, NoteIdPair)
+import Note exposing (..)
 import OpaqueDict exposing (OpaqueDict)
 import Page exposing (..)
 import Task
@@ -105,10 +105,18 @@ resetUlStyle =
     ]
 
 
+noteListStyle : List Style
+noteListStyle =
+    resetUlStyle
+        ++ [ displayFlex
+           , flexDirection column
+           ]
+
+
 notesListView : Model -> Html NotesListMsg
 notesListView { pending, done } =
     div [ css [ Css.width (pct 100) ] ]
-        [ ul [ css resetUlStyle ]
+        [ ul [ css noteListStyle ]
             (List.concat
                 [ noteDictToList pending |> List.map pendingNoteView
                 , noteDictToList done |> List.map doneNoteView
@@ -128,29 +136,9 @@ noteDictToList dict =
         |> List.sortBy (Tuple.second >> .title)
 
 
-resetLiStyle : List Style
-resetLiStyle =
-    [ listStyle none ]
-
-
-itemStyle : List Style
-itemStyle =
-    [ displayFlex
-    , alignItems center
-    , padding (px 10)
-    , fontSize (rem 1.3)
-    , color (hex neutral.s450)
-    , borderBottom3 (px 1) solid (hex neutral.s450)
-    ]
-
-
-noteTitleStyle =
-    [ flexGrow (int 1) ]
-
-
 pendingNoteView : ( NoteId, Note ) -> Html NotesListMsg
 pendingNoteView ( noteId, note ) =
-    li [ css (List.concat [ resetLiStyle, itemStyle ]) ]
+    li [ css noteStyle ]
         [ span [ css noteTitleStyle ] [ text note.title ]
         , button [ onClick (RemoveNote noteId) ] [ text "🗑️" ]
         , button [ onClick (OpenEditNote noteId note) ] [ text "✏️" ]
