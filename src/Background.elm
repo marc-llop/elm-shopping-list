@@ -14,8 +14,11 @@ hexPattern imgUrl =
         , SvgAttr.height "100%"
         ]
         [ image
-            [ SvgAttr.width "100%"
-            , SvgAttr.height "100%"
+            [ SvgAttr.width "660"
+            , SvgAttr.height "660"
+            , x "50%"
+            , y "50%"
+            , SvgAttr.transform "translate(-330, -330)"
             , xlinkHref imgUrl
             ]
             []
