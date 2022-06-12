@@ -2,6 +2,7 @@ module Main exposing (main)
 
 import Background exposing (background)
 import Browser
+import CreateNote exposing (CreateNoteFormMsg(..), createNoteView)
 import Css exposing (fixed, fullWidth, height, int, pct, position, property, width, zIndex)
 import Html
 import Html.Styled exposing (..)
@@ -91,13 +92,6 @@ type EditNoteFormMsg
     = InputEditedNoteTitle String
     | EditNote NoteId Note
     | CancelEdit
-
-
-type CreateNoteFormMsg
-    = InputNewNoteTitle String
-    | CreateNote Note
-    | RetickNote NoteId
-    | CancelCreate
 
 
 editNote : NoteId -> Note -> OpaqueDict NoteId Note -> OpaqueDict NoteId Note
@@ -221,50 +215,6 @@ view model =
                     editNoteView noteId note |> Html.Styled.map EditNoteFormMsgContainer
     in
     viewPage model page
-
-
-createNoteView : Model -> Note -> Html CreateNoteFormMsg
-createNoteView model newNote =
-    Html.Styled.form [ onSubmit (CreateNote newNote), css [ Css.width (pct 100) ] ]
-        [ input [ onInput InputNewNoteTitle, value newNote.title, id createNoteAutofocusId ] []
-        , Ui.Button.button { buttonType = Submit, label = "Add note" }
-        , Ui.Button.button { buttonType = Button CancelCreate, label = "Cancel" }
-        , matchesList model newNote
-        ]
-
-
-noteView : NoteIdPair -> Html CreateNoteFormMsg
-noteView ( noteId, note ) =
-    li [ css (noteStyle Note.Pending), onClick (RetickNote noteId) ]
-        [ span [ css noteTitleStyle ] [ text note.title ]
-        ]
-
-
-matchesTitle : String -> NoteIdPair -> Bool
-matchesTitle title ( id, note ) =
-    if String.isEmpty title then
-        True
-
-    else
-        String.startsWith title note.title
-
-
-matchesList : Model -> Note -> Html CreateNoteFormMsg
-matchesList model newNote =
-    let
-        notesList =
-            allNotes model
-
-        matches =
-            matchesTitle newNote.title
-
-        allMatchedNotes =
-            List.filter matches notesList
-    in
-    div [ css [ Css.width (pct 100) ] ]
-        [ ul [ css [ Css.margin Css.zero, Css.padding Css.zero ] ]
-            (List.map noteView allMatchedNotes)
-        ]
 
 
 editNoteView : NoteId -> Note -> Html EditNoteFormMsg
