@@ -8,6 +8,8 @@ import Html.Styled.Events exposing (onClick, onInput, onSubmit)
 import Model exposing (..)
 import Note exposing (Note, NoteId, NoteIdPair, noteStyle, noteTitleStyle)
 import Page exposing (createNoteAutofocusId)
+import Search
+import Time
 import Ui.Button exposing (ButtonType(..))
 
 
@@ -28,26 +30,38 @@ createNoteView model newNote =
         ]
 
 
-matchesTitle : String -> NoteIdPair -> Bool
-matchesTitle title ( id, note ) =
-    if String.isEmpty title then
-        True
+type alias IndexableNote =
+    { id : NoteId
+    , content : String
+    , dateTime : Time.Posix
+    }
 
-    else
-        String.startsWith title note.title
+
+noteToDatum : NoteIdPair -> IndexableNote
+noteToDatum ( noteId, note ) =
+    { id = noteId
+    , content = note.title
+    , dateTime = Time.millisToPosix 0
+    }
+
+
+datumToNote : IndexableNote -> NoteIdPair
+datumToNote { id, content, dateTime } =
+    ( id, { title = content } )
 
 
 matchesList : Model -> Note -> Html CreateNoteFormMsg
 matchesList model newNote =
     let
         notesList =
-            allNotes model
-
-        matches =
-            matchesTitle newNote.title
+            allNotes model |> List.map noteToDatum
 
         allMatchedNotes =
-            List.filter matches notesList
+            Search.search
+                Search.NotCaseSensitive
+                newNote.title
+                notesList
+                |> List.map datumToNote
     in
     div [ css [ Css.width (pct 100) ] ]
         [ ul [ css [ Css.margin Css.zero, Css.padding Css.zero ] ]
