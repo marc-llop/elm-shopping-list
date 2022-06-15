@@ -157,8 +157,6 @@ docs =
             , buttonType = Button (logAction "Button clicked")
             , customStyle = [ margin (px 20) ]
             }
-
-        -- withMargin = styled [ ]
     in
     chapter "Button"
         |> renderComponentList
