@@ -131,6 +131,7 @@ shadeShowcase index ( name, shade ) =
             [ backgroundColor (hex shade)
             , color
                 (hex
+                    -- Display darker shades with white text
                     (if index > 9 then
                         white
 
@@ -143,8 +144,6 @@ shadeShowcase index ( name, shade ) =
             , height (px 50)
             , alignItems center
             , justifyContent center
-
-            -- , textShadow4 zero zero (px 5) (hex white)
             ]
         ]
         [ text name ]
