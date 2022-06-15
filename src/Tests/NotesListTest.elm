@@ -1,8 +1,7 @@
 module Tests.NotesListTest exposing (..)
 
 import Expect exposing (Expectation)
-import Fuzz exposing (Fuzzer, int, list, string)
-import NotesList
+import Model
 import OpaqueDict
 import Test exposing (..)
 
@@ -31,7 +30,7 @@ suite =
                             intDictFrom [ ( 2, "b" ) ]
 
                         actual =
-                            NotesList.move 2 dictA dictB
+                            Model.move 2 dictA dictB
                     in
                     actual |> Expect.equal ( expectedA, expectedB )
             , test "should move an element to a non-empty dictionary" <|
@@ -50,7 +49,7 @@ suite =
                             intDictFrom [ ( 3, "e" ), ( 5, "f" ), ( 42, "x" ) ]
 
                         actual =
-                            NotesList.move 42 dictA dictB
+                            Model.move 42 dictA dictB
                     in
                     actual |> Expect.equal ( expectedA, expectedB )
             , test "should do nothing if element is not in origin" <|
@@ -63,7 +62,7 @@ suite =
                             intDictFrom [ ( 2, "a" ) ]
 
                         actual =
-                            NotesList.move 42 dictA dictB
+                            Model.move 42 dictA dictB
                     in
                     actual |> Expect.equal ( dictA, dictB )
             ]
