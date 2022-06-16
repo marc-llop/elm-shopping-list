@@ -5,6 +5,7 @@ import ElmBook exposing (withChapterGroups, withThemeOptions)
 import ElmBook.ElmCSS exposing (Book, Chapter, book)
 import ElmBook.ThemeOptions
 import Ui.Button
+import Ui.Glassmorphism
 import Ui.ListedNote
 
 
@@ -21,6 +22,7 @@ main =
             , ( "Components"
               , [ Ui.Button.docs
                 , Ui.ListedNote.docs
+                , Ui.Glassmorphism.docs
                 ]
               )
             ]
