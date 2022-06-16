@@ -8,7 +8,8 @@ import ElmBook.Chapter exposing (chapter, renderComponentList)
 import ElmBook.ElmCSS exposing (Chapter)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
-import Html.Styled.Events exposing (onClick)
+import Html.Styled.Events exposing (onClick, stopPropagationOn)
+import Json.Decode
 import Note exposing (Note, NoteId)
 
 
@@ -31,9 +32,14 @@ listedNoteView : ListedNoteProps msg -> Html msg
 listedNoteView { noteId, note, state, onTick, onRemove, onEdit } =
     li [ css (noteStyle state), onClick (onTick noteId) ]
         [ span [ css noteTitleStyle ] [ text note.title ]
-        , button [ onClick (onRemove noteId) ] [ text "🗑️" ]
-        , button [ onClick (onEdit noteId note) ] [ text "✏️" ]
+        , button [ onClickStopPropagation (onRemove noteId) ] [ text "🗑️" ]
+        , button [ onClickStopPropagation (onEdit noteId note) ] [ text "✏️" ]
         ]
+
+
+onClickStopPropagation : msg -> Attribute msg
+onClickStopPropagation msg =
+    stopPropagationOn "click" <| Json.Decode.succeed ( msg, True )
 
 
 noteStyle : NoteState -> List Style
