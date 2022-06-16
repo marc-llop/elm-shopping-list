@@ -4,6 +4,7 @@ import Css exposing (..)
 import Html
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as Attr exposing (css)
+import NamedInterpolate exposing (interpolate)
 import Svg.Styled exposing (..)
 import Svg.Styled.Attributes as SvgAttr exposing (..)
 
@@ -63,7 +64,7 @@ hexMask =
             , y "0"
             , SvgAttr.width "660"
             , SvgAttr.height "660"
-            , SvgAttr.fill ("url(#" ++ patternId ++ ")")
+            , SvgAttr.fill (idRef patternId)
             ]
             []
         ]
@@ -75,6 +76,10 @@ patternId =
 
 maskId =
     "hexmask"
+
+
+idRef id =
+    interpolate "url(#{id})" [ ( "id", id ) ]
 
 
 
@@ -99,7 +104,7 @@ backgroundSvg imgUrl =
 
             --, xlinkHref "https://images.unsplash.com/photo-1546453667-8a8d2d07bc20?w=1080"
             , xlinkHref imgUrl
-            , SvgAttr.mask ("url(#" ++ maskId ++ ")")
+            , SvgAttr.mask (idRef maskId)
             ]
             []
         ]
@@ -119,9 +124,12 @@ background imgUrl =
             , Css.width (pct 100)
             , Css.height (pct 100)
             , property "background"
-                ("radial-gradient(ellipse 110% 40% at bottom right, #3b023a, 50%, transparent),"
-                    ++ "radial-gradient(ellipse 180% 160% at -80% -80%, #f57a00, transparent),"
-                    ++ "#100210"
+                (interpolate
+                    ("radial-gradient(ellipse 110% 40% at bottom right, #3b023a, 50%, transparent),"
+                        ++ "radial-gradient(ellipse 180% 160% at -80% -80%, #f57a00, transparent),"
+                        ++ "#{backgroundColor}"
+                    )
+                    [ ( "backgroundColor", "100210" ) ]
                 )
             ]
         ]

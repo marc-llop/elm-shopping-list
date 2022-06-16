@@ -9,6 +9,7 @@ import ElmBook.Chapter exposing (chapter, renderComponentList)
 import ElmBook.ElmCSS exposing (Chapter)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
+import NamedInterpolate exposing (interpolate)
 
 
 type alias GlassmorphismProps =
@@ -68,11 +69,10 @@ glassmorphism { color, opacityPct, blurPx, saturationPct } =
         saturation =
             clamp 0 200 saturationPct |> String.fromInt
 
-        blur =
-            blurPx |> String.fromInt
-
         backdropFilter =
-            "blur(" ++ blur ++ "px) saturate(" ++ saturation ++ "%)"
+            interpolate
+                "blur({blur}px) saturate({saturation}%)"
+                [ ( "blur", String.fromInt blurPx ), ( "saturation", saturation ) ]
     in
     [ backgroundColor (hex colorHex)
     , Css.property "backdrop-filter" backdropFilter

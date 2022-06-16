@@ -11,6 +11,7 @@ import Html
 import Html.Styled exposing (Html, span, text)
 import Html.Styled.Attributes exposing (css)
 import Html.Styled.Events exposing (onClick)
+import NamedInterpolate exposing (interpolate)
 
 
 buttonStyles : List Style
@@ -64,8 +65,12 @@ buttonTransition duration =
 
 
 shadow : Int -> String -> String
-shadow size color =
-    "0 0 " ++ String.fromInt size ++ "px #" ++ color
+shadow sizeInt color =
+    interpolate
+        "0 0 {size}px #{color}"
+        [ ( "size", String.fromInt sizeInt )
+        , ( "color", color )
+        ]
 
 
 insetShadow : Int -> String -> String
