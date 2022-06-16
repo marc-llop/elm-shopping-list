@@ -23,7 +23,7 @@ suite =
                             interpolate template values
 
                         expected =
-                            Ok "Hello Pepet! So you are 42 years old already?"
+                            "Hello Pepet! So you are 42 years old already?"
                     in
                     actual |> Expect.equal expected
             , test "should replace the tags no matter the order" <|
@@ -39,7 +39,7 @@ suite =
                             interpolate template values
 
                         expected =
-                            Ok "margin: 15px; padding: 5px;"
+                            "margin: 15px; padding: 5px;"
                     in
                     actual |> Expect.equal expected
             , test "should be resilient to extra and repeated values" <|
@@ -55,10 +55,10 @@ suite =
                             interpolate template values
 
                         expected =
-                            Ok "margin: 20px; padding: 5px;"
+                            "margin: 20px; padding: 5px;"
                     in
                     actual |> Expect.equal expected
-            , test "should return error if a variable is missing in values" <|
+            , test "should leave the string unmodified if a variable is missing in values" <|
                 \_ ->
                     let
                         template =
@@ -71,10 +71,10 @@ suite =
                             interpolate template values
 
                         expected =
-                            Err [ NamedInterpolate.VarNotFound "margin" ]
+                            "margin: {margin}px; padding: 5px;"
                     in
                     actual |> Expect.equal expected
-            , test "should return parser errors if the template can not be parsed" <|
+            , test "should return the template unmodified if it can not be parsed" <|
                 \_ ->
                     let
                         template =
@@ -85,10 +85,7 @@ suite =
 
                         actual =
                             interpolate template values
-
-                        expected =
-                            Err [ NamedInterpolate.DeadEnd { col = 16, row = 1, problem = ExpectingSymbol "}" } ]
                     in
-                    actual |> Expect.equal expected
+                    actual |> Expect.equal template
             ]
         ]
