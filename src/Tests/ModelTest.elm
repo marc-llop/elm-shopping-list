@@ -1,4 +1,4 @@
-module Tests.NotesListTest exposing (..)
+module Tests.ModelTest exposing (..)
 
 import Expect exposing (Expectation)
 import Model
@@ -12,7 +12,7 @@ intDictFrom =
 
 suite : Test
 suite =
-    describe "NotesList"
+    describe "Model"
         [ describe "move"
             [ test "should move an element from one dictionary to an empty one" <|
                 \_ ->
