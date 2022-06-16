@@ -2,7 +2,6 @@ module Tests.NamedInterpolateTest exposing (..)
 
 import Expect exposing (Expectation)
 import NamedInterpolate exposing (interpolate)
-import Parser exposing (Problem(..))
 import Test exposing (..)
 
 

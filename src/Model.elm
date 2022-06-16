@@ -14,11 +14,15 @@ type alias Model =
     }
 
 
-allNotes : Model -> List NoteIdPair
-allNotes model =
+type alias NotesInModel a =
+    { a | pending : OpaqueDict NoteId Note, done : OpaqueDict NoteId Note }
+
+
+allNotes : NotesInModel a -> List NoteIdPair
+allNotes { pending, done } =
     List.concat
-        [ OpaqueDict.toList model.pending
-        , OpaqueDict.toList model.done
+        [ OpaqueDict.toList pending
+        , OpaqueDict.toList done
         ]
 
 
