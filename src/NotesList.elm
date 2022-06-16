@@ -3,7 +3,6 @@ module NotesList exposing (NotesListMsg(..), notesListView, update)
 import Browser.Dom
 import Css exposing (..)
 import DesignSystem.Colors exposing (neutral)
-import ElmBook exposing (Msg)
 import Html
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
@@ -14,6 +13,7 @@ import Note exposing (..)
 import OpaqueDict exposing (OpaqueDict)
 import Page exposing (..)
 import Task
+import Ui.ListedNote exposing (ListedNoteProps, listedNoteView)
 import Utils exposing (classStrList)
 
 
@@ -120,23 +120,28 @@ noteDictToList dict =
         |> List.sortBy (Tuple.second >> .title)
 
 
-noteView : List Style -> (NoteId -> NotesListMsg) -> ( NoteId, Note ) -> Html NotesListMsg
-noteView styles clickMsg ( noteId, note ) =
-    li [ css styles, onClick (clickMsg noteId) ]
-        [ span [ css noteTitleStyle ] [ text note.title ]
-        , button [ onClick (RemoveNote noteId) ] [ text "🗑️" ]
-        , button [ onClick (OpenEditNote noteId note) ] [ text "✏️" ]
-        ]
-
-
 pendingNoteView : ( NoteId, Note ) -> Html NotesListMsg
-pendingNoteView =
-    noteView (noteStyle Pending) Tick
+pendingNoteView ( noteId, note ) =
+    listedNoteView
+        { noteId = noteId
+        , note = note
+        , state = Ui.ListedNote.Pending
+        , onTick = Tick
+        , onRemove = RemoveNote
+        , onEdit = OpenEditNote
+        }
 
 
 doneNoteView : ( NoteId, Note ) -> Html NotesListMsg
-doneNoteView =
-    noteView (noteStyle Done) Untick
+doneNoteView ( noteId, note ) =
+    listedNoteView
+        { noteId = noteId
+        , note = note
+        , state = Ui.ListedNote.Done
+        , onTick = Untick
+        , onRemove = RemoveNote
+        , onEdit = OpenEditNote
+        }
 
 
 createNoteButtonView : Html NotesListMsg

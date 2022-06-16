@@ -6,11 +6,12 @@ import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onClick, onInput, onSubmit)
 import Model exposing (..)
-import Note exposing (Note, NoteId, NoteIdPair, noteStyle, noteTitleStyle)
+import Note exposing (Note, NoteId, NoteIdPair)
 import Page exposing (createNoteAutofocusId)
 import Search
 import Time
 import Ui.Button exposing (ButtonType(..))
+import Ui.ListedNote exposing (noteStyle, noteTitleStyle)
 
 
 type CreateNoteFormMsg
@@ -71,6 +72,6 @@ matchesList model newNote =
 
 noteView : NoteIdPair -> Html CreateNoteFormMsg
 noteView ( noteId, note ) =
-    li [ css (noteStyle Note.Pending), onClick (RetickNote noteId) ]
+    li [ css (noteStyle Ui.ListedNote.Pending), onClick (RetickNote noteId) ]
         [ span [ css noteTitleStyle ] [ text note.title ]
         ]

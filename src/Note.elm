@@ -30,16 +30,6 @@ type alias NoteIdPair =
     ( NoteId, Note )
 
 
-resetLiStyle : List Style
-resetLiStyle =
-    [ listStyle none ]
-
-
-type NoteState
-    = Pending
-    | Done
-
-
 hexDigits : Array Char
 hexDigits =
     "0123456789abcdef" |> String.toList |> Array.fromList
@@ -99,29 +89,3 @@ glassmorphism color opacityPct blurPx saturationPct =
     , Css.property "backdrop-filter" backdropFilter
     , Css.property "-webkit-backdrop-filter" backdropFilter
     ]
-
-
-noteStyle : NoteState -> List Style
-noteStyle state =
-    resetLiStyle
-        ++ [ displayFlex
-           , alignItems center
-           , padding (px 10)
-           , fontSize (rem 1.3)
-           , color
-                (hex
-                    (case state of
-                        Pending ->
-                            neutral.s450
-
-                        Done ->
-                            backgroundPurple.s400
-                    )
-                )
-           , borderBottom3 (px 1) solid (hex neutral.s450)
-           , cursor pointer
-           ]
-
-
-noteTitleStyle =
-    [ flexGrow (int 1) ]

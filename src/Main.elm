@@ -10,7 +10,7 @@ import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onClick, onInput, onSubmit)
 import List
 import Model exposing (..)
-import Note exposing (Note, NoteId, NoteIdPair, noteStyle, noteTitleStyle)
+import Note exposing (Note, NoteId, NoteIdPair)
 import NotesList exposing (..)
 import OpaqueDict exposing (OpaqueDict)
 import Page exposing (..)
