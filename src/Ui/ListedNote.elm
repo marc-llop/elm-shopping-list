@@ -1,7 +1,7 @@
 module Ui.ListedNote exposing (..)
 
 import Css exposing (..)
-import DesignSystem.Colors exposing (backgroundPurple, neutral)
+import DesignSystem.Colors exposing (accentBlue, backgroundPurple, neutral)
 import ElmBook exposing (Msg)
 import ElmBook.Actions exposing (logAction)
 import ElmBook.Chapter exposing (chapter, renderComponentList)
@@ -11,6 +11,7 @@ import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onClick, stopPropagationOn)
 import Json.Decode
 import Note exposing (Note, NoteId)
+import Ui.Glassmorphism exposing (glassmorphism)
 
 
 type NoteState
@@ -45,10 +46,35 @@ onClickStopPropagation msg =
 noteStyle : NoteState -> List Style
 noteStyle state =
     resetLiStyle
+        ++ glassmorphism
+            { color =
+                case state of
+                    Pending ->
+                        neutral.s750
+
+                    Done ->
+                        backgroundPurple.s750
+            , opacityPct = 35
+            , blurPx = 6
+            , saturationPct = 100
+            }
         ++ [ displayFlex
            , alignItems center
            , padding (px 10)
-           , fontSize (rem 1.3)
+           , margin4 (px 3) (px 7) (px 5) (px 5)
+           , borderRadius (px 10)
+           , boxShadow3 (px 2)
+                (px 2)
+                (hex
+                    (case state of
+                        Pending ->
+                            neutral.s750
+
+                        Done ->
+                            backgroundPurple.s650
+                    )
+                )
+           , fontSize (rem 1.2)
            , color
                 (hex
                     (case state of
@@ -59,7 +85,6 @@ noteStyle state =
                             backgroundPurple.s400
                     )
                 )
-           , borderBottom3 (px 1) solid (hex neutral.s450)
            , cursor pointer
            ]
 

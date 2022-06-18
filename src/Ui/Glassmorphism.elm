@@ -126,9 +126,9 @@ docs =
     in
     chapter "Glassmorphism"
         |> renderComponentList
-            [ ( "Block", showcaseGlass props )
-            , ( "With max saturation", showcaseGlass { props | saturationPct = 200 } )
+            [ ( "Block (opacity=50, blur=4, saturation=0)", showcaseGlass props )
+            , ( "With max saturation (200)", showcaseGlass { props | saturationPct = 200 } )
             , ( "With other color", showcaseGlass { props | color = "111928" } )
-            , ( "With less opacity", showcaseGlass { props | opacityPct = 10 } )
-            , ( "With less blur", showcaseGlass { props | blurPx = 1 } )
+            , ( "With less opacity (10)", showcaseGlass { props | opacityPct = 10 } )
+            , ( "With less blur (1)", showcaseGlass { props | blurPx = 1 } )
             ]
