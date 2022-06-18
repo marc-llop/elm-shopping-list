@@ -3,7 +3,7 @@ module NamedInterpolate exposing (interpolate)
 import Char
 import Debug
 import Dict exposing (Dict, foldr)
-import Parser exposing ((|.), (|=), Parser, Step(..), end, loop, map, oneOf, run, succeed, symbol, variable)
+import Parser exposing (..)
 import Set exposing (Set)
 import Svg.Styled exposing (tspan)
 
@@ -38,24 +38,30 @@ parseVariable =
         |. symbol "}"
 
 
-notOpenBracket : Char -> Bool
-notOpenBracket c =
-    c /= '{'
+parseEscapedBracket : Parser Token
+parseEscapedBracket =
+    succeed Text
+        |. symbol "\\"
+        |. symbol "{"
+        |= commit "{"
 
 
 parseText : Parser Token
 parseText =
-    succeed Text
-        |= variable
-            { start = notOpenBracket
-            , inner = notOpenBracket
-            , reserved = Set.empty
-            }
+    (getChompedString <|
+        succeed ()
+            |. chompWhile (\c -> c /= '\\' && c /= '{')
+    )
+        |> map Text
 
 
 parseVariableOrText : Parser Token
 parseVariableOrText =
-    oneOf [ parseVariable, parseText ]
+    oneOf
+        [ parseVariable
+        , backtrackable parseEscapedBracket
+        , parseText
+        ]
 
 
 parseTemplate : Parser Template

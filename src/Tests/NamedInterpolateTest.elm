@@ -86,5 +86,21 @@ suite =
                             interpolate template values
                     in
                     actual |> Expect.equal template
+            , test "should allow and unescape escaped brackets" <|
+                \_ ->
+                    let
+                        template =
+                            ":hover \\{\n margin: {margin}px;\n}"
+
+                        values =
+                            [ ( "margin", "15" ) ]
+
+                        actual =
+                            interpolate template values
+
+                        expected =
+                            ":hover {\n margin: 15px;\n}"
+                    in
+                    actual |> Expect.equal expected
             ]
         ]
