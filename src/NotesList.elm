@@ -13,7 +13,7 @@ import OpaqueDict exposing (OpaqueDict)
 import Page exposing (..)
 import Task
 import Ui.ListedNote exposing (ListedNoteProps, listedNoteView)
-import Utils exposing (classStrList)
+import Utils exposing (dataTestId)
 
 
 type NotesListMsg
@@ -98,7 +98,7 @@ noteListStyle =
 
 notesListView : Model -> Html NotesListMsg
 notesListView { pending, done } =
-    div [ css [ Css.width (pct 100) ] ]
+    div [ dataTestId "NotesList", css [ Css.width (pct 100) ] ]
         [ ul [ css noteListStyle ]
             (List.concat
                 [ noteDictToList pending |> List.map pendingNoteView

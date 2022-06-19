@@ -1,13 +1,13 @@
 module Utils exposing (..)
 
-import Html exposing (Attribute)
-import Html.Attributes exposing (classList)
+import Html.Styled exposing (Attribute)
+import Html.Styled.Attributes exposing (attribute)
 
 
 flip fn =
     \a b -> fn b a
 
 
-classStrList : List String -> Attribute msg
-classStrList =
-    List.map (flip Tuple.pair True) >> classList
+dataTestId : String -> Attribute msg
+dataTestId testId =
+    attribute "data-testid" testId

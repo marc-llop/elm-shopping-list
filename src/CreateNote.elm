@@ -13,6 +13,7 @@ import String.Deburr exposing (deburr)
 import Time
 import Ui.Button exposing (ButtonType(..))
 import Ui.ListedNote exposing (noteStyle, noteTitleStyle)
+import Utils exposing (dataTestId)
 
 
 type CreateNoteFormMsg
@@ -73,7 +74,11 @@ applyIfCreateNotePage model fn =
 
 createNoteView : Model -> Note -> Html CreateNoteFormMsg
 createNoteView model newNote =
-    Html.Styled.form [ onSubmit (CreateNote newNote), css [ Css.width (pct 100) ] ]
+    Html.Styled.form
+        [ onSubmit (CreateNote newNote)
+        , dataTestId "CreateNote"
+        , css [ Css.width (pct 100) ]
+        ]
         [ input [ onInput InputNewNoteTitle, value newNote.title, id createNoteAutofocusId ] []
         , Ui.Button.button
             { buttonType = Submit
@@ -133,14 +138,18 @@ matchesListView model newNote =
         matches =
             notesMatching newNote.title model
     in
-    div [ css [ Css.width (pct 100) ] ]
+    div [ dataTestId "MatchesList", css [ Css.width (pct 100) ] ]
         [ ul [ css [ Css.margin Css.zero, Css.padding Css.zero ] ]
-            (List.map noteView matches)
+            (List.map matchedNoteView matches)
         ]
 
 
-noteView : NoteIdPair -> Html CreateNoteFormMsg
-noteView ( noteId, note ) =
-    li [ css (noteStyle Ui.ListedNote.Pending), onClick (RetickNote noteId) ]
+matchedNoteView : NoteIdPair -> Html CreateNoteFormMsg
+matchedNoteView ( noteId, note ) =
+    li
+        [ dataTestId "MatchedNote"
+        , css (noteStyle Ui.ListedNote.Pending)
+        , onClick (RetickNote noteId)
+        ]
         [ span [ css noteTitleStyle ] [ text note.title ]
         ]

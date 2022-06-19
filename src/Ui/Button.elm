@@ -11,6 +11,7 @@ import Html.Styled exposing (Html, span, text)
 import Html.Styled.Attributes as HtmlAttr exposing (css)
 import Html.Styled.Events as HtmlEvt
 import NamedInterpolate exposing (interpolate)
+import Utils exposing (dataTestId)
 
 
 buttonStyles : Bool -> List Style
@@ -163,7 +164,7 @@ stylableButton { label, buttonType, isEnabled, customStyle } =
             css (List.concat [ buttonStyles isEnabled, customStyle ])
     in
     Html.Styled.button
-        (joinedStyles :: attrsWithDisabled)
+        (dataTestId "Button" :: joinedStyles :: attrsWithDisabled)
         [ span [] [ text label ] ]
 
 

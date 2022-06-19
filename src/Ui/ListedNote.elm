@@ -12,6 +12,7 @@ import Html.Styled.Events exposing (onClick, stopPropagationOn)
 import Json.Decode
 import Note exposing (Note, NoteId)
 import Ui.Glassmorphism exposing (glassmorphism)
+import Utils exposing (dataTestId)
 
 
 type NoteState
@@ -31,7 +32,7 @@ type alias ListedNoteProps msg =
 
 listedNoteView : ListedNoteProps msg -> Html msg
 listedNoteView { noteId, note, state, onTick, onRemove, onEdit } =
-    li [ css (noteStyle state), onClick (onTick noteId) ]
+    li [ dataTestId "ListedNote", css (noteStyle state), onClick (onTick noteId) ]
         [ span [ css noteTitleStyle ] [ text note.title ]
         , button [ onClickStopPropagation (onRemove noteId) ] [ text "🗑️" ]
         , button [ onClickStopPropagation (onEdit noteId note) ] [ text "✏️" ]

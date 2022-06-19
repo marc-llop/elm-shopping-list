@@ -6,6 +6,7 @@ import Html.Styled.Attributes as Attr
 import NamedInterpolate exposing (interpolate)
 import Svg.Styled exposing (..)
 import Svg.Styled.Attributes as SvgAttr exposing (..)
+import Utils exposing (dataTestId)
 
 
 whitePolygon pointList =
@@ -116,7 +117,8 @@ backgroundSvg imgUrl =
 
 background imgUrl =
     div
-        [ Attr.css
+        [ dataTestId "Background"
+        , Attr.css
             [ Css.display Css.table
             , position fixed
             , zIndex (int -1)

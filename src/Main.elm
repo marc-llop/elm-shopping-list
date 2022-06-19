@@ -15,6 +15,7 @@ import OpaqueDict exposing (OpaqueDict)
 import Page exposing (..)
 import Tuple
 import Ui.Button exposing (ButtonType(..))
+import Utils exposing (dataTestId)
 
 
 
@@ -177,7 +178,11 @@ view model =
 
 editNoteView : NoteId -> Note -> Html EditNoteFormMsg
 editNoteView noteId note =
-    Html.Styled.form [ onSubmit (EditNote noteId note), css [ Css.width (pct 100) ] ]
+    Html.Styled.form
+        [ dataTestId "EditNote"
+        , onSubmit (EditNote noteId note)
+        , css [ Css.width (pct 100) ]
+        ]
         [ input [ onInput InputEditedNoteTitle, value note.title, id editNoteAutofocusId ] []
         , Ui.Button.button
             { buttonType = Submit
