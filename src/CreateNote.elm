@@ -13,6 +13,7 @@ import String.Deburr exposing (deburr)
 import Time
 import Ui.Button exposing (ButtonType(..))
 import Ui.ListedNote exposing (noteStyle, noteTitleStyle)
+import Ui.NoteList exposing (noteListView)
 import Utils exposing (dataTestId)
 
 
@@ -139,8 +140,12 @@ matchesListView model newNote =
             notesMatching newNote.title model
     in
     div [ dataTestId "MatchesList", css [ Css.width (pct 100) ] ]
-        [ ul [ css [ Css.margin Css.zero, Css.padding Css.zero ] ]
-            (List.map matchedNoteView matches)
+        [ noteListView
+            { pending = matches
+            , done = []
+            , pendingNoteView = matchedNoteView
+            , doneNoteView = matchedNoteView
+            }
         ]
 
 

@@ -14,6 +14,7 @@ import Page exposing (..)
 import Task
 import Ui.FloatingActionButton exposing (floatingActionButtonView)
 import Ui.ListedNote exposing (ListedNoteProps, listedNoteView)
+import Ui.NoteList exposing (noteListView)
 import Utils exposing (dataTestId)
 
 
@@ -82,30 +83,22 @@ resetNoteForm =
     { title = "" }
 
 
-resetUlStyle : List Style
-resetUlStyle =
-    [ margin zero
-    , padding zero
-    ]
-
-
-noteListStyle : List Style
-noteListStyle =
-    resetUlStyle
-        ++ [ displayFlex
-           , flexDirection column
-           ]
-
-
 notesListView : Model -> Html NotesListMsg
 notesListView { pending, done } =
-    div [ dataTestId "NotesList", css [ Css.width (pct 100) ] ]
-        [ ul [ css noteListStyle ]
-            (List.concat
-                [ noteDictToList pending |> List.map pendingNoteView
-                , noteDictToList done |> List.map doneNoteView
-                ]
-            )
+    let
+        pendingNotes =
+            noteDictToList pending
+
+        doneNotes =
+            noteDictToList done
+    in
+    div [ dataTestId "NotesListPage", css [ Css.width (pct 100) ] ]
+        [ noteListView
+            { pending = pendingNotes
+            , done = doneNotes
+            , pendingNoteView = pendingNoteView
+            , doneNoteView = doneNoteView
+            }
         , createNoteButtonView
         ]
 
