@@ -59,7 +59,7 @@ noteStyle state =
 
                 Done ->
                     { glassColor = backgroundPurple.s750
-                    , glassOpacity = 20
+                    , glassOpacity = 30
                     , boxShadowColor = backgroundPurple.s650
                     , textColor = backgroundPurple.s200
                     , textShadowColor = backgroundPurple.s400
@@ -74,7 +74,10 @@ noteStyle state =
         }
     , displayFlex
     , alignItems center
-    , padding (px 10)
+    , justifyContent spaceBetween
+    , Css.height (px 60)
+    , paddingLeft (px 15)
+    , paddingRight (px 15)
     , margin4 (px 3) (px 7) (px 5) (px 5)
     , borderRadius (px 10)
     , boxShadow3 (px 2) (px 2) (hex boxShadowColor)
