@@ -3,14 +3,13 @@ module Ui.Button exposing (ButtonType(..), button, docs)
 import Css exposing (..)
 import Css.Transitions exposing (easeOut, transition)
 import DesignSystem.Colors exposing (..)
-import ElmBook exposing (Msg)
+import ElmBook
 import ElmBook.Actions exposing (logAction)
 import ElmBook.Chapter exposing (chapter, renderComponentList)
 import ElmBook.ElmCSS exposing (Chapter)
-import Html
 import Html.Styled exposing (Html, span, text)
 import Html.Styled.Attributes as HtmlAttr exposing (css)
-import Html.Styled.Events as HtmlEvt exposing (onClick)
+import Html.Styled.Events as HtmlEvt
 import NamedInterpolate exposing (interpolate)
 
 

@@ -1,9 +1,8 @@
 module Background exposing (..)
 
 import Css exposing (..)
-import Html
 import Html.Styled exposing (..)
-import Html.Styled.Attributes as Attr exposing (css)
+import Html.Styled.Attributes as Attr
 import NamedInterpolate exposing (interpolate)
 import Svg.Styled exposing (..)
 import Svg.Styled.Attributes as SvgAttr exposing (..)

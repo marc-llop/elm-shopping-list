@@ -1,7 +1,7 @@
 module Tests.CreateNoteTest exposing (..)
 
 import CreateNote exposing (notesMatching)
-import Expect exposing (Expectation)
+import Expect
 import Note exposing (Note, NoteId(..), intToNoteId, noteIdToString)
 import OpaqueDict exposing (OpaqueDict)
 import Test exposing (..)

@@ -3,7 +3,6 @@ module NotesList exposing (NotesListMsg(..), notesListView, update)
 import Browser.Dom
 import Css exposing (..)
 import DesignSystem.Colors exposing (neutral)
-import Html
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onClick, onInput, onSubmit)
