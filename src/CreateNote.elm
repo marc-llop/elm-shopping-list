@@ -1,6 +1,7 @@
 module CreateNote exposing (..)
 
-import Css exposing (pct)
+import Css exposing (displayFlex, marginRight, pct, px)
+import DesignSystem.StyledIcons as Icons
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onClick, onInput, onSubmit)
@@ -149,12 +150,20 @@ matchesListView model newNote =
         ]
 
 
+addIcon : Html msg
+addIcon =
+    div
+        [ css [ marginRight (px 10), displayFlex ] ]
+        [ Icons.greenPlus ]
+
+
 matchedNoteView : NoteIdPair -> Html CreateNoteFormMsg
 matchedNoteView ( noteId, note ) =
     li
         [ dataTestId "MatchedNote"
-        , css (noteStyle Ui.ListedNote.Pending)
+        , css (noteStyle Ui.ListedNote.ToAdd)
         , onClick (RetickNote noteId)
         ]
-        [ span [ css [ noteTitleStyle ] ] [ text note.title ]
+        [ addIcon
+        , span [ css [ noteTitleStyle ] ] [ text note.title ]
         ]

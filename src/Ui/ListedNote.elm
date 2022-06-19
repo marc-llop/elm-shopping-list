@@ -2,7 +2,6 @@ module Ui.ListedNote exposing (..)
 
 import Css exposing (..)
 import DesignSystem.Colors exposing (accentBlue, backgroundPurple, neutral)
-import DesignSystem.StyledIcons as Icons
 import ElmBook.Actions exposing (logAction)
 import ElmBook.Chapter exposing (chapter, renderComponentList)
 import ElmBook.ElmCSS exposing (Chapter)
@@ -21,16 +20,6 @@ type NoteState
     | ToAdd -- Used in CreateNote search
 
 
-isToAdd : NoteState -> Bool
-isToAdd state =
-    case state of
-        ToAdd ->
-            True
-
-        _ ->
-            False
-
-
 type alias ListedNoteProps msg =
     { noteId : NoteId
     , note : Note
@@ -41,27 +30,13 @@ type alias ListedNoteProps msg =
     }
 
 
-addIcon : Html msg
-addIcon =
-    div
-        [ css [ marginRight (px 10), displayFlex ] ]
-        [ Icons.greenPlus ]
-
-
 listedNoteView : ListedNoteProps msg -> Html msg
 listedNoteView { noteId, note, state, onTick, onRemove, onEdit } =
     li [ dataTestId "ListedNote", css (noteStyle state), onClick (onTick noteId) ]
-        ((if isToAdd state then
-            [ addIcon ]
-
-          else
-            []
-         )
-            ++ [ span [ css [ noteTitleStyle ] ] [ text note.title ]
-               , button [ onClickStopPropagation (onRemove noteId) ] [ text "🗑️" ]
-               , button [ onClickStopPropagation (onEdit noteId note) ] [ text "✏️" ]
-               ]
-        )
+        [ span [ css [ noteTitleStyle ] ] [ text note.title ]
+        , button [ onClickStopPropagation (onRemove noteId) ] [ text "🗑️" ]
+        , button [ onClickStopPropagation (onEdit noteId note) ] [ text "✏️" ]
+        ]
 
 
 onClickStopPropagation : msg -> Attribute msg
@@ -72,11 +47,12 @@ onClickStopPropagation msg =
 noteStyle : NoteState -> List Style
 noteStyle state =
     let
-        { glassColor, glassOpacity, boxShadowColor, textColor, textShadowColor } =
+        { glassColor, glassOpacity, glassBlur, boxShadowColor, textColor, textShadowColor } =
             case state of
                 Pending ->
                     { glassColor = neutral.s750
                     , glassOpacity = 35
+                    , glassBlur = 6
                     , boxShadowColor = neutral.s750
                     , textColor = neutral.s300
                     , textShadowColor = neutral.s500
@@ -85,6 +61,7 @@ noteStyle state =
                 Done ->
                     { glassColor = backgroundPurple.s750
                     , glassOpacity = 30
+                    , glassBlur = 10
                     , boxShadowColor = backgroundPurple.s650
                     , textColor = backgroundPurple.s200
                     , textShadowColor = backgroundPurple.s400
@@ -92,8 +69,9 @@ noteStyle state =
 
                 ToAdd ->
                     { glassColor = accentBlue.s500
-                    , glassOpacity = 30
-                    , boxShadowColor = accentBlue.s700
+                    , glassOpacity = 15
+                    , glassBlur = 13
+                    , boxShadowColor = accentBlue.s800
                     , textColor = accentBlue.s300
                     , textShadowColor = accentBlue.s400
                     }
@@ -102,7 +80,7 @@ noteStyle state =
     , glassmorphism
         { color = glassColor
         , opacityPct = glassOpacity
-        , blurPx = 6
+        , blurPx = glassBlur
         , saturationPct = 100
         }
     , displayFlex
