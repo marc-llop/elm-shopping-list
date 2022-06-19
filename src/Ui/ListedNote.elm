@@ -2,7 +2,7 @@ module Ui.ListedNote exposing (..)
 
 import Css exposing (..)
 import DesignSystem.Colors exposing (accentBlue, backgroundPurple, neutral)
-import ElmBook exposing (Msg)
+import DesignSystem.StyledIcons as Icons
 import ElmBook.Actions exposing (logAction)
 import ElmBook.Chapter exposing (chapter, renderComponentList)
 import ElmBook.ElmCSS exposing (Chapter)
@@ -18,6 +18,17 @@ import Utils exposing (dataTestId, transparencyBackground)
 type NoteState
     = Pending
     | Done
+    | ToAdd -- Used in CreateNote search
+
+
+isToAdd : NoteState -> Bool
+isToAdd state =
+    case state of
+        ToAdd ->
+            True
+
+        _ ->
+            False
 
 
 type alias ListedNoteProps msg =
@@ -30,13 +41,27 @@ type alias ListedNoteProps msg =
     }
 
 
+addIcon : Html msg
+addIcon =
+    div
+        [ css [ marginRight (px 10), displayFlex ] ]
+        [ Icons.greenPlus ]
+
+
 listedNoteView : ListedNoteProps msg -> Html msg
 listedNoteView { noteId, note, state, onTick, onRemove, onEdit } =
     li [ dataTestId "ListedNote", css (noteStyle state), onClick (onTick noteId) ]
-        [ span [ css [ noteTitleStyle ] ] [ text note.title ]
-        , button [ onClickStopPropagation (onRemove noteId) ] [ text "🗑️" ]
-        , button [ onClickStopPropagation (onEdit noteId note) ] [ text "✏️" ]
-        ]
+        ((if isToAdd state then
+            [ addIcon ]
+
+          else
+            []
+         )
+            ++ [ span [ css [ noteTitleStyle ] ] [ text note.title ]
+               , button [ onClickStopPropagation (onRemove noteId) ] [ text "🗑️" ]
+               , button [ onClickStopPropagation (onEdit noteId note) ] [ text "✏️" ]
+               ]
+        )
 
 
 onClickStopPropagation : msg -> Attribute msg
@@ -63,6 +88,14 @@ noteStyle state =
                     , boxShadowColor = backgroundPurple.s650
                     , textColor = backgroundPurple.s200
                     , textShadowColor = backgroundPurple.s400
+                    }
+
+                ToAdd ->
+                    { glassColor = accentBlue.s500
+                    , glassOpacity = 30
+                    , boxShadowColor = accentBlue.s700
+                    , textColor = accentBlue.s300
+                    , textShadowColor = accentBlue.s400
                     }
     in
     [ resetLiStyle
@@ -119,4 +152,5 @@ docs =
         |> renderComponentList
             [ ( "Pending", showcaseNote props )
             , ( "Done", showcaseNote { props | state = Done, onTick = \_ -> logAction "Unticked" } )
+            , ( "ToAdd", showcaseNote { props | state = ToAdd, onTick = \_ -> logAction "Added note" } )
             ]
