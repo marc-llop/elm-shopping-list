@@ -45,16 +45,29 @@ onClickStopPropagation msg =
 
 noteStyle : NoteState -> List Style
 noteStyle state =
+    let
+        { glassColor, glassOpacity, boxShadowColor, textColor, textShadowColor } =
+            case state of
+                Pending ->
+                    { glassColor = neutral.s750
+                    , glassOpacity = 35
+                    , boxShadowColor = neutral.s750
+                    , textColor = neutral.s300
+                    , textShadowColor = neutral.s500
+                    }
+
+                Done ->
+                    { glassColor = backgroundPurple.s750
+                    , glassOpacity = 20
+                    , boxShadowColor = backgroundPurple.s650
+                    , textColor = backgroundPurple.s200
+                    , textShadowColor = backgroundPurple.s400
+                    }
+    in
     resetLiStyle
         ++ glassmorphism
-            { color =
-                case state of
-                    Pending ->
-                        neutral.s750
-
-                    Done ->
-                        backgroundPurple.s750
-            , opacityPct = 35
+            { color = glassColor
+            , opacityPct = glassOpacity
             , blurPx = 6
             , saturationPct = 100
             }
@@ -63,28 +76,10 @@ noteStyle state =
            , padding (px 10)
            , margin4 (px 3) (px 7) (px 5) (px 5)
            , borderRadius (px 10)
-           , boxShadow3 (px 2)
-                (px 2)
-                (hex
-                    (case state of
-                        Pending ->
-                            neutral.s750
-
-                        Done ->
-                            backgroundPurple.s650
-                    )
-                )
+           , boxShadow3 (px 2) (px 2) (hex boxShadowColor)
            , fontSize (rem 1.2)
-           , color
-                (hex
-                    (case state of
-                        Pending ->
-                            neutral.s450
-
-                        Done ->
-                            backgroundPurple.s400
-                    )
-                )
+           , color (hex textColor)
+           , textShadow4 zero zero (px 3) (hex textShadowColor)
            , cursor pointer
            ]
 
