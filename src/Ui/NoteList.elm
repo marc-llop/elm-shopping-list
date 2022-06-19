@@ -28,6 +28,7 @@ noteListStyle =
     resetUlStyle
         ++ [ displayFlex
            , flexDirection column
+           , marginBottom (px 120)
            ]
 
 
