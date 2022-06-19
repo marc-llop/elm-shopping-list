@@ -10,6 +10,7 @@ import ElmBook.ElmCSS exposing (Chapter)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
 import NamedInterpolate exposing (interpolate)
+import Utils
 
 
 type alias GlassmorphismProps =
@@ -97,23 +98,10 @@ glassCard props =
 docs : Chapter x
 docs =
     let
-        background component =
-            div []
-                [ div
-                    [ css
-                        [ Css.property "background" "repeating-conic-gradient(#808080 0% 25%, transparent 0% 50%) 50% / 20px 20px"
-                        , Css.width (px 250)
-                        , Css.height (px 250)
-                        , position absolute
-                        , top zero
-                        ]
-                    ]
-                    []
-                , component
-                ]
-
         showcaseGlass p =
-            background (glassCard p)
+            Utils.transparencyBackground
+                { width = 250, height = 250 }
+                (glassCard p)
 
         props =
             { color = "7B4A23"

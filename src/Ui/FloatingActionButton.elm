@@ -12,7 +12,7 @@ import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events as Evt exposing (onClick)
 import NamedInterpolate exposing (interpolate)
 import Ui.Glassmorphism exposing (glassmorphism)
-import Utils exposing (dataTestId)
+import Utils exposing (dataTestId, transparencyBackground)
 
 
 type alias FabProps msg =
@@ -32,10 +32,12 @@ floatingActionButtonStyles =
             }
         , displayFlex
         , alignItems center
+        , justifyContent center
         , position fixed
         , bottom (px 30)
         , right (px 30)
-        , padding (px 15)
+        , Css.width (px 65)
+        , Css.height (px 65)
         , borderRadius (px 10)
         , cursor pointer
         , color (hex accentGreen.s200)
@@ -75,10 +77,16 @@ docs =
                 [ position relative
                 , bottom zero
                 , right zero
+                , left (px 7)
                 ]
             }
+
+        showcaseFab p =
+            transparencyBackground
+                { width = 80, height = 80 }
+                (floatingActionButtonView p)
     in
     chapter "FAB"
         |> renderComponentList
-            [ ( "Floating Action Button", floatingActionButtonView props )
+            [ ( "Floating Action Button", showcaseFab props )
             ]

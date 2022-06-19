@@ -12,7 +12,7 @@ import Html.Styled.Events exposing (onClick, stopPropagationOn)
 import Json.Decode
 import Note exposing (Note, NoteId)
 import Ui.Glassmorphism exposing (glassmorphism)
-import Utils exposing (dataTestId)
+import Utils exposing (dataTestId, transparencyBackground)
 
 
 type NoteState
@@ -106,9 +106,14 @@ docs =
             , onRemove = \_ -> logAction "Removed"
             , onEdit = \_ _ -> logAction "Edit clicked"
             }
+
+        showcaseNote p =
+            transparencyBackground
+                { width = 650, height = 80 }
+                (listedNoteView p)
     in
     chapter "Note"
         |> renderComponentList
-            [ ( "Pending", listedNoteView props )
-            , ( "Done", listedNoteView { props | state = Done, onTick = \_ -> logAction "Unticked" } )
+            [ ( "Pending", showcaseNote props )
+            , ( "Done", showcaseNote { props | state = Done, onTick = \_ -> logAction "Unticked" } )
             ]
