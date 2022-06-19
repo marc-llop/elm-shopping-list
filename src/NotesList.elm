@@ -12,6 +12,7 @@ import Note exposing (..)
 import OpaqueDict exposing (OpaqueDict)
 import Page exposing (..)
 import Task
+import Ui.FloatingActionButton exposing (floatingActionButtonView)
 import Ui.ListedNote exposing (ListedNoteProps, listedNoteView)
 import Utils exposing (dataTestId)
 
@@ -145,4 +146,4 @@ doneNoteView ( noteId, note ) =
 
 createNoteButtonView : Html NotesListMsg
 createNoteButtonView =
-    button [ onClick OpenCreateNote ] [ text "+" ]
+    floatingActionButtonView { onClick = OpenCreateNote, styles = [] }

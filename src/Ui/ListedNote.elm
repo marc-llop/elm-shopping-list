@@ -33,7 +33,7 @@ type alias ListedNoteProps msg =
 listedNoteView : ListedNoteProps msg -> Html msg
 listedNoteView { noteId, note, state, onTick, onRemove, onEdit } =
     li [ dataTestId "ListedNote", css (noteStyle state), onClick (onTick noteId) ]
-        [ span [ css noteTitleStyle ] [ text note.title ]
+        [ span [ css [ noteTitleStyle ] ] [ text note.title ]
         , button [ onClickStopPropagation (onRemove noteId) ] [ text "🗑️" ]
         , button [ onClickStopPropagation (onEdit noteId note) ] [ text "✏️" ]
         ]
@@ -65,33 +65,34 @@ noteStyle state =
                     , textShadowColor = backgroundPurple.s400
                     }
     in
-    resetLiStyle
-        ++ glassmorphism
-            { color = glassColor
-            , opacityPct = glassOpacity
-            , blurPx = 6
-            , saturationPct = 100
-            }
-        ++ [ displayFlex
-           , alignItems center
-           , padding (px 10)
-           , margin4 (px 3) (px 7) (px 5) (px 5)
-           , borderRadius (px 10)
-           , boxShadow3 (px 2) (px 2) (hex boxShadowColor)
-           , fontSize (rem 1.2)
-           , color (hex textColor)
-           , textShadow4 zero zero (px 3) (hex textShadowColor)
-           , cursor pointer
-           ]
+    [ resetLiStyle
+    , glassmorphism
+        { color = glassColor
+        , opacityPct = glassOpacity
+        , blurPx = 6
+        , saturationPct = 100
+        }
+    , displayFlex
+    , alignItems center
+    , padding (px 10)
+    , margin4 (px 3) (px 7) (px 5) (px 5)
+    , borderRadius (px 10)
+    , boxShadow3 (px 2) (px 2) (hex boxShadowColor)
+    , fontSize (rem 1.2)
+    , color (hex textColor)
+    , textShadow4 zero zero (px 3) (hex textShadowColor)
+    , cursor pointer
+    ]
 
 
-resetLiStyle : List Style
+resetLiStyle : Style
 resetLiStyle =
-    [ listStyle none ]
+    listStyle none
 
 
+noteTitleStyle : Style
 noteTitleStyle =
-    [ flexGrow (int 1) ]
+    flexGrow (int 1)
 
 
 docs : Chapter x

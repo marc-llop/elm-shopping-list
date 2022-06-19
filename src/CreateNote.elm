@@ -151,5 +151,5 @@ matchedNoteView ( noteId, note ) =
         , css (noteStyle Ui.ListedNote.Pending)
         , onClick (RetickNote noteId)
         ]
-        [ span [ css noteTitleStyle ] [ text note.title ]
+        [ span [ css [ noteTitleStyle ] ] [ text note.title ]
         ]

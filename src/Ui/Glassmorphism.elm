@@ -59,7 +59,7 @@ percentToHex pct =
 -- Base CSS source https://ui.glass/generator/
 
 
-glassmorphism : GlassmorphismProps -> List Style
+glassmorphism : GlassmorphismProps -> Style
 glassmorphism { color, opacityPct, blurPx, saturationPct } =
     let
         -- Color as 8-digit hexadecimal number (#rrggbbaa)
@@ -74,24 +74,22 @@ glassmorphism { color, opacityPct, blurPx, saturationPct } =
                 "blur({blur}px) saturate({saturation}%)"
                 [ ( "blur", String.fromInt blurPx ), ( "saturation", saturation ) ]
     in
-    [ backgroundColor (hex colorHex)
-    , Css.property "backdrop-filter" backdropFilter
-    , Css.property "-webkit-backdrop-filter" backdropFilter
-    ]
+    Css.batch
+        [ backgroundColor (hex colorHex)
+        , Css.property "backdrop-filter" backdropFilter
+        , Css.property "-webkit-backdrop-filter" backdropFilter
+        ]
 
 
 glassCard : GlassmorphismProps -> Html msg
 glassCard props =
     div
         [ css
-            (List.concat
-                [ glassmorphism props
-                , [ Css.width (px 150)
-                  , Css.height (px 150)
-                  , margin (px 50)
-                  ]
-                ]
-            )
+            [ glassmorphism props
+            , Css.width (px 150)
+            , Css.height (px 150)
+            , margin (px 50)
+            ]
         ]
         []
 
