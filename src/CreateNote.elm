@@ -7,7 +7,8 @@ import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onClick, onInput, onSubmit)
 import Model exposing (..)
 import Note exposing (Note, NoteId, NoteIdPair)
-import Page exposing (createNoteAutofocusId)
+import OpaqueDict exposing (OpaqueDict)
+import Page exposing (Page(..), createNoteAutofocusId)
 import Search
 import String.Deburr exposing (deburr)
 import Time
@@ -20,6 +21,55 @@ type CreateNoteFormMsg
     | CreateNote Note
     | RetickNote NoteId
     | CancelCreate
+
+
+update : CreateNoteFormMsg -> Model -> ( Model, Cmd CreateNoteFormMsg )
+update msg model =
+    case msg of
+        InputNewNoteTitle title ->
+            ( applyIfCreateNotePage model
+                (\note -> { model | currentPage = CreateNotePage { note | title = title } })
+            , Cmd.none
+            )
+
+        CreateNote note ->
+            ( { model
+                | currentPage = ListPage
+                , pending =
+                    OpaqueDict.insert
+                        (Note.intToNoteId model.idCounter)
+                        note
+                        model.pending
+                , idCounter = model.idCounter + 1
+              }
+            , Cmd.none
+            )
+
+        RetickNote noteId ->
+            let
+                ( newDone, newPending ) =
+                    move noteId model.done model.pending
+            in
+            ( { model
+                | currentPage = ListPage
+                , pending = newPending
+                , done = newDone
+              }
+            , Cmd.none
+            )
+
+        CancelCreate ->
+            ( { model | currentPage = ListPage }, Cmd.none )
+
+
+applyIfCreateNotePage : Model -> (Note -> Model) -> Model
+applyIfCreateNotePage model fn =
+    case model.currentPage of
+        CreateNotePage note ->
+            fn note
+
+        _ ->
+            model
 
 
 createNoteView : Model -> Note -> Html CreateNoteFormMsg

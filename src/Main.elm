@@ -98,16 +98,6 @@ editNote id note =
     OpaqueDict.update id (Maybe.map (always note))
 
 
-applyIfCreateNotePage : Model -> (Note -> Model) -> Model
-applyIfCreateNotePage model fn =
-    case model.currentPage of
-        CreateNotePage note ->
-            fn note
-
-        _ ->
-            model
-
-
 applyIfEditNotePage : Model -> (NoteId -> Note -> Model) -> Model
 applyIfEditNotePage model fn =
     case model.currentPage of
@@ -125,40 +115,9 @@ update msg model =
             NotesList.update notesListMsg model
                 |> Tuple.mapSecond (Cmd.map NotesListMsgContainer)
 
-        CreateNoteFormMsgContainer (InputNewNoteTitle title) ->
-            ( applyIfCreateNotePage model
-                (\note -> { model | currentPage = CreateNotePage { note | title = title } })
-            , Cmd.none
-            )
-
-        CreateNoteFormMsgContainer CancelCreate ->
-            ( { model | currentPage = ListPage }, Cmd.none )
-
-        CreateNoteFormMsgContainer (CreateNote note) ->
-            ( { model
-                | currentPage = ListPage
-                , pending =
-                    OpaqueDict.insert
-                        (Note.intToNoteId model.idCounter)
-                        note
-                        model.pending
-                , idCounter = model.idCounter + 1
-              }
-            , Cmd.none
-            )
-
-        CreateNoteFormMsgContainer (RetickNote noteId) ->
-            let
-                ( newDone, newPending ) =
-                    move noteId model.done model.pending
-            in
-            ( { model
-                | currentPage = ListPage
-                , pending = newPending
-                , done = newDone
-              }
-            , Cmd.none
-            )
+        CreateNoteFormMsgContainer createNoteMsg ->
+            CreateNote.update createNoteMsg model
+                |> Tuple.mapSecond (Cmd.map CreateNoteFormMsgContainer)
 
         EditNoteFormMsgContainer (EditNote noteId note) ->
             ( { model
