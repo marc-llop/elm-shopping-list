@@ -2,6 +2,7 @@ module Ui.Book exposing (main)
 
 import DesignSystem.Colors
 import DesignSystem.Icons
+import DesignSystem.StyledIcons
 import ElmBook exposing (withChapterGroups, withThemeOptions)
 import ElmBook.ElmCSS exposing (Book, Chapter, book)
 import ElmBook.ThemeOptions
@@ -20,6 +21,7 @@ main =
             [ ( "Design Tokens"
               , [ DesignSystem.Colors.docs
                 , DesignSystem.Icons.docs
+                , DesignSystem.StyledIcons.docs
                 ]
               )
             , ( "Components"
