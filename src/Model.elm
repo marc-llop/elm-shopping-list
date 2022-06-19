@@ -26,6 +26,11 @@ allNotes { pending, done } =
         ]
 
 
+sortNotes : List NoteIdPair -> List NoteIdPair
+sortNotes =
+    List.sortBy (Tuple.second >> .title >> String.toLower)
+
+
 move : k -> OpaqueDict k v -> OpaqueDict k v -> ( OpaqueDict k v, OpaqueDict k v )
 move k dictFrom dictTo =
     let

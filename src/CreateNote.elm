@@ -1,7 +1,6 @@
 module CreateNote exposing (..)
 
-import Css exposing (fixed, fullWidth, height, int, pct, position, property, width, zIndex)
-import Html
+import Css exposing (pct)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onClick, onInput, onSubmit)
@@ -125,6 +124,7 @@ notesMatching newNoteTitle model =
                 notesList
     in
     List.map datumToNote allMatchedNotes
+        |> sortNotes
 
 
 matchesListView : Model -> Note -> Html CreateNoteFormMsg

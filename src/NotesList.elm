@@ -7,7 +7,7 @@ import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onClick, onInput, onSubmit)
 import List
-import Model exposing (Model, move)
+import Model exposing (Model, move, sortNotes)
 import Note exposing (..)
 import OpaqueDict exposing (OpaqueDict)
 import Page exposing (..)
@@ -116,7 +116,7 @@ notesListView { pending, done } =
 noteDictToList : OpaqueDict NoteId Note -> List NoteIdPair
 noteDictToList dict =
     OpaqueDict.toList dict
-        |> List.sortBy (Tuple.second >> .title)
+        |> sortNotes
 
 
 pendingNoteView : ( NoteId, Note ) -> Html NotesListMsg
