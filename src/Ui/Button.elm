@@ -196,7 +196,7 @@ docs =
     chapter "Button"
         |> renderComponentList
             [ ( "Default", stylableButton props )
-            , ( "Hovered", stylableButton { props | customStyle = hoverStyles } )
-            , ( "Active", stylableButton { props | customStyle = activeStyles } )
+            , ( "Hovered", stylableButton { props | customStyle = margin (px 20) :: hoverStyles } )
+            , ( "Active", stylableButton { props | customStyle = margin (px 20) :: activeStyles } )
             , ( "Disabled", stylableButton { props | isEnabled = False } )
             ]
