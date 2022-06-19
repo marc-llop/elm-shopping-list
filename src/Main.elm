@@ -221,6 +221,14 @@ editNoteView : NoteId -> Note -> Html EditNoteFormMsg
 editNoteView noteId note =
     Html.Styled.form [ onSubmit (EditNote noteId note), css [ Css.width (pct 100) ] ]
         [ input [ onInput InputEditedNoteTitle, value note.title, id editNoteAutofocusId ] []
-        , Ui.Button.button { buttonType = Submit, label = "Save note" }
-        , Ui.Button.button { buttonType = Button CancelEdit, label = "Cancel edit" }
+        , Ui.Button.button
+            { buttonType = Submit
+            , label = "Save note"
+            , isEnabled = not (String.isEmpty note.title)
+            }
+        , Ui.Button.button
+            { buttonType = Button CancelEdit
+            , label = "Cancel edit"
+            , isEnabled = True
+            }
         ]

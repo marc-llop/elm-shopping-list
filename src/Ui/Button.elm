@@ -9,27 +9,48 @@ import ElmBook.Chapter exposing (chapter, renderComponentList)
 import ElmBook.ElmCSS exposing (Chapter)
 import Html
 import Html.Styled exposing (Html, span, text)
-import Html.Styled.Attributes exposing (css)
-import Html.Styled.Events exposing (onClick)
+import Html.Styled.Attributes as HtmlAttr exposing (css)
+import Html.Styled.Events as HtmlEvt exposing (onClick)
 import NamedInterpolate exposing (interpolate)
 
 
-buttonStyles : List Style
-buttonStyles =
-    [ displayFlex
-    , minWidth (px 100)
-    , padding2 (px 10) (px 20)
-    , justifyContent center
-    , fontSize (rem 1.2)
-    , color (hex neutral.s300)
-    , backgroundColor transparent
+buttonStyles : Bool -> List Style
+buttonStyles isEnabled =
+    (if isEnabled then
+        enabledButtonStyles
+
+     else
+        disabledButtonStyles
+    )
+        ++ [ displayFlex
+           , minWidth (px 100)
+           , padding2 (px 10) (px 20)
+           , justifyContent center
+           , fontSize (rem 1.2)
+           , backgroundColor transparent
+           , borderRadius (px 10)
+           , buttonTransition 200
+           ]
+
+
+enabledButtonStyles : List Style
+enabledButtonStyles =
+    [ color (hex neutral.s300)
     , border3 (px 2) solid (hex neutral.s100)
-    , borderRadius (px 10)
     , property "box-shadow" (shadow 10 neutral.s300 ++ ", " ++ insetShadow 10 neutral.s300)
     , cursor pointer
-    , buttonTransition 200
     , hover hoverStyles
     , active activeStyles
+    , focus
+        [ outline3 (px 3) solid (hex neutral.s300)
+        ]
+    ]
+
+
+disabledButtonStyles : List Style
+disabledButtonStyles =
+    [ color (hex accentBlue.s250)
+    , border3 (px 2) solid (hex accentBlue.s300)
     , focus
         [ outline3 (px 3) solid (hex neutral.s300)
         ]
@@ -118,40 +139,48 @@ type ButtonType msg
 stylableButton :
     { label : String
     , buttonType : ButtonType msg
+    , isEnabled : Bool
     , customStyle : List Style
     }
     -> Html msg
-stylableButton { label, buttonType, customStyle } =
+stylableButton { label, buttonType, isEnabled, customStyle } =
     let
-        htmlOnClick =
-            Html.Styled.Events.onClick
-
-        htmlType =
-            Html.Styled.Attributes.type_
-
         attrs =
             case buttonType of
                 Submit ->
-                    [ htmlType "submit" ]
+                    [ HtmlAttr.type_ "submit" ]
 
                 Button msg ->
-                    [ htmlOnClick msg, htmlType "button" ]
+                    [ HtmlEvt.onClick msg, HtmlAttr.type_ "button" ]
+
+        attrsWithDisabled =
+            if isEnabled then
+                attrs
+
+            else
+                HtmlAttr.disabled True :: attrs
 
         joinedStyles =
-            css (List.concat [ buttonStyles, customStyle ])
+            css (List.concat [ buttonStyles isEnabled, customStyle ])
     in
     Html.Styled.button
-        (joinedStyles :: attrs)
+        (joinedStyles :: attrsWithDisabled)
         [ span [] [ text label ] ]
 
 
 button :
     { label : String
     , buttonType : ButtonType msg
+    , isEnabled : Bool
     }
     -> Html msg
-button { label, buttonType } =
-    stylableButton { label = label, buttonType = buttonType, customStyle = [] }
+button { label, buttonType, isEnabled } =
+    stylableButton
+        { label = label
+        , buttonType = buttonType
+        , isEnabled = isEnabled
+        , customStyle = []
+        }
 
 
 docs : Chapter x
@@ -160,6 +189,7 @@ docs =
         props =
             { label = "Accept"
             , buttonType = Button (logAction "Button clicked")
+            , isEnabled = True
             , customStyle = [ margin (px 20) ]
             }
     in
@@ -168,4 +198,5 @@ docs =
             [ ( "Default", stylableButton props )
             , ( "Hovered", stylableButton { props | customStyle = hoverStyles } )
             , ( "Active", stylableButton { props | customStyle = activeStyles } )
+            , ( "Disabled", stylableButton { props | isEnabled = False } )
             ]

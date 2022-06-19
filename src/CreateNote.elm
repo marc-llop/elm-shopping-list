@@ -26,8 +26,16 @@ createNoteView : Model -> Note -> Html CreateNoteFormMsg
 createNoteView model newNote =
     Html.Styled.form [ onSubmit (CreateNote newNote), css [ Css.width (pct 100) ] ]
         [ input [ onInput InputNewNoteTitle, value newNote.title, id createNoteAutofocusId ] []
-        , Ui.Button.button { buttonType = Submit, label = "Add note" }
-        , Ui.Button.button { buttonType = Button CancelCreate, label = "Cancel" }
+        , Ui.Button.button
+            { buttonType = Submit
+            , label = "Add note"
+            , isEnabled = not (String.isEmpty newNote.title)
+            }
+        , Ui.Button.button
+            { buttonType = Button CancelCreate
+            , label = "Cancel"
+            , isEnabled = True
+            }
         , matchesListView model newNote
         ]
 
