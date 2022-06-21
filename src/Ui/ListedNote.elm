@@ -1,6 +1,7 @@
 module Ui.ListedNote exposing (..)
 
 import Css exposing (..)
+import DesignSystem.ColorDecisions exposing (neutralTextColor)
 import DesignSystem.Colors exposing (accentBlue, backgroundPurple, neutral)
 import ElmBook.Actions exposing (logAction)
 import ElmBook.Chapter exposing (chapter, renderComponentList)
@@ -54,7 +55,7 @@ noteStyle state =
                     , glassOpacity = 35
                     , glassBlur = 6
                     , boxShadowColor = neutral.s750
-                    , textColor = neutral.s300
+                    , textColor = neutralTextColor
                     , textShadowColor = neutral.s500
                     }
 

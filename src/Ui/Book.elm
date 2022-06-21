@@ -1,5 +1,6 @@
 module Ui.Book exposing (main)
 
+import DesignSystem.ColorDecisions
 import DesignSystem.Colors
 import DesignSystem.Icons
 import DesignSystem.StyledIcons
@@ -20,6 +21,7 @@ main =
         |> withChapterGroups
             [ ( "Design Tokens"
               , [ DesignSystem.Colors.docs
+                , DesignSystem.ColorDecisions.docs
                 , DesignSystem.Icons.docs
                 , DesignSystem.StyledIcons.docs
                 ]

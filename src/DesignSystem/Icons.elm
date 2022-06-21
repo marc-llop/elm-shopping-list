@@ -29,10 +29,10 @@ svgFeatherIcon className extraStyles =
         ]
 
 
-checkSquare : Html msg
-checkSquare =
+checkSquare : List Style -> Html msg
+checkSquare styles =
     svgFeatherIcon "check-square"
-        []
+        styles
         [ Svg.Styled.polyline [ points "9 11 12 14 22 4" ] []
         , Svg.Styled.path [ d "M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" ] []
         ]
@@ -55,10 +55,10 @@ plus styles =
         ]
 
 
-square : Html msg
-square =
+square : List Style -> Html msg
+square styles =
     svgFeatherIcon "square"
-        []
+        styles
         [ Svg.Styled.rect [ Svg.Styled.Attributes.x "3", y "3", width "18", height "18", rx "2", ry "2" ] []
         ]
 
@@ -78,8 +78,8 @@ docs : Chapter x
 docs =
     chapter "Icons"
         |> renderComponentList
-            [ ( "Square", square )
-            , ( "CheckSquare", checkSquare )
+            [ ( "Square", square [] )
+            , ( "CheckSquare", checkSquare [] )
             , ( "Edit2", edit2 )
             , ( "Trash2", trash2 )
             , ( "Plus", plus [] )
