@@ -38,10 +38,10 @@ checkSquare styles =
         ]
 
 
-edit2 : Html msg
-edit2 =
+edit2 : List Style -> Html msg
+edit2 styles =
     svgFeatherIcon "edit-2"
-        []
+        styles
         [ Svg.Styled.path [ d "M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" ] []
         ]
 
@@ -63,10 +63,10 @@ square styles =
         ]
 
 
-trash2 : Html msg
-trash2 =
+trash2 : List Style -> Html msg
+trash2 styles =
     svgFeatherIcon "trash-2"
-        []
+        styles
         [ Svg.Styled.polyline [ points "3 6 5 6 21 6" ] []
         , Svg.Styled.path [ d "M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" ] []
         , Svg.Styled.line [ x1 "10", y1 "11", x2 "10", y2 "17" ] []
@@ -80,7 +80,7 @@ docs =
         |> renderComponentList
             [ ( "Square", square [] )
             , ( "CheckSquare", checkSquare [] )
-            , ( "Edit2", edit2 )
-            , ( "Trash2", trash2 )
+            , ( "Edit2", edit2 [] )
+            , ( "Trash2", trash2 [] )
             , ( "Plus", plus [] )
             ]
