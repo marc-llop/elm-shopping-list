@@ -118,10 +118,12 @@ pendingNoteView ( noteId, note ) =
     listedNoteView
         { noteId = noteId
         , note = note
-        , state = Ui.ListedNote.Pending
+        , state =
+            Ui.ListedNote.Pending
+                { onRemove = RemoveNote
+                , onEdit = OpenEditNote
+                }
         , onTick = Tick
-        , onRemove = RemoveNote
-        , onEdit = OpenEditNote
         }
 
 
@@ -130,10 +132,12 @@ doneNoteView ( noteId, note ) =
     listedNoteView
         { noteId = noteId
         , note = note
-        , state = Ui.ListedNote.Done
+        , state =
+            Ui.ListedNote.Done
+                { onRemove = RemoveNote
+                , onEdit = OpenEditNote
+                }
         , onTick = Untick
-        , onRemove = RemoveNote
-        , onEdit = OpenEditNote
         }
 
 

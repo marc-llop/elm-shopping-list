@@ -16,29 +16,33 @@ import Ui.Glassmorphism exposing (glassmorphism)
 import Utils exposing (dataTestId, transparencyBackground)
 
 
-type NoteState
-    = Pending
-    | Done
+type NoteState msg
+    = Pending (WriteEvents msg)
+    | Done (WriteEvents msg)
     | ToAdd -- Used in CreateNote search
+
+
+type alias WriteEvents msg =
+    { onRemove : NoteId -> msg
+    , onEdit : NoteId -> Note -> msg
+    }
 
 
 type alias ListedNoteProps msg =
     { noteId : NoteId
     , note : Note
-    , state : NoteState
+    , state : NoteState msg
     , onTick : NoteId -> msg
-    , onRemove : NoteId -> msg
-    , onEdit : NoteId -> Note -> msg
     }
 
 
-checkboxView : NoteState -> Html msg
+checkboxView : NoteState msg -> Html msg
 checkboxView state =
     case state of
-        Pending ->
+        Pending _ ->
             untickedCheck
 
-        Done ->
+        Done _ ->
             tickedCheck
 
         ToAdd ->
@@ -62,13 +66,47 @@ iconButtonView evt icon =
 
 
 listedNoteView : ListedNoteProps msg -> Html msg
-listedNoteView { noteId, note, state, onTick, onRemove, onEdit } =
-    li [ dataTestId "ListedNote", css (noteStyle state), onClick (onTick noteId) ]
-        [ checkboxView state
-        , span [ css [ noteTitleStyle ] ] [ text note.title ]
-        , iconButtonView (onRemove noteId) redTrash
-        , iconButtonView (onEdit noteId note) blueEdit
+listedNoteView { noteId, note, state, onTick } =
+    let
+        writeButtonElems { onEdit, onRemove } =
+            [ iconButtonView (onRemove noteId) redTrash
+            , iconButtonView (onEdit noteId note) blueEdit
+            ]
+
+        writeButtons =
+            case state of
+                Pending we ->
+                    writeButtonElems we
+
+                Done we ->
+                    writeButtonElems we
+
+                ToAdd ->
+                    []
+    in
+    li
+        [ dataTestId (stateToDataTestId state)
+        , css (noteStyle state)
+        , onClick (onTick noteId)
         ]
+        ([ checkboxView state
+         , span [ css [ noteTitleStyle ] ] [ text note.title ]
+         ]
+            ++ writeButtons
+        )
+
+
+stateToDataTestId : NoteState msg -> String
+stateToDataTestId state =
+    case state of
+        Pending _ ->
+            "ListedNotePending"
+
+        Done _ ->
+            "ListedNoteDone"
+
+        ToAdd ->
+            "MatchedNote"
 
 
 onClickStopPropagation : msg -> Attribute msg
@@ -76,12 +114,12 @@ onClickStopPropagation msg =
     stopPropagationOn "click" <| Json.Decode.succeed ( msg, True )
 
 
-noteStyle : NoteState -> List Style
+noteStyle : NoteState msg -> List Style
 noteStyle state =
     let
         { glassColor, glassOpacity, glassBlur, boxShadowColor, textColor, textShadowColor } =
             case state of
-                Pending ->
+                Pending _ ->
                     { glassColor = neutral.s750
                     , glassOpacity = 35
                     , glassBlur = 6
@@ -90,7 +128,7 @@ noteStyle state =
                     , textShadowColor = neutral.s500
                     }
 
-                Done ->
+                Done _ ->
                     { glassColor = backgroundPurple.s750
                     , glassOpacity = 30
                     , glassBlur = 10
@@ -147,13 +185,16 @@ noteTitleStyle =
 docs : Chapter x
 docs =
     let
+        writeEvents =
+            { onRemove = \_ -> logAction "Removed"
+            , onEdit = \_ _ -> logAction "Edit clicked"
+            }
+
         props =
             { noteId = Note.intToNoteId 42
             , note = { title = "Milk" }
-            , state = Pending
+            , state = Pending writeEvents
             , onTick = \_ -> logAction "Ticked"
-            , onRemove = \_ -> logAction "Removed"
-            , onEdit = \_ _ -> logAction "Edit clicked"
             }
 
         showcaseNote p =
@@ -164,6 +205,6 @@ docs =
     chapter "Note"
         |> renderComponentList
             [ ( "Pending", showcaseNote props )
-            , ( "Done", showcaseNote { props | state = Done, onTick = \_ -> logAction "Unticked" } )
+            , ( "Done", showcaseNote { props | state = Done writeEvents, onTick = \_ -> logAction "Unticked" } )
             , ( "ToAdd", showcaseNote { props | state = ToAdd, onTick = \_ -> logAction "Added note" } )
             ]
