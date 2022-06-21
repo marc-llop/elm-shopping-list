@@ -3,7 +3,7 @@ module Ui.ListedNote exposing (..)
 import Css exposing (..)
 import DesignSystem.ColorDecisions exposing (neutralTextColor)
 import DesignSystem.Colors exposing (accentBlue, backgroundPurple, neutral)
-import DesignSystem.StyledIcons exposing (blueEdit, redTrash)
+import DesignSystem.StyledIcons exposing (blueEdit, greenPlus, redTrash, tickedCheck, untickedCheck)
 import ElmBook.Actions exposing (logAction)
 import ElmBook.Chapter exposing (chapter, renderComponentList)
 import ElmBook.ElmCSS exposing (Chapter)
@@ -32,6 +32,19 @@ type alias ListedNoteProps msg =
     }
 
 
+checkboxView : NoteState -> Html msg
+checkboxView state =
+    case state of
+        Pending ->
+            untickedCheck
+
+        Done ->
+            tickedCheck
+
+        ToAdd ->
+            greenPlus
+
+
 resetButtonStyles : List Style
 resetButtonStyles =
     [ borderStyle none
@@ -51,7 +64,8 @@ iconButtonView evt icon =
 listedNoteView : ListedNoteProps msg -> Html msg
 listedNoteView { noteId, note, state, onTick, onRemove, onEdit } =
     li [ dataTestId "ListedNote", css (noteStyle state), onClick (onTick noteId) ]
-        [ span [ css [ noteTitleStyle ] ] [ text note.title ]
+        [ checkboxView state
+        , span [ css [ noteTitleStyle ] ] [ text note.title ]
         , iconButtonView (onRemove noteId) redTrash
         , iconButtonView (onEdit noteId note) blueEdit
         ]
@@ -124,7 +138,10 @@ resetLiStyle =
 
 noteTitleStyle : Style
 noteTitleStyle =
-    flexGrow (int 1)
+    Css.batch
+        [ flexGrow (int 1)
+        , marginLeft (px 20)
+        ]
 
 
 docs : Chapter x
