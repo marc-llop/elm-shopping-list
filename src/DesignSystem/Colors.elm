@@ -36,6 +36,10 @@ black =
     "000000"
 
 
+translucentDarkGrey =
+    "303030d0"
+
+
 accentGreen : ColorPalette
 accentGreen =
     { s900 = "001a0f"
