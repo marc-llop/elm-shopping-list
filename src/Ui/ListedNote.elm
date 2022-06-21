@@ -3,6 +3,7 @@ module Ui.ListedNote exposing (..)
 import Css exposing (..)
 import DesignSystem.ColorDecisions exposing (neutralTextColor)
 import DesignSystem.Colors exposing (accentBlue, backgroundPurple, neutral)
+import DesignSystem.StyledIcons exposing (blueEdit, redTrash)
 import ElmBook.Actions exposing (logAction)
 import ElmBook.Chapter exposing (chapter, renderComponentList)
 import ElmBook.ElmCSS exposing (Chapter)
@@ -31,12 +32,28 @@ type alias ListedNoteProps msg =
     }
 
 
+resetButtonStyles : List Style
+resetButtonStyles =
+    [ borderStyle none
+    , backgroundColor transparent
+    , cursor pointer
+    ]
+
+
+iconButtonView evt icon =
+    button
+        [ onClickStopPropagation evt
+        , css resetButtonStyles
+        ]
+        [ icon ]
+
+
 listedNoteView : ListedNoteProps msg -> Html msg
 listedNoteView { noteId, note, state, onTick, onRemove, onEdit } =
     li [ dataTestId "ListedNote", css (noteStyle state), onClick (onTick noteId) ]
         [ span [ css [ noteTitleStyle ] ] [ text note.title ]
-        , button [ onClickStopPropagation (onRemove noteId) ] [ text "🗑️" ]
-        , button [ onClickStopPropagation (onEdit noteId note) ] [ text "✏️" ]
+        , iconButtonView (onRemove noteId) redTrash
+        , iconButtonView (onEdit noteId note) blueEdit
         ]
 
 
