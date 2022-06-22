@@ -1,10 +1,10 @@
 module Ui.NoteList exposing (..)
 
 import Css exposing (..)
-import Html.Styled exposing (Html, ul)
+import Html.Styled exposing (Html)
 import Html.Styled.Attributes exposing (css)
-import Model exposing (sortNotes)
-import Note exposing (NoteIdPair)
+import Html.Styled.Keyed exposing (ul)
+import Note exposing (NoteId, NoteIdPair, noteIdToString)
 import Utils exposing (dataTestId)
 
 
@@ -32,6 +32,11 @@ noteListStyle =
            ]
 
 
+keyedNoteView : (NoteIdPair -> Html msg) -> NoteIdPair -> ( String, Html msg )
+keyedNoteView mapper pair =
+    ( Tuple.first pair |> noteIdToString, mapper pair )
+
+
 noteListView : NoteListProps msg -> Html msg
 noteListView { pending, done, pendingNoteView, doneNoteView } =
     ul
@@ -39,7 +44,7 @@ noteListView { pending, done, pendingNoteView, doneNoteView } =
         , css noteListStyle
         ]
         (List.concat
-            [ List.map pendingNoteView pending
-            , List.map doneNoteView done
+            [ List.map (keyedNoteView pendingNoteView) pending
+            , List.map (keyedNoteView doneNoteView) done
             ]
         )
