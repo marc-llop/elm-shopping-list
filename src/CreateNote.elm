@@ -6,23 +6,33 @@ import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onClick, onInput, onSubmit)
 import Model exposing (..)
-import Note exposing (Note, NoteId, NoteIdPair)
+import Note exposing (Note, NoteId, NoteIdPair, stringToNoteId)
 import OpaqueDict exposing (OpaqueDict)
 import Page exposing (Page(..), createNoteAutofocusId)
+import Random
+import Random.Char
+import Random.String
 import Search
 import String.Deburr exposing (deburr)
 import Time
 import Ui.Button exposing (ButtonType(..))
-import Ui.ListedNote exposing (ListedNoteProps, listedNoteView)
+import Ui.ListedNote exposing (listedNoteView)
 import Ui.NoteList exposing (noteListView)
 import Utils exposing (dataTestId)
 
 
 type CreateNoteFormMsg
     = InputNewNoteTitle String
-    | CreateNote Note
+    | CreateNote Note NoteId
+    | RequestId Note
     | RetickNote NoteId
     | CancelCreate
+
+
+noteIdGenerator : Random.Generator NoteId
+noteIdGenerator =
+    Random.String.string 5 Random.Char.english
+        |> Random.map stringToNoteId
 
 
 update : CreateNoteFormMsg -> Model -> ( Model, Cmd CreateNoteFormMsg )
@@ -34,15 +44,17 @@ update msg model =
             , Cmd.none
             )
 
-        CreateNote note ->
+        RequestId note ->
+            ( model, Random.generate (CreateNote note) noteIdGenerator )
+
+        CreateNote note noteId ->
             ( { model
                 | currentPage = ListPage
                 , pending =
                     OpaqueDict.insert
-                        (Note.intToNoteId model.idCounter)
+                        noteId
                         note
                         model.pending
-                , idCounter = model.idCounter + 1
               }
             , Cmd.none
             )
@@ -77,7 +89,7 @@ applyIfCreateNotePage model fn =
 createNoteView : Model -> Note -> Html CreateNoteFormMsg
 createNoteView model newNote =
     Html.Styled.form
-        [ onSubmit (CreateNote newNote)
+        [ onSubmit (RequestId newNote)
         , dataTestId "CreateNote"
         , css [ Css.width (pct 100) ]
         ]

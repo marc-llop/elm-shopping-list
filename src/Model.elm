@@ -8,7 +8,6 @@ import Page exposing (Page)
 type alias Model =
     { pending : OpaqueDict NoteId Note
     , done : OpaqueDict NoteId Note
-    , idCounter : Int
     , currentPage : Page
     , backgroundTextureUrl : String
     }

@@ -70,7 +70,6 @@ init : { backgroundTextureUrl : String } -> ( Model, Cmd Msg )
 init { backgroundTextureUrl } =
     ( { pending = OpaqueDict.empty Note.noteIdToString |> insertInitialNotesList
       , done = OpaqueDict.empty Note.noteIdToString
-      , idCounter = 100
       , currentPage = ListPage
       , backgroundTextureUrl = backgroundTextureUrl
       }

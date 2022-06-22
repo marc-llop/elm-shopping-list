@@ -1,4 +1,4 @@
-module Note exposing (..)
+module Note exposing (Note, NoteId, NoteIdPair, intToNoteId, noteIdToString, stringToNoteId)
 
 
 type NoteId
@@ -8,6 +8,11 @@ type NoteId
 noteIdToString : NoteId -> String
 noteIdToString (NoteId id) =
     id
+
+
+stringToNoteId : String -> NoteId
+stringToNoteId id =
+    NoteId id
 
 
 intToNoteId : Int -> NoteId
