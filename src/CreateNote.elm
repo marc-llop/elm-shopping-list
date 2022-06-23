@@ -6,12 +6,10 @@ import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onClick, onInput, onSubmit)
 import Model exposing (..)
-import Note exposing (Note, NoteId, NoteIdPair, stringToNoteId)
+import Note exposing (Note, NoteId, NoteIdPair, noteIdGenerator)
 import OpaqueDict exposing (OpaqueDict)
 import Page exposing (Page(..), createNoteAutofocusId)
 import Random
-import Random.Char
-import Random.String
 import Search
 import String.Deburr exposing (deburr)
 import Time
@@ -27,12 +25,6 @@ type CreateNoteFormMsg
     | RequestId Note
     | RetickNote NoteId
     | CancelCreate
-
-
-noteIdGenerator : Random.Generator NoteId
-noteIdGenerator =
-    Random.String.string 5 Random.Char.english
-        |> Random.map stringToNoteId
 
 
 update : CreateNoteFormMsg -> Model -> ( Model, Cmd CreateNoteFormMsg )

@@ -11,7 +11,7 @@ import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onClick, stopPropagationOn)
 import Json.Decode
-import Note exposing (Note, NoteId)
+import Note exposing (Note, NoteId, newFakeNote)
 import Ui.Glassmorphism exposing (glassmorphism)
 import Utils exposing (dataTestId, transparencyBackground)
 
@@ -190,9 +190,12 @@ docs =
             , onEdit = \_ _ -> logAction "Edit clicked"
             }
 
+        ( fakeId, fakeNote ) =
+            newFakeNote 42 "Milk"
+
         props =
-            { noteId = Note.intToNoteId 42
-            , note = { title = "Milk" }
+            { noteId = fakeId
+            , note = fakeNote
             , state = Pending writeEvents
             , onTick = \_ -> logAction "Ticked"
             }

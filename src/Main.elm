@@ -9,7 +9,7 @@ import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onClick, onInput, onSubmit)
 import List
 import Model exposing (..)
-import Note exposing (Note, NoteId, NoteIdPair)
+import Note exposing (Note, NoteId, newFakeNote, noteIdToString)
 import NotesList exposing (..)
 import OpaqueDict exposing (OpaqueDict)
 import Page exposing (..)
@@ -35,8 +35,8 @@ main =
 -- MODEL
 
 
-insertInitialNotesList : OpaqueDict NoteId Note -> OpaqueDict NoteId Note
-insertInitialNotesList dict =
+initialNotesList : OpaqueDict NoteId Note
+initialNotesList =
     [ "ous"
     , "fuet"
     , "patatones"
@@ -62,13 +62,13 @@ insertInitialNotesList dict =
     , "arròs"
     , "pasta seca"
     ]
-        |> List.indexedMap (\i note -> OpaqueDict.insert (Note.intToNoteId i) (Note note))
-        |> List.foldl (\fn newDict -> fn newDict) dict
+        |> List.indexedMap (\i note -> newFakeNote i note)
+        |> OpaqueDict.fromList noteIdToString
 
 
 init : { backgroundTextureUrl : String } -> ( Model, Cmd Msg )
 init { backgroundTextureUrl } =
-    ( { pending = OpaqueDict.empty Note.noteIdToString |> insertInitialNotesList
+    ( { pending = initialNotesList
       , done = OpaqueDict.empty Note.noteIdToString
       , currentPage = ListPage
       , backgroundTextureUrl = backgroundTextureUrl
