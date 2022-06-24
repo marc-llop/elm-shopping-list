@@ -1,6 +1,5 @@
 module Main exposing (main)
 
-import Background exposing (background)
 import Browser
 import CreateNote exposing (CreateNoteFormMsg(..), createNoteView)
 import Css exposing (fixed, fullWidth, height, int, pct, position, property, width, zIndex)
@@ -15,6 +14,7 @@ import NotesList exposing (..)
 import OpaqueDict exposing (OpaqueDict)
 import Page exposing (..)
 import Tuple
+import Ui.Background exposing (background)
 import Ui.Button exposing (ButtonType(..))
 import Utils exposing (dataTestId)
 

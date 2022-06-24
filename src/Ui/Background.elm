@@ -1,4 +1,4 @@
-module Background exposing (..)
+module Ui.Background exposing (..)
 
 import Css exposing (..)
 import Html.Styled exposing (..)
