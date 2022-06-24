@@ -3,6 +3,7 @@ module Main exposing (main)
 import Browser
 import CreateNotePage exposing (CreateNoteFormMsg(..), createNoteView)
 import Css exposing (fixed, fullWidth, height, int, pct, position, property, width, zIndex)
+import EditNotePage exposing (EditNoteFormMsg(..), editNoteView)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onClick, onInput, onSubmit)
@@ -10,7 +11,7 @@ import List
 import LocalStorage exposing (encodeAndStoreModel)
 import Model exposing (..)
 import Note exposing (Note, NoteId, newFakeNote, noteIdToString)
-import NotesListPage exposing (..)
+import NotesListPage exposing (NotesListMsg(..), notesListView)
 import OpaqueDict exposing (OpaqueDict)
 import Page exposing (..)
 import Tuple
@@ -90,27 +91,6 @@ type Msg
     | EditNoteFormMsgContainer EditNoteFormMsg
 
 
-type EditNoteFormMsg
-    = InputEditedNoteTitle String
-    | EditNote NoteId Note
-    | CancelEdit
-
-
-editNote : NoteId -> Note -> OpaqueDict NoteId Note -> OpaqueDict NoteId Note
-editNote id note =
-    OpaqueDict.update id (Maybe.map (always note))
-
-
-applyIfEditNotePage : Model -> (NoteId -> Note -> Model) -> Model
-applyIfEditNotePage model fn =
-    case model.currentPage of
-        EditNotePage noteId note ->
-            fn noteId note
-
-        _ ->
-            model
-
-
 storeAndThen : Cmd a -> Model -> Cmd a
 storeAndThen cmd newModel =
     Cmd.batch
@@ -144,23 +124,8 @@ update msg model =
         CreateNoteFormMsgContainer createNoteMsg ->
             handlePageUpdate CreateNotePage.update CreateNoteFormMsgContainer createNoteMsg model
 
-        EditNoteFormMsgContainer (EditNote noteId note) ->
-            ( { model
-                | currentPage = ListPage
-                , pending = editNote noteId note model.pending
-                , done = editNote noteId note model.done
-              }
-            , Cmd.none
-            )
-
-        EditNoteFormMsgContainer (InputEditedNoteTitle title) ->
-            ( applyIfEditNotePage model
-                (\noteId note -> { model | currentPage = EditNotePage noteId { note | title = title } })
-            , Cmd.none
-            )
-
-        EditNoteFormMsgContainer CancelEdit ->
-            ( { model | currentPage = ListPage }, Cmd.none )
+        EditNoteFormMsgContainer editNoteMsg ->
+            handlePageUpdate EditNotePage.update EditNoteFormMsgContainer editNoteMsg model
 
 
 
@@ -198,24 +163,3 @@ view model =
                     editNoteView noteId note |> Html.Styled.map EditNoteFormMsgContainer
     in
     viewPage model page
-
-
-editNoteView : NoteId -> Note -> Html EditNoteFormMsg
-editNoteView noteId note =
-    Html.Styled.form
-        [ dataTestId "EditNote"
-        , onSubmit (EditNote noteId note)
-        , css [ Css.width (pct 100) ]
-        ]
-        [ input [ onInput InputEditedNoteTitle, value note.title, id editNoteAutofocusId ] []
-        , Ui.Button.button
-            { buttonType = Submit
-            , label = "Save note"
-            , isEnabled = not (String.isEmpty note.title)
-            }
-        , Ui.Button.button
-            { buttonType = Button CancelEdit
-            , label = "Cancel edit"
-            , isEnabled = True
-            }
-        ]
