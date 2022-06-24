@@ -1,4 +1,4 @@
-module CreateNote exposing (..)
+module CreateNotePage exposing (..)
 
 import Css exposing (displayFlex, marginRight, pct, px)
 import DesignSystem.StyledIcons as Icons

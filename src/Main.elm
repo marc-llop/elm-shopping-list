@@ -1,7 +1,7 @@
 module Main exposing (main)
 
 import Browser
-import CreateNote exposing (CreateNoteFormMsg(..), createNoteView)
+import CreateNotePage exposing (CreateNoteFormMsg(..), createNoteView)
 import Css exposing (fixed, fullWidth, height, int, pct, position, property, width, zIndex)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
@@ -10,7 +10,7 @@ import List
 import LocalStorage exposing (encodeAndStoreModel)
 import Model exposing (..)
 import Note exposing (Note, NoteId, newFakeNote, noteIdToString)
-import NotesList exposing (..)
+import NotesListPage exposing (..)
 import OpaqueDict exposing (OpaqueDict)
 import Page exposing (..)
 import Tuple
@@ -139,10 +139,10 @@ update : UpdateFn Msg
 update msg model =
     case msg of
         NotesListMsgContainer notesListMsg ->
-            handlePageUpdate NotesList.update NotesListMsgContainer notesListMsg model
+            handlePageUpdate NotesListPage.update NotesListMsgContainer notesListMsg model
 
         CreateNoteFormMsgContainer createNoteMsg ->
-            handlePageUpdate CreateNote.update CreateNoteFormMsgContainer createNoteMsg model
+            handlePageUpdate CreateNotePage.update CreateNoteFormMsgContainer createNoteMsg model
 
         EditNoteFormMsgContainer (EditNote noteId note) ->
             ( { model
