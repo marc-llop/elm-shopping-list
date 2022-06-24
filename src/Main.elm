@@ -8,6 +8,7 @@ import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onClick, onInput, onSubmit)
 import List
+import LocalStorage exposing (encodeAndStoreModel)
 import Model exposing (..)
 import Note exposing (Note, NoteId, newFakeNote, noteIdToString)
 import NotesList exposing (..)
@@ -71,7 +72,9 @@ init { backgroundTextureUrl } =
     ( { pending = initialNotesList
       , done = OpaqueDict.empty Note.noteIdToString
       , currentPage = ListPage
-      , backgroundTextureUrl = backgroundTextureUrl
+      , constants =
+            { backgroundTextureUrl = backgroundTextureUrl
+            }
       }
     , Cmd.none
     )
@@ -108,16 +111,38 @@ applyIfEditNotePage model fn =
             model
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
+storeAndThen : Cmd a -> Model -> Cmd a
+storeAndThen cmd newModel =
+    Cmd.batch
+        [ cmd
+        , encodeAndStoreModel newModel
+        ]
+
+
+type alias UpdateFn a =
+    a -> Model -> ( Model, Cmd a )
+
+
+handlePageUpdate : UpdateFn a -> (a -> Msg) -> a -> Model -> ( Model, Cmd Msg )
+handlePageUpdate updateFn mapper msg model =
+    let
+        ( newModel, localCmd ) =
+            updateFn msg model
+
+        globalCmd =
+            Cmd.map mapper localCmd
+    in
+    ( newModel, storeAndThen globalCmd newModel )
+
+
+update : UpdateFn Msg
 update msg model =
     case msg of
         NotesListMsgContainer notesListMsg ->
-            NotesList.update notesListMsg model
-                |> Tuple.mapSecond (Cmd.map NotesListMsgContainer)
+            handlePageUpdate NotesList.update NotesListMsgContainer notesListMsg model
 
         CreateNoteFormMsgContainer createNoteMsg ->
-            CreateNote.update createNoteMsg model
-                |> Tuple.mapSecond (Cmd.map CreateNoteFormMsgContainer)
+            handlePageUpdate CreateNote.update CreateNoteFormMsgContainer createNoteMsg model
 
         EditNoteFormMsgContainer (EditNote noteId note) ->
             ( { model
@@ -154,7 +179,7 @@ subscriptions model =
 viewPage : Model -> Html Msg -> Browser.Document Msg
 viewPage model body =
     { title = "Elm Shopping List"
-    , body = [ background model.backgroundTextureUrl, body ] |> List.map toUnstyled
+    , body = [ background model.constants.backgroundTextureUrl, body ] |> List.map toUnstyled
     }
 
 

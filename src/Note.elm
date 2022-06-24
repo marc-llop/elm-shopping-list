@@ -1,4 +1,4 @@
-module Note exposing (Note, NoteId, NoteIdPair, decodeNoteId, encodeNote, newFakeNote, noteIdGenerator, noteIdToString)
+module Note exposing (Note, NoteId, NoteIdPair, decodeNote, decodeNoteIdFromString, encodeNote, newFakeNote, noteIdGenerator, noteIdToString)
 
 import Json.Decode as D
 import Json.Encode as E
@@ -25,6 +25,12 @@ noteIdGenerator =
 decodeNoteId : D.Decoder NoteId
 decodeNoteId =
     D.map NoteId D.string
+
+
+decodeNoteIdFromString : String -> Maybe NoteId
+decodeNoteIdFromString s =
+    D.decodeString decodeNoteId s
+        |> Result.toMaybe
 
 
 newFakeNote : Int -> String -> NoteIdPair

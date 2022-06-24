@@ -1,16 +1,53 @@
 module Model exposing (..)
 
-import Note exposing (Note, NoteId, NoteIdPair)
+import Json.Decode as D
+import Json.Encode as E
+import Note exposing (..)
 import OpaqueDict exposing (OpaqueDict)
-import Page exposing (Page)
+import Page exposing (Page(..))
 
 
 type alias Model =
     { pending : OpaqueDict NoteId Note
     , done : OpaqueDict NoteId Note
     , currentPage : Page
-    , backgroundTextureUrl : String
+    , constants : Constants
     }
+
+
+type alias Constants =
+    { backgroundTextureUrl : String
+    }
+
+
+encodeModel : Model -> E.Value
+encodeModel model =
+    let
+        encodeDict =
+            OpaqueDict.encode noteIdToString encodeNote
+    in
+    E.object
+        [ ( "pending", encodeDict model.pending )
+        , ( "done", encodeDict model.done )
+        ]
+
+
+decodeModel : Constants -> D.Decoder Model
+decodeModel c =
+    let
+        instantiateModel pending done =
+            { pending = pending
+            , done = done
+            , currentPage = ListPage
+            , constants = c
+            }
+
+        decodeDict =
+            OpaqueDict.decode decodeNoteIdFromString noteIdToString decodeNote
+    in
+    D.map2 instantiateModel
+        decodeDict
+        decodeDict
 
 
 type alias NotesInModel a =
