@@ -3,10 +3,12 @@ module Main exposing (main)
 import Browser
 import CreateNotePage exposing (CreateNoteFormMsg(..), createNoteView)
 import Css exposing (fixed, fullWidth, height, int, pct, position, property, width, zIndex)
+import Debug
 import EditNotePage exposing (EditNoteFormMsg(..), editNoteView)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onClick, onInput, onSubmit)
+import Json.Decode as D
 import List
 import LocalStorage exposing (encodeAndStoreModel)
 import Model exposing (..)
@@ -68,17 +70,22 @@ initialNotesList =
         |> OpaqueDict.fromList noteIdToString
 
 
-init : { backgroundTextureUrl : String } -> ( Model, Cmd Msg )
-init { backgroundTextureUrl } =
-    ( { pending = initialNotesList
-      , done = OpaqueDict.empty Note.noteIdToString
-      , currentPage = ListPage
-      , constants =
-            { backgroundTextureUrl = backgroundTextureUrl
-            }
-      }
-    , Cmd.none
-    )
+init :
+    D.Value
+    -> ( Model, Cmd Msg )
+init json =
+    let
+        model =
+            D.decodeValue decodeModel json
+                |> Result.toMaybe
+                |> Maybe.withDefault
+                    (initModel
+                        "backgroundTextureUrl not found"
+                        initialNotesList
+                        (OpaqueDict.empty Note.noteIdToString)
+                    )
+    in
+    ( model, Cmd.none )
 
 
 
@@ -144,13 +151,16 @@ subscriptions model =
 viewPage : Model -> Html Msg -> Browser.Document Msg
 viewPage model body =
     { title = "Elm Shopping List"
-    , body = [ background model.constants.backgroundTextureUrl, body ] |> List.map toUnstyled
+    , body = [ background model.backgroundTextureUrl, body ] |> List.map toUnstyled
     }
 
 
 view : Model -> Browser.Document Msg
 view model =
     let
+        a =
+            Debug.log "Hola"
+
         page =
             case model.currentPage of
                 ListPage ->

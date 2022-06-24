@@ -5,18 +5,31 @@ import Json.Encode as E
 import Note exposing (..)
 import OpaqueDict exposing (OpaqueDict)
 import Page exposing (Page(..))
+import Ui.ListedNote exposing (NoteState(..))
 
 
 type alias Model =
-    { pending : OpaqueDict NoteId Note
-    , done : OpaqueDict NoteId Note
+    { pending : PendingDict
+    , done : DoneDict
     , currentPage : Page
-    , constants : Constants
+    , backgroundTextureUrl : String
     }
 
 
-type alias Constants =
-    { backgroundTextureUrl : String
+type alias PendingDict =
+    OpaqueDict NoteId Note
+
+
+type alias DoneDict =
+    OpaqueDict NoteId Note
+
+
+initModel : String -> PendingDict -> DoneDict -> Model
+initModel backgroundTextureUrl pending done =
+    { pending = pending
+    , done = done
+    , currentPage = ListPage
+    , backgroundTextureUrl = backgroundTextureUrl
     }
 
 
@@ -32,22 +45,16 @@ encodeModel model =
         ]
 
 
-decodeModel : Constants -> D.Decoder Model
-decodeModel c =
+decodeModel : D.Decoder Model
+decodeModel =
     let
-        instantiateModel pending done =
-            { pending = pending
-            , done = done
-            , currentPage = ListPage
-            , constants = c
-            }
-
         decodeDict =
             OpaqueDict.decode decodeNoteIdFromString noteIdToString decodeNote
     in
-    D.map2 instantiateModel
-        decodeDict
-        decodeDict
+    D.map3 initModel
+        (D.field "backgroundTextureUrl" D.string)
+        (D.field "pending" decodeDict)
+        (D.field "done" decodeDict)
 
 
 type alias NotesInModel a =

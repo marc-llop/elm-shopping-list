@@ -2,6 +2,8 @@ import { Elm } from "./Main.elm";
 
 const modelStorageKey = 'model'
 
+const model = JSON.parse(localStorage.getItem(modelStorageKey))
+
 const backgroundTextureUrl = new URL(
     'assets/SeemlessBlackbrushed.png',
     import.meta.url
@@ -9,10 +11,12 @@ const backgroundTextureUrl = new URL(
 
 const app = Elm.Main.init({
     node: document.getElementById("root"),
-    flags: {backgroundTextureUrl}
+    flags: {
+        ...model,
+        backgroundTextureUrl,
+    },
 });
 
 app.ports.storeModel.subscribe(modelObj => {
-    console.log(modelObj)
     localStorage.setItem(modelStorageKey, JSON.stringify(modelObj))
 })

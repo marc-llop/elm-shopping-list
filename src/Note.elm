@@ -29,8 +29,7 @@ decodeNoteId =
 
 decodeNoteIdFromString : String -> Maybe NoteId
 decodeNoteIdFromString s =
-    D.decodeString decodeNoteId s
-        |> Result.toMaybe
+    Just (NoteId s)
 
 
 newFakeNote : Int -> String -> NoteIdPair
