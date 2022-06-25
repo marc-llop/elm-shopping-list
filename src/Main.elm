@@ -3,7 +3,6 @@ module Main exposing (main)
 import Browser
 import CreateNotePage exposing (CreateNoteFormMsg(..), createNoteView)
 import Css exposing (fixed, fullWidth, height, int, pct, position, property, width, zIndex)
-import Debug
 import EditNotePage exposing (EditNoteFormMsg(..), editNoteView)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
@@ -158,9 +157,6 @@ viewPage model body =
 view : Model -> Browser.Document Msg
 view model =
     let
-        a =
-            Debug.log "Hola"
-
         page =
             case model.currentPage of
                 ListPage ->

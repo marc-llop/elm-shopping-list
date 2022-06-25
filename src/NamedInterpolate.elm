@@ -1,7 +1,6 @@
 module NamedInterpolate exposing (interpolate)
 
 import Char
-import Debug
 import Dict exposing (Dict, foldr)
 import Parser exposing (..)
 import Set exposing (Set)
