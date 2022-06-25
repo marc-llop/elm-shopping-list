@@ -1,4 +1,4 @@
-module Tests.NoteTest exposing (..)
+module Tests.GlassmorphismTest exposing (..)
 
 import Expect exposing (Expectation)
 import OpaqueDict
