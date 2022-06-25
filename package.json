@@ -2,10 +2,9 @@
   "name": "shopping-list-elm",
   "version": "1.0.0",
   "description": "A shopping list app written in Elm.",
-  "main": "src/index.js",
   "scripts": {
     "start": "PARCEL_ELM_NO_DEBUG=1 parcel src/index.html",
-    "build": "parcel build src/index.html",
+    "build": "npm run test && parcel build src/index.html",
     "test": "elm-test src/**/*Test.elm",
     "lint": "lint-staged",
     "elmbook": "elm-live src/Ui/Book.elm --pushstate --open"
