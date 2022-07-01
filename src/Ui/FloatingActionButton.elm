@@ -2,7 +2,7 @@ module Ui.FloatingActionButton exposing (..)
 
 import Css exposing (..)
 import DesignSystem.ColorDecisions exposing (..)
-import DesignSystem.Colors exposing (accentBlue, accentGreen, translucentDarkGrey)
+import DesignSystem.Colors exposing (accentBlue, accentGreen)
 import DesignSystem.Sizes exposing (cardBorderRadius, cardBoxShadow)
 import DesignSystem.StyledIcons as Icons
 import ElmBook exposing (Msg)

@@ -25,8 +25,8 @@ glassButtonGlowing =
 glassButtonInert : GlassmorphismProps
 glassButtonInert =
     { color = accentBlue.s500
-    , opacityPct = 10
-    , blurPx = 3
+    , opacityPct = 20
+    , blurPx = 4
     , saturationPct = 0
     }
 

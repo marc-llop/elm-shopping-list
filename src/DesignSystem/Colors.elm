@@ -37,7 +37,7 @@ black =
 
 
 translucentDarkGrey =
-    "303030d0"
+    "304040d0"
 
 
 red =
