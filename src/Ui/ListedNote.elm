@@ -1,8 +1,9 @@
 module Ui.ListedNote exposing (..)
 
 import Css exposing (..)
-import DesignSystem.ColorDecisions exposing (neutralTextColor)
+import DesignSystem.ColorDecisions exposing (glassButtonGlowing, glassButtonInert, glassButtonInertBoxShadowColor, neutralTextColor)
 import DesignSystem.Colors exposing (accentBlue, backgroundPurple, neutral)
+import DesignSystem.Sizes exposing (boxShadowOffset, cardBorderRadius, cardBoxShadow)
 import DesignSystem.StyledIcons exposing (blueEdit, greenPlus, redTrash, tickedCheck, untickedCheck)
 import ElmBook.Actions exposing (logAction)
 import ElmBook.Chapter exposing (chapter, renderComponentList)
@@ -138,10 +139,10 @@ noteStyle state =
                     }
 
                 ToAdd ->
-                    { glassColor = accentBlue.s500
-                    , glassOpacity = 15
-                    , glassBlur = 13
-                    , boxShadowColor = accentBlue.s800
+                    { glassColor = glassButtonInert.color
+                    , glassOpacity = glassButtonInert.opacityPct
+                    , glassBlur = glassButtonInert.blurPx
+                    , boxShadowColor = glassButtonInertBoxShadowColor
                     , textColor = accentBlue.s300
                     , textShadowColor = accentBlue.s400
                     }
@@ -160,12 +161,19 @@ noteStyle state =
     , paddingLeft (px 15)
     , paddingRight (px 15)
     , margin4 (px 3) (px 7) (px 5) (px 5)
-    , borderRadius (px 10)
-    , boxShadow3 (px 2) (px 2) (hex boxShadowColor)
+    , borderRadius cardBorderRadius
+    , cardBoxShadow (hex boxShadowColor)
     , fontSize (rem 1.2)
     , color (hex textColor)
     , textShadow4 zero zero (px 3) (hex textShadowColor)
     , cursor pointer
+    , hover
+        (if state == ToAdd then
+            [ glassmorphism glassButtonGlowing ]
+
+         else
+            []
+        )
     ]
 
 

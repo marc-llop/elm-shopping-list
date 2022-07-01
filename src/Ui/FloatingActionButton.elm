@@ -1,7 +1,9 @@
 module Ui.FloatingActionButton exposing (..)
 
 import Css exposing (..)
+import DesignSystem.ColorDecisions exposing (..)
 import DesignSystem.Colors exposing (accentBlue, accentGreen, translucentDarkGrey)
+import DesignSystem.Sizes exposing (cardBorderRadius, cardBoxShadow)
 import DesignSystem.StyledIcons as Icons
 import ElmBook exposing (Msg)
 import ElmBook.Actions exposing (logAction)
@@ -31,7 +33,7 @@ floatingActionButtonStyles =
         , right (px 30)
         , Css.width (px 65)
         , Css.height (px 65)
-        , borderRadius (px 10)
+        , borderRadius cardBorderRadius
         , cursor pointer
         , borderStyle none
         , inertStyle
@@ -42,26 +44,16 @@ floatingActionButtonStyles =
 glowingStyle : Style
 glowingStyle =
     Css.batch
-        [ glassmorphism
-            { color = accentBlue.s500
-            , opacityPct = 40
-            , blurPx = 7
-            , saturationPct = 100
-            }
-        , boxShadow3 (px 2) (px 2) (hex accentBlue.s700)
+        [ glassmorphism glassButtonGlowing
+        , cardBoxShadow (hex glassButtonGlowingBoxShadowColor)
         ]
 
 
 inertStyle : Style
 inertStyle =
     Css.batch
-        [ glassmorphism
-            { color = accentBlue.s500
-            , opacityPct = 10
-            , blurPx = 3
-            , saturationPct = 0
-            }
-        , boxShadow3 (px 2) (px 2) (hex translucentDarkGrey)
+        [ glassmorphism glassButtonInert
+        , cardBoxShadow (hex glassButtonInertBoxShadowColor)
         ]
 
 

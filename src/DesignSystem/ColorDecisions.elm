@@ -6,10 +6,37 @@ import ElmBook.Chapter exposing (chapter, renderComponentList)
 import ElmBook.ElmCSS exposing (Chapter)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (css)
+import Ui.Glassmorphism exposing (GlassmorphismProps)
 
 
 neutralTextColor =
     neutral.s300
+
+
+glassButtonGlowing : GlassmorphismProps
+glassButtonGlowing =
+    { color = accentBlue.s500
+    , opacityPct = 40
+    , blurPx = 7
+    , saturationPct = 100
+    }
+
+
+glassButtonInert : GlassmorphismProps
+glassButtonInert =
+    { color = accentBlue.s500
+    , opacityPct = 10
+    , blurPx = 3
+    , saturationPct = 0
+    }
+
+
+glassButtonGlowingBoxShadowColor =
+    accentBlue.s800
+
+
+glassButtonInertBoxShadowColor =
+    translucentDarkGrey
 
 
 

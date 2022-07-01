@@ -82,8 +82,8 @@ glassmorphism { color, opacityPct, blurPx, saturationPct } =
         ]
 
 
-glassCard : GlassmorphismProps -> Html msg
-glassCard props =
+glassExample : GlassmorphismProps -> Html msg
+glassExample props =
     div
         [ css
             [ glassmorphism props
@@ -101,7 +101,7 @@ docs =
         showcaseGlass p =
             Utils.transparencyBackground
                 { width = 250, height = 250 }
-                (glassCard p)
+                (glassExample p)
 
         props =
             { color = "7B4A23"
