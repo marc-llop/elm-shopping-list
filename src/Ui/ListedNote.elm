@@ -1,7 +1,7 @@
 module Ui.ListedNote exposing (..)
 
 import Css exposing (..)
-import DesignSystem.ColorDecisions exposing (glassButtonGlowing, glassButtonInert, glassButtonInertBoxShadowColor, neutralTextColor)
+import DesignSystem.ColorDecisions exposing (..)
 import DesignSystem.Colors exposing (accentBlue, backgroundPurple, neutral)
 import DesignSystem.Sizes exposing (boxShadowOffset, cardBorderRadius, cardBoxShadow)
 import DesignSystem.StyledIcons exposing (blueEdit, greenPlus, redTrash, tickedCheck, untickedCheck)
@@ -121,12 +121,12 @@ noteStyle state =
         { glassColor, glassOpacity, glassBlur, boxShadowColor, textColor, textShadowColor } =
             case state of
                 Pending _ ->
-                    { glassColor = neutral.s750
-                    , glassOpacity = 35
-                    , glassBlur = 6
-                    , boxShadowColor = neutral.s750
+                    { glassColor = neutralCardColor.color
+                    , glassOpacity = neutralCardColor.opacityPct
+                    , glassBlur = neutralCardColor.blurPx
+                    , boxShadowColor = neutralCardBoxShadowColor
                     , textColor = neutralTextColor
-                    , textShadowColor = neutral.s500
+                    , textShadowColor = neutralCardTextShadowColor
                     }
 
                 Done _ ->
@@ -139,9 +139,9 @@ noteStyle state =
                     }
 
                 ToAdd ->
-                    { glassColor = glassButtonInert.color
-                    , glassOpacity = glassButtonInert.opacityPct
-                    , glassBlur = glassButtonInert.blurPx
+                    { glassColor = glassButtonInertColor.color
+                    , glassOpacity = glassButtonInertColor.opacityPct
+                    , glassBlur = glassButtonInertColor.blurPx
                     , boxShadowColor = glassButtonInertBoxShadowColor
                     , textColor = accentBlue.s300
                     , textShadowColor = accentBlue.s400
@@ -169,7 +169,7 @@ noteStyle state =
     , cursor pointer
     , hover
         (if state == ToAdd then
-            [ glassmorphism glassButtonGlowing ]
+            [ glassmorphism glassButtonGlowingColor ]
 
          else
             []

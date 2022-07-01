@@ -44,7 +44,7 @@ floatingActionButtonStyles =
 glowingStyle : Style
 glowingStyle =
     Css.batch
-        [ glassmorphism glassButtonGlowing
+        [ glassmorphism glassButtonGlowingColor
         , cardBoxShadow (hex glassButtonGlowingBoxShadowColor)
         ]
 
@@ -52,7 +52,7 @@ glowingStyle =
 inertStyle : Style
 inertStyle =
     Css.batch
-        [ glassmorphism glassButtonInert
+        [ glassmorphism glassButtonInertColor
         , cardBoxShadow (hex glassButtonInertBoxShadowColor)
         ]
 

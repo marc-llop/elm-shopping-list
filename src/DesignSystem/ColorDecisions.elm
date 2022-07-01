@@ -13,8 +13,8 @@ neutralTextColor =
     neutral.s300
 
 
-glassButtonGlowing : GlassmorphismProps
-glassButtonGlowing =
+glassButtonGlowingColor : GlassmorphismProps
+glassButtonGlowingColor =
     { color = accentBlue.s500
     , opacityPct = 40
     , blurPx = 7
@@ -22,8 +22,8 @@ glassButtonGlowing =
     }
 
 
-glassButtonInert : GlassmorphismProps
-glassButtonInert =
+glassButtonInertColor : GlassmorphismProps
+glassButtonInertColor =
     { color = accentBlue.s500
     , opacityPct = 20
     , blurPx = 4
@@ -37,6 +37,23 @@ glassButtonGlowingBoxShadowColor =
 
 glassButtonInertBoxShadowColor =
     translucentDarkGrey
+
+
+neutralCardColor : GlassmorphismProps
+neutralCardColor =
+    { color = neutral.s750
+    , opacityPct = 35
+    , blurPx = 6
+    , saturationPct = 100
+    }
+
+
+neutralCardBoxShadowColor =
+    neutral.s750
+
+
+neutralCardTextShadowColor =
+    neutral.s500
 
 
 
