@@ -65,12 +65,12 @@ editNoteView noteId note =
         [ input [ onInput InputEditedNoteTitle, value note.title, id editNoteAutofocusId ] []
         , Ui.Button.button
             { buttonType = Submit
-            , label = "Save note"
+            , label = "Desa els canvis"
             , isEnabled = not (String.isEmpty note.title)
             }
         , Ui.Button.button
             { buttonType = Button CancelEdit
-            , label = "Cancel edit"
+            , label = "Cancel·la"
             , isEnabled = True
             }
         ]

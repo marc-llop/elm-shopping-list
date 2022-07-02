@@ -88,12 +88,12 @@ createNoteView model newNote =
         [ input [ onInput InputNewNoteTitle, value newNote.title, id createNoteAutofocusId ] []
         , Ui.Button.button
             { buttonType = Submit
-            , label = "Add note"
+            , label = "Afegeix l'element"
             , isEnabled = not (String.isEmpty newNote.title)
             }
         , Ui.Button.button
             { buttonType = Button CancelCreate
-            , label = "Cancel"
+            , label = "Cancel·la"
             , isEnabled = True
             }
         , matchesListView model newNote
