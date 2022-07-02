@@ -1,7 +1,7 @@
 module Ui.ProgressBar exposing (..)
 
 import Css exposing (..)
-import DesignSystem.Colors exposing (ColorPalette, backgroundPurple, neutral)
+import DesignSystem.Colors exposing (ColorPalette, accentBlue, accentGreen, backgroundPurple, neutral)
 import ElmBook
 import ElmBook.Chapter exposing (chapter, renderComponentList)
 import ElmBook.ElmCSS exposing (Chapter)
@@ -19,7 +19,7 @@ type alias ProgressBarProps =
 
 container : List Style
 container =
-    [ height (px 30)
+    [ height (px 60)
     , displayFlex
     ]
 
@@ -48,24 +48,24 @@ edge edgePosition color =
                     , borderTwoRadius = borderBottomRightRadius
                     }
     in
-    [ width (px 15)
-    , height (px 30)
+    [ width (px 30)
+    , height (px 60)
     , overflow hidden
     , position relative
     , before
         [ property "content" "\"\""
         , position absolute
-        , width (px 15)
-        , height (px 15)
-        , variables.side (px 5)
-        , top (px 5)
-        , border3 (px 2) solid (hex color.s250)
+        , width (px 30)
+        , height (px 30)
+        , variables.side (px 10)
+        , top (px 10)
+        , border3 (px 4) solid (hex color.s250)
         , variables.missingBorder zero
-        , variables.borderOneRadius (px 10)
-        , variables.borderTwoRadius (px 10)
+        , variables.borderOneRadius (px 20)
+        , variables.borderTwoRadius (px 20)
         , property "box-shadow"
             (interpolate
-                "0 0 3px #{color}, inset 0 0 3px #{color}"
+                "0 0 6px #{color}, inset 0 0 6px #{color}"
                 [ ( "color", color.s350 ) ]
             )
         ]
@@ -93,10 +93,10 @@ barContainer borderPos =
                     top zero
 
                 BottomBorder ->
-                    top (px 17)
+                    top (px 35)
     in
     [ width (pct 100)
-    , height (px 12)
+    , height (px 24)
     , position absolute
     , topOffset
     , overflow hidden
@@ -106,9 +106,9 @@ barContainer borderPos =
 progressContainer : List Style
 progressContainer =
     [ width (pct 100)
-    , height (px 12)
+    , height (px 24)
     , position absolute
-    , top (px 8.5)
+    , top (px 17)
     ]
 
 
@@ -116,7 +116,7 @@ linearGradient : String -> String -> Style
 linearGradient shadeLeft shadeRight =
     property "background"
         (interpolate
-            "linear-gradient(to right, #{colorLeft}, #{colorRight})"
+            "linear-gradient(to right, #{colorLeft}, 30%, #{colorRight})"
             [ ( "colorLeft", shadeLeft )
             , ( "colorRight", shadeRight )
             ]
@@ -137,7 +137,7 @@ partialGradient : Int -> String -> String -> Style
 partialGradient progress shadeLeft shadeRight =
     property "background"
         (interpolate
-            "linear-gradient(to right, #{colorLeft}, #{colorRight} calc(100% * (100 / {progress})))"
+            "linear-gradient(to right, #{colorLeft}, 30%, #{colorRight} calc(100% * (100 / {progress})))"
             [ ( "colorLeft", shadeLeft )
             , ( "colorRight", shadeRight )
             , ( "progress", String.fromInt progress )
@@ -147,22 +147,22 @@ partialGradient progress shadeLeft shadeRight =
 
 borderGlow : ProgressBarProps -> List Style
 borderGlow { colorLeft, colorRight } =
-    [ width (calc (pct 100) plus (px 4))
-    , height (px 2.4)
+    [ width (calc (pct 100) plus (px 8))
+    , height (px 4.8)
     , position absolute
-    , left (px -2)
-    , top (px 4.8)
+    , left (px -4)
+    , top (px 9.6)
     , linearGradient colorLeft.s350 colorRight.s350
-    , property "filter" "blur(1.4px)"
+    , property "filter" "blur(2.8px)"
     ]
 
 
 borderBody : ProgressBarProps -> List Style
 borderBody { colorLeft, colorRight } =
     [ width (pct 100)
-    , height (px 2)
+    , height (px 3)
     , position absolute
-    , top (px 5)
+    , top (px 10)
     , linearGradient colorLeft.s250 colorRight.s250
     ]
 
@@ -179,14 +179,14 @@ progressGlow : ProgressBarProps -> List Style
 progressGlow { progress, colorLeft, colorRight } =
     let
         sideOffset =
-            6
+            10
     in
     [ width (calc (pct (toFloat progress)) plus (px (sideOffset * 2)))
-    , height (px 8)
+    , height (px 16)
     , position absolute
     , left (px -sideOffset)
-    , top (px 2)
-    , borderRadius (px 4)
+    , top (px 4)
+    , borderRadius (px 8)
     , partialGradient progress colorLeft.s350 colorRight.s350
     , property "filter" "blur(1.5px)"
     ]
@@ -196,14 +196,14 @@ progressBody : ProgressBarProps -> List Style
 progressBody { progress, colorLeft, colorRight } =
     let
         sideOffset =
-            4
+            6
     in
     [ width (calc (pct (toFloat progress)) plus (px (sideOffset * 2)))
-    , height (px 6)
+    , height (px 12)
     , position absolute
     , left (px -sideOffset)
-    , top (px 3)
-    , borderRadius (px 4)
+    , top (px 6)
+    , borderRadius (px 8)
 
     -- Go from dark to brighter so that the full bar stands out more.
     , partialGradient progress colorLeft.s300 colorRight.s150
@@ -213,9 +213,14 @@ progressBody { progress, colorLeft, colorRight } =
 progressGauge : ProgressBarProps -> Html msg
 progressGauge props =
     div [ css progressContainer ]
-        [ div [ css (progressGlow props) ] []
-        , div [ css (progressBody props) ] []
-        ]
+        (if props.progress == 0 then
+            []
+
+         else
+            [ div [ css (progressGlow props) ] []
+            , div [ css (progressBody props) ] []
+            ]
+        )
 
 
 progressBarMiddle : ProgressBarProps -> Html msg
@@ -258,9 +263,11 @@ docs =
     in
     chapter "ProgressBar"
         |> renderComponentList
-            [ ( "Full", progressBarView props )
-            , ( "3/4", progressBarView { props | progress = 75 } )
-            , ( "2/5", progressBarView { props | progress = 40 } )
-            , ( "1/4", progressBarView { props | progress = 25 } )
-            , ( "Empty", progressBarView { props | progress = 0 } )
+            [ ( "100%", progressBarView props )
+            , ( "Purple-Blue", progressBarView { props | colorRight = accentBlue } )
+            , ( "Neutral-Green", progressBarView { props | colorRight = accentGreen, colorLeft = neutral } )
+            , ( "75%", progressBarView { props | progress = 75 } )
+            , ( "25%", progressBarView { props | progress = 25 } )
+            , ( "1%", progressBarView { props | progress = 1 } )
+            , ( "0%", progressBarView { props | progress = 0 } )
             ]
