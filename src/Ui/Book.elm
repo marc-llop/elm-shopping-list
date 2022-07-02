@@ -11,6 +11,7 @@ import Ui.Button
 import Ui.FloatingActionButton
 import Ui.Glassmorphism
 import Ui.ListedNote
+import Ui.ProgressBar
 
 
 main =
@@ -31,6 +32,7 @@ main =
                 , Ui.ListedNote.docs
                 , Ui.Glassmorphism.docs
                 , Ui.FloatingActionButton.docs
+                , Ui.ProgressBar.docs
                 ]
               )
             ]
