@@ -32,7 +32,11 @@ update msg model =
 
         InputEditedNoteTitle title ->
             ( applyIfEditNotePage model
-                (\noteId note -> { model | currentPage = EditNotePage noteId { note | title = title } })
+                (\noteId note originalNote ->
+                    { model
+                        | currentPage = EditNotePage noteId { note | title = title } originalNote
+                    }
+                )
             , Cmd.none
             )
 
@@ -40,11 +44,11 @@ update msg model =
             ( { model | currentPage = ListPage }, Cmd.none )
 
 
-applyIfEditNotePage : Model -> (NoteId -> Note -> Model) -> Model
+applyIfEditNotePage : Model -> (NoteId -> Note -> Note -> Model) -> Model
 applyIfEditNotePage model fn =
     case model.currentPage of
-        EditNotePage noteId note ->
-            fn noteId note
+        EditNotePage noteId note originalNote ->
+            fn noteId note originalNote
 
         _ ->
             model
@@ -55,8 +59,8 @@ editNote id note =
     OpaqueDict.update id (Maybe.map (always note))
 
 
-editNoteView : NoteId -> Note -> Html EditNoteFormMsg
-editNoteView noteId note =
+editNoteView : NoteId -> Note -> Note -> Html EditNoteFormMsg
+editNoteView noteId note originalNote =
     form
         [ dataTestId "EditNote"
         , onSubmit (EditNote noteId note)
@@ -66,7 +70,9 @@ editNoteView noteId note =
         , Ui.Button.button
             { buttonType = Submit
             , label = "Desa els canvis"
-            , isEnabled = not (String.isEmpty note.title)
+            , isEnabled =
+                not (String.isEmpty note.title)
+                    && (note.title /= originalNote.title)
             }
         , Ui.Button.button
             { buttonType = Button CancelEdit

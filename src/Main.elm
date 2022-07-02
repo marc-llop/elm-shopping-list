@@ -165,7 +165,7 @@ view model =
                 CreateNotePage note ->
                     createNoteView model note |> Html.Styled.map CreateNoteFormMsgContainer
 
-                EditNotePage noteId note ->
-                    editNoteView noteId note |> Html.Styled.map EditNoteFormMsgContainer
+                EditNotePage noteId note originalNote ->
+                    editNoteView noteId note originalNote |> Html.Styled.map EditNoteFormMsgContainer
     in
     viewPage model page

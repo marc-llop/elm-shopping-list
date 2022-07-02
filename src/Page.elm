@@ -6,7 +6,7 @@ import Note exposing (Note, NoteId)
 type Page
     = ListPage
     | CreateNotePage Note
-    | EditNotePage NoteId Note
+    | EditNotePage NoteId Note Note
 
 
 createNoteAutofocusId =

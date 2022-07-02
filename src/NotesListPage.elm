@@ -62,7 +62,7 @@ update msg model =
             )
 
         ( OpenEditNote noteId note, ListPage ) ->
-            ( { model | currentPage = EditNotePage noteId note }
+            ( { model | currentPage = EditNotePage noteId note note }
             , Task.attempt (\_ -> NoOp) (Browser.Dom.focus editNoteAutofocusId)
             )
 
