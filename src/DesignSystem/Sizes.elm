@@ -1,6 +1,6 @@
 module DesignSystem.Sizes exposing (..)
 
-import Css exposing (boxShadow3, px)
+import Css exposing (boxShadow3, px, rem)
 
 
 cardBorderRadius =
@@ -13,3 +13,11 @@ boxShadowOffset =
 
 cardBoxShadow color =
     boxShadow3 boxShadowOffset boxShadowOffset color
+
+
+noteFontSize =
+    rem 1.2
+
+
+listFontSize =
+    rem 1.5

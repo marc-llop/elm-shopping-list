@@ -3,7 +3,7 @@ module Ui.ListedNote exposing (..)
 import Css exposing (..)
 import DesignSystem.ColorDecisions exposing (..)
 import DesignSystem.Colors exposing (accentBlue, backgroundPurple, neutral)
-import DesignSystem.Sizes exposing (boxShadowOffset, cardBorderRadius, cardBoxShadow)
+import DesignSystem.Sizes exposing (boxShadowOffset, cardBorderRadius, cardBoxShadow, noteFontSize)
 import DesignSystem.StyledIcons exposing (blueEdit, greenPlus, redTrash, tickedCheck, untickedCheck)
 import ElmBook.Actions exposing (logAction)
 import ElmBook.Chapter exposing (chapter, renderComponentList)
@@ -163,7 +163,7 @@ noteStyle state =
     , margin4 (px 3) (px 7) (px 5) (px 5)
     , borderRadius cardBorderRadius
     , cardBoxShadow (hex boxShadowColor)
-    , fontSize (rem 1.2)
+    , fontSize noteFontSize
     , color (hex textColor)
     , textShadow4 zero zero (px 3) (hex textShadowColor)
     , cursor pointer

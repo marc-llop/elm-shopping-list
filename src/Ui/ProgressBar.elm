@@ -1,4 +1,4 @@
-module Ui.ProgressBar exposing (..)
+module Ui.ProgressBar exposing (ProgressBarProps, docs, progressBarView)
 
 import Css exposing (..)
 import DesignSystem.Colors exposing (ColorPalette, accentBlue, accentGreen, backgroundPurple, neutral)

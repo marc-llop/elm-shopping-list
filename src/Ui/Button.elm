@@ -3,6 +3,7 @@ module Ui.Button exposing (ButtonType(..), button, docs)
 import Css exposing (..)
 import Css.Transitions exposing (easeOut, transition)
 import DesignSystem.Colors exposing (..)
+import DesignSystem.Sizes exposing (noteFontSize)
 import ElmBook
 import ElmBook.Actions exposing (logAction)
 import ElmBook.Chapter exposing (chapter, renderComponentList)
@@ -10,6 +11,7 @@ import ElmBook.ElmCSS exposing (Chapter)
 import Html.Styled exposing (Html, span, text)
 import Html.Styled.Attributes as HtmlAttr exposing (css)
 import Html.Styled.Events as HtmlEvt
+import Json.Decode
 import NamedInterpolate exposing (interpolate)
 import Utils exposing (dataTestId)
 
@@ -26,7 +28,7 @@ buttonStyles isEnabled =
            , minWidth (px 100)
            , padding2 (px 10) (px 20)
            , justifyContent center
-           , fontSize (rem 1.2)
+           , fontSize noteFontSize
            , backgroundColor transparent
            , borderRadius (px 10)
            , buttonTransition 200
@@ -151,7 +153,10 @@ stylableButton { label, buttonType, isEnabled, customStyle } =
                     [ HtmlAttr.type_ "submit" ]
 
                 Button msg ->
-                    [ HtmlEvt.onClick msg, HtmlAttr.type_ "button" ]
+                    [ HtmlEvt.on "touchstart" (Json.Decode.succeed msg)
+                    , HtmlEvt.onClick msg
+                    , HtmlAttr.type_ "button"
+                    ]
 
         attrsWithDisabled =
             if isEnabled then
