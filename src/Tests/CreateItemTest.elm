@@ -1,6 +1,6 @@
-module Tests.CreateNoteTest exposing (..)
+module Tests.CreateItemTest exposing (..)
 
-import CreateNotePage exposing (notesMatching)
+import CreateItemPage exposing (itemsMatching)
 import Expect
 import ItemModel exposing (IdItemPair, Item, ItemId(..), itemIdToString, newFakeItem)
 import OpaqueDict exposing (OpaqueDict)
@@ -14,9 +14,9 @@ dict ls =
 
 suite : Test
 suite =
-    describe "CreateNote"
-        [ describe "notesMatching"
-            [ test "should return all the notes for empty string, sorted alphabetically" <|
+    describe "CreateItem"
+        [ describe "itemsMatching"
+            [ test "should return all the items for empty string, sorted alphabetically" <|
                 \_ ->
                     let
                         model =
@@ -25,7 +25,7 @@ suite =
                             }
 
                         actual =
-                            notesMatching "" model
+                            itemsMatching "" model
 
                         expected =
                             [ newFakeItem 1 "Eggs"
@@ -34,7 +34,7 @@ suite =
                             ]
                     in
                     actual |> Expect.equal expected
-            , test "should return all the notes that contain the string" <|
+            , test "should return all the items that contain the string" <|
                 \_ ->
                     let
                         model =
@@ -43,7 +43,7 @@ suite =
                             }
 
                         actual =
-                            notesMatching "toes" model
+                            itemsMatching "toes" model
 
                         expected =
                             [ newFakeItem 4 "Potatoes"
@@ -60,7 +60,7 @@ suite =
                             }
 
                         actual =
-                            notesMatching "to" model
+                            itemsMatching "to" model
 
                         expected =
                             [ newFakeItem 3 "Toasts"
@@ -68,7 +68,7 @@ suite =
                             ]
                     in
                     actual |> Expect.equal expected
-            , test "should return matches ignoring accents in search query and in notes" <|
+            , test "should return matches ignoring accents in search query and in items" <|
                 \_ ->
                     let
                         model =
@@ -77,7 +77,7 @@ suite =
                             }
 
                         actual =
-                            notesMatching "ós" model
+                            itemsMatching "ós" model
 
                         expected =
                             [ newFakeItem 1 "Arròs"
@@ -94,7 +94,7 @@ suite =
                             }
 
                         actual =
-                            notesMatching "ço" model
+                            itemsMatching "ço" model
 
                         expected =
                             [ newFakeItem 5 "Calçots"
