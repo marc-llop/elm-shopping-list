@@ -1,4 +1,4 @@
-module NotesListPage exposing (NotesListMsg(..), notesListView, update)
+module ChecklistPage exposing (NotesListMsg(..), notesListView, update)
 
 import Browser.Dom
 import Css exposing (..)

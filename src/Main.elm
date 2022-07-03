@@ -1,6 +1,7 @@
 module Main exposing (main)
 
 import Browser
+import ChecklistPage exposing (NotesListMsg(..), notesListView)
 import CreateItemPage exposing (CreateItemFormMsg(..), createItemView)
 import Css exposing (fixed, fullWidth, height, int, pct, position, property, width, zIndex)
 import EditItemPage exposing (EditItemFormMsg(..), editItemView)
@@ -12,7 +13,6 @@ import Json.Decode as D
 import List
 import LocalStorage exposing (encodeAndStoreModel)
 import Model exposing (..)
-import NotesListPage exposing (NotesListMsg(..), notesListView)
 import OpaqueDict exposing (OpaqueDict)
 import Page exposing (..)
 import Tuple
@@ -125,7 +125,7 @@ update : UpdateFn Msg
 update msg model =
     case msg of
         NotesListMsgContainer notesListMsg ->
-            handlePageUpdate NotesListPage.update NotesListMsgContainer notesListMsg model
+            handlePageUpdate ChecklistPage.update NotesListMsgContainer notesListMsg model
 
         CreateNoteFormMsgContainer createNoteMsg ->
             handlePageUpdate CreateItemPage.update CreateNoteFormMsgContainer createNoteMsg model
