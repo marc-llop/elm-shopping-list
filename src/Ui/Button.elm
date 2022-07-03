@@ -3,7 +3,7 @@ module Ui.Button exposing (ButtonType(..), button, docs)
 import Css exposing (..)
 import Css.Transitions exposing (easeOut, transition)
 import DesignSystem.Colors exposing (..)
-import DesignSystem.Sizes exposing (noteFontSize)
+import DesignSystem.Sizes exposing (itemFontSize)
 import ElmBook
 import ElmBook.Actions exposing (logAction)
 import ElmBook.Chapter exposing (chapter, renderComponentList)
@@ -28,7 +28,7 @@ buttonStyles isEnabled =
            , minWidth (px 100)
            , padding2 (px 10) (px 20)
            , justifyContent center
-           , fontSize noteFontSize
+           , fontSize itemFontSize
            , backgroundColor transparent
            , borderRadius (px 10)
            , buttonTransition 200

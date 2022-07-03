@@ -15,7 +15,7 @@ cardBoxShadow color =
     boxShadow3 boxShadowOffset boxShadowOffset color
 
 
-noteFontSize =
+itemFontSize =
     rem 1.2
 
 

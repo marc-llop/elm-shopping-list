@@ -3,7 +3,7 @@ module Ui.Item exposing (..)
 import Css exposing (..)
 import DesignSystem.ColorDecisions exposing (..)
 import DesignSystem.Colors exposing (accentBlue, backgroundPurple, neutral)
-import DesignSystem.Sizes exposing (boxShadowOffset, cardBorderRadius, cardBoxShadow, noteFontSize)
+import DesignSystem.Sizes exposing (boxShadowOffset, cardBorderRadius, cardBoxShadow, itemFontSize)
 import DesignSystem.StyledIcons exposing (blueEdit, greenPlus, redTrash, tickedCheck, untickedCheck)
 import ElmBook.Actions exposing (logAction)
 import ElmBook.Chapter exposing (chapter, renderComponentList)
@@ -20,7 +20,7 @@ import Utils exposing (dataTestId, transparencyBackground)
 type ItemState msg
     = Pending (WriteEvents msg)
     | Done (WriteEvents msg)
-    | ToAdd -- Used in CreateNote search
+    | ToAdd -- Used in CreateItem search
 
 
 type alias WriteEvents msg =
@@ -101,13 +101,13 @@ stateToDataTestId : ItemState msg -> String
 stateToDataTestId state =
     case state of
         Pending _ ->
-            "ListedNotePending"
+            "ListedItemPending"
 
         Done _ ->
-            "ListedNoteDone"
+            "ListedItemDone"
 
         ToAdd ->
-            "MatchedNote"
+            "MatchedItem"
 
 
 onClickStopPropagation : msg -> Attribute msg
@@ -163,7 +163,7 @@ itemStyle state =
     , margin4 (px 3) (px 7) (px 5) (px 5)
     , borderRadius cardBorderRadius
     , cardBoxShadow (hex boxShadowColor)
-    , fontSize noteFontSize
+    , fontSize itemFontSize
     , color (hex textColor)
     , textShadow4 zero zero (px 3) (hex textShadowColor)
     , cursor pointer
@@ -208,14 +208,14 @@ docs =
             , onTick = \_ -> logAction "Ticked"
             }
 
-        showcaseNote p =
+        showcaseItem p =
             transparencyBackground
                 { width = 650, height = 80 }
                 (itemView p)
     in
     chapter "Item"
         |> renderComponentList
-            [ ( "Pending", showcaseNote props )
-            , ( "Done", showcaseNote { props | state = Done writeEvents, onTick = \_ -> logAction "Unticked" } )
-            , ( "ToAdd", showcaseNote { props | state = ToAdd, onTick = \_ -> logAction "Added item" } )
+            [ ( "Pending", showcaseItem props )
+            , ( "Done", showcaseItem { props | state = Done writeEvents, onTick = \_ -> logAction "Unticked" } )
+            , ( "ToAdd", showcaseItem { props | state = ToAdd, onTick = \_ -> logAction "Added item" } )
             ]
