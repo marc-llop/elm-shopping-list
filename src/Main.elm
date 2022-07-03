@@ -3,7 +3,7 @@ module Main exposing (main)
 import Browser
 import CreateItemPage exposing (CreateItemFormMsg(..), createItemView)
 import Css exposing (fixed, fullWidth, height, int, pct, position, property, width, zIndex)
-import EditItemPage exposing (EditNoteFormMsg(..), editNoteView)
+import EditItemPage exposing (EditItemFormMsg(..), editItemView)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onClick, onInput, onSubmit)
@@ -94,7 +94,7 @@ init json =
 type Msg
     = NotesListMsgContainer NotesListMsg
     | CreateNoteFormMsgContainer CreateItemFormMsg
-    | EditNoteFormMsgContainer EditNoteFormMsg
+    | EditNoteFormMsgContainer EditItemFormMsg
 
 
 storeAndThen : Cmd a -> Model -> Cmd a
@@ -166,6 +166,6 @@ view model =
                     createItemView model note |> Html.Styled.map CreateNoteFormMsgContainer
 
                 EditItemPage noteId note originalNote ->
-                    editNoteView noteId note originalNote |> Html.Styled.map EditNoteFormMsgContainer
+                    editItemView noteId note originalNote |> Html.Styled.map EditNoteFormMsgContainer
     in
     viewPage model page

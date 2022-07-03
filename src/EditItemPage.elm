@@ -1,4 +1,4 @@
-module EditItemPage exposing (EditNoteFormMsg(..), editNoteView, update)
+module EditItemPage exposing (EditItemFormMsg(..), editItemView, update)
 
 import Css exposing (pct)
 import Html.Styled exposing (Html, form, input)
@@ -12,29 +12,29 @@ import Ui.Button exposing (ButtonType(..))
 import Utils exposing (dataTestId)
 
 
-type EditNoteFormMsg
-    = InputEditedNoteTitle String
-    | EditNote ItemId Item
+type EditItemFormMsg
+    = InputEditedItemTitle String
+    | EditItem ItemId Item
     | CancelEdit
 
 
-update : EditNoteFormMsg -> Model -> ( Model, Cmd EditNoteFormMsg )
+update : EditItemFormMsg -> Model -> ( Model, Cmd EditItemFormMsg )
 update msg model =
     case msg of
-        EditNote noteId note ->
+        EditItem itemId item ->
             ( { model
                 | currentPage = ChecklistPage
-                , pending = editNote noteId note model.pending
-                , done = editNote noteId note model.done
+                , pending = editItem itemId item model.pending
+                , done = editItem itemId item model.done
               }
             , Cmd.none
             )
 
-        InputEditedNoteTitle title ->
-            ( applyIfEditNotePage model
-                (\noteId note originalNote ->
+        InputEditedItemTitle title ->
+            ( applyIfEditItemPage model
+                (\itemId item originalItem ->
                     { model
-                        | currentPage = EditItemPage noteId { note | title = title } originalNote
+                        | currentPage = EditItemPage itemId { item | title = title } originalItem
                     }
                 )
             , Cmd.none
@@ -44,35 +44,35 @@ update msg model =
             ( { model | currentPage = ChecklistPage }, Cmd.none )
 
 
-applyIfEditNotePage : Model -> (ItemId -> Item -> Item -> Model) -> Model
-applyIfEditNotePage model fn =
+applyIfEditItemPage : Model -> (ItemId -> Item -> Item -> Model) -> Model
+applyIfEditItemPage model fn =
     case model.currentPage of
-        EditItemPage noteId note originalNote ->
-            fn noteId note originalNote
+        EditItemPage itemId item originalItem ->
+            fn itemId item originalItem
 
         _ ->
             model
 
 
-editNote : ItemId -> Item -> OpaqueDict ItemId Item -> OpaqueDict ItemId Item
-editNote id note =
-    OpaqueDict.update id (Maybe.map (always note))
+editItem : ItemId -> Item -> OpaqueDict ItemId Item -> OpaqueDict ItemId Item
+editItem id item =
+    OpaqueDict.update id (Maybe.map (always item))
 
 
-editNoteView : ItemId -> Item -> Item -> Html EditNoteFormMsg
-editNoteView noteId note originalNote =
+editItemView : ItemId -> Item -> Item -> Html EditItemFormMsg
+editItemView itemId item originalItem =
     form
-        [ dataTestId "EditNote"
-        , onSubmit (EditNote noteId note)
+        [ dataTestId "EditItem"
+        , onSubmit (EditItem itemId item)
         , css [ Css.width (pct 100) ]
         ]
-        [ input [ onInput InputEditedNoteTitle, value note.title, id editItemAutofocusId ] []
+        [ input [ onInput InputEditedItemTitle, value item.title, id editItemAutofocusId ] []
         , Ui.Button.button
             { buttonType = Submit
             , label = "Desa els canvis"
             , isEnabled =
-                not (String.isEmpty note.title)
-                    && (note.title /= originalNote.title)
+                not (String.isEmpty item.title)
+                    && (item.title /= originalItem.title)
             }
         , Ui.Button.button
             { buttonType = Button CancelEdit
