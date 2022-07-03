@@ -38,8 +38,8 @@ main =
 -- MODEL
 
 
-initialNotesList : OpaqueDict ItemId Item
-initialNotesList =
+initialItemsList : OpaqueDict ItemId Item
+initialItemsList =
     [ "ous"
     , "fuet"
     , "patatones"
@@ -65,7 +65,7 @@ initialNotesList =
     , "arròs"
     , "pasta seca"
     ]
-        |> List.indexedMap (\i note -> newFakeItem i note)
+        |> List.indexedMap (\i item -> newFakeItem i item)
         |> OpaqueDict.fromList itemIdToString
 
 
@@ -80,7 +80,7 @@ init json =
                 |> Maybe.withDefault
                     (initModel
                         "backgroundTextureUrl not found"
-                        initialNotesList
+                        initialItemsList
                         (OpaqueDict.empty ItemModel.itemIdToString)
                     )
     in
@@ -92,9 +92,9 @@ init json =
 
 
 type Msg
-    = NotesListMsgContainer ChecklistMsg
-    | CreateNoteFormMsgContainer CreateItemFormMsg
-    | EditNoteFormMsgContainer EditItemFormMsg
+    = ChecklistMsgContainer ChecklistMsg
+    | CreateItemFormMsgContainer CreateItemFormMsg
+    | EditItemFormMsgContainer EditItemFormMsg
 
 
 storeAndThen : Cmd a -> Model -> Cmd a
@@ -124,14 +124,14 @@ handlePageUpdate updateFn mapper msg model =
 update : UpdateFn Msg
 update msg model =
     case msg of
-        NotesListMsgContainer notesListMsg ->
-            handlePageUpdate ChecklistPage.update NotesListMsgContainer notesListMsg model
+        ChecklistMsgContainer checklistMsg ->
+            handlePageUpdate ChecklistPage.update ChecklistMsgContainer checklistMsg model
 
-        CreateNoteFormMsgContainer createNoteMsg ->
-            handlePageUpdate CreateItemPage.update CreateNoteFormMsgContainer createNoteMsg model
+        CreateItemFormMsgContainer createItemMsg ->
+            handlePageUpdate CreateItemPage.update CreateItemFormMsgContainer createItemMsg model
 
-        EditNoteFormMsgContainer editNoteMsg ->
-            handlePageUpdate EditItemPage.update EditNoteFormMsgContainer editNoteMsg model
+        EditItemFormMsgContainer editItemMsg ->
+            handlePageUpdate EditItemPage.update EditItemFormMsgContainer editItemMsg model
 
 
 
@@ -160,12 +160,12 @@ view model =
         page =
             case model.currentPage of
                 ChecklistPage ->
-                    checklistPageView model |> Html.Styled.map NotesListMsgContainer
+                    checklistPageView model |> Html.Styled.map ChecklistMsgContainer
 
-                CreateItemPage note ->
-                    createItemView model note |> Html.Styled.map CreateNoteFormMsgContainer
+                CreateItemPage item ->
+                    createItemView model item |> Html.Styled.map CreateItemFormMsgContainer
 
-                EditItemPage noteId note originalNote ->
-                    editItemView noteId note originalNote |> Html.Styled.map EditNoteFormMsgContainer
+                EditItemPage itemId item originalItem ->
+                    editItemView itemId item originalItem |> Html.Styled.map EditItemFormMsgContainer
     in
     viewPage model page

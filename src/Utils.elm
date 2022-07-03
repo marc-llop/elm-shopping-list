@@ -14,10 +14,8 @@ dataTestId testId =
     attribute "data-testid" testId
 
 
-
--- Used to showcase translucent items in elm-book
-
-
+{-| Used to showcase translucent items in elm-book.
+-}
 transparencyBackground : { width : Float, height : Float } -> Html msg -> Html msg
 transparencyBackground { width, height } component =
     div
