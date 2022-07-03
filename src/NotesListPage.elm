@@ -30,7 +30,7 @@ type NotesListMsg
 update : NotesListMsg -> Model -> ( Model, Cmd NotesListMsg )
 update msg model =
     case ( msg, model.currentPage ) of
-        ( Tick noteId, ListPage ) ->
+        ( Tick noteId, ChecklistPage ) ->
             let
                 ( newPending, newDone ) =
                     Model.move noteId model.pending model.done
@@ -42,7 +42,7 @@ update msg model =
             , Cmd.none
             )
 
-        ( Untick noteId, ListPage ) ->
+        ( Untick noteId, ChecklistPage ) ->
             let
                 ( newDone, newPending ) =
                     Model.move noteId model.done model.pending
@@ -54,19 +54,19 @@ update msg model =
             , Cmd.none
             )
 
-        ( OpenCreateNote, ListPage ) ->
+        ( OpenCreateNote, ChecklistPage ) ->
             ( { model
-                | currentPage = CreateNotePage resetNoteForm
+                | currentPage = CreateItemPage resetNoteForm
               }
-            , Task.attempt (\_ -> NoOp) (Browser.Dom.focus createNoteAutofocusId)
+            , Task.attempt (\_ -> NoOp) (Browser.Dom.focus createItemAutofocusId)
             )
 
-        ( OpenEditNote noteId note, ListPage ) ->
-            ( { model | currentPage = EditNotePage noteId note note }
-            , Task.attempt (\_ -> NoOp) (Browser.Dom.focus editNoteAutofocusId)
+        ( OpenEditNote noteId note, ChecklistPage ) ->
+            ( { model | currentPage = EditItemPage noteId note note }
+            , Task.attempt (\_ -> NoOp) (Browser.Dom.focus editItemAutofocusId)
             )
 
-        ( RemoveNote noteId, ListPage ) ->
+        ( RemoveNote noteId, ChecklistPage ) ->
             ( { model
                 | pending = OpaqueDict.remove noteId model.pending
                 , done = OpaqueDict.remove noteId model.done

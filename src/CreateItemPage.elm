@@ -1,4 +1,4 @@
-module CreateNotePage exposing (..)
+module CreateItemPage exposing (..)
 
 import Css exposing (displayFlex, marginRight, pct, px)
 import DesignSystem.StyledIcons as Icons
@@ -8,7 +8,7 @@ import Html.Styled.Events exposing (onClick, onInput, onSubmit)
 import ItemModel exposing (IdItemPair, Item, ItemId, itemIdGenerator)
 import Model exposing (..)
 import OpaqueDict exposing (OpaqueDict)
-import Page exposing (Page(..), createNoteAutofocusId)
+import Page exposing (Page(..), createItemAutofocusId)
 import Random
 import Search
 import String.Deburr exposing (deburr)
@@ -32,7 +32,7 @@ update msg model =
     case msg of
         InputNewNoteTitle title ->
             ( applyIfCreateNotePage model
-                (\note -> { model | currentPage = CreateNotePage { note | title = title } })
+                (\note -> { model | currentPage = CreateItemPage { note | title = title } })
             , Cmd.none
             )
 
@@ -41,7 +41,7 @@ update msg model =
 
         CreateNote note noteId ->
             ( { model
-                | currentPage = ListPage
+                | currentPage = ChecklistPage
                 , pending =
                     OpaqueDict.insert
                         noteId
@@ -57,7 +57,7 @@ update msg model =
                     move noteId model.done model.pending
             in
             ( { model
-                | currentPage = ListPage
+                | currentPage = ChecklistPage
                 , pending = newPending
                 , done = newDone
               }
@@ -65,13 +65,13 @@ update msg model =
             )
 
         CancelCreate ->
-            ( { model | currentPage = ListPage }, Cmd.none )
+            ( { model | currentPage = ChecklistPage }, Cmd.none )
 
 
 applyIfCreateNotePage : Model -> (Item -> Model) -> Model
 applyIfCreateNotePage model fn =
     case model.currentPage of
-        CreateNotePage note ->
+        CreateItemPage note ->
             fn note
 
         _ ->
@@ -85,7 +85,7 @@ createNoteView model newNote =
         , dataTestId "CreateNote"
         , css [ Css.width (pct 100) ]
         ]
-        [ input [ onInput InputNewNoteTitle, value newNote.title, id createNoteAutofocusId ] []
+        [ input [ onInput InputNewNoteTitle, value newNote.title, id createItemAutofocusId ] []
         , Ui.Button.button
             { buttonType = Submit
             , label = "Afegeix l'element"

@@ -28,7 +28,7 @@ initModel : String -> PendingDict -> DoneDict -> Model
 initModel backgroundTextureUrl pending done =
     { pending = pending
     , done = done
-    , currentPage = ListPage
+    , currentPage = ChecklistPage
     , backgroundTextureUrl = backgroundTextureUrl
     }
 

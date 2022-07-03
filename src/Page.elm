@@ -4,14 +4,14 @@ import ItemModel exposing (Item, ItemId)
 
 
 type Page
-    = ListPage
-    | CreateNotePage Item
-    | EditNotePage ItemId Item Item
+    = ChecklistPage
+    | CreateItemPage Item
+    | EditItemPage ItemId Item Item
 
 
-createNoteAutofocusId =
-    "create-note-autofocus"
+createItemAutofocusId =
+    "create-item-autofocus"
 
 
-editNoteAutofocusId =
-    "edit-note-autofocus"
+editItemAutofocusId =
+    "edit-item-autofocus"

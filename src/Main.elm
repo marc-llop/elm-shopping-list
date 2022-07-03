@@ -1,9 +1,9 @@
 module Main exposing (main)
 
 import Browser
-import CreateNotePage exposing (CreateNoteFormMsg(..), createNoteView)
+import CreateItemPage exposing (CreateNoteFormMsg(..), createNoteView)
 import Css exposing (fixed, fullWidth, height, int, pct, position, property, width, zIndex)
-import EditNotePage exposing (EditNoteFormMsg(..), editNoteView)
+import EditItemPage exposing (EditNoteFormMsg(..), editNoteView)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onClick, onInput, onSubmit)
@@ -128,10 +128,10 @@ update msg model =
             handlePageUpdate NotesListPage.update NotesListMsgContainer notesListMsg model
 
         CreateNoteFormMsgContainer createNoteMsg ->
-            handlePageUpdate CreateNotePage.update CreateNoteFormMsgContainer createNoteMsg model
+            handlePageUpdate CreateItemPage.update CreateNoteFormMsgContainer createNoteMsg model
 
         EditNoteFormMsgContainer editNoteMsg ->
-            handlePageUpdate EditNotePage.update EditNoteFormMsgContainer editNoteMsg model
+            handlePageUpdate EditItemPage.update EditNoteFormMsgContainer editNoteMsg model
 
 
 
@@ -159,13 +159,13 @@ view model =
     let
         page =
             case model.currentPage of
-                ListPage ->
+                ChecklistPage ->
                     notesListView model |> Html.Styled.map NotesListMsgContainer
 
-                CreateNotePage note ->
+                CreateItemPage note ->
                     createNoteView model note |> Html.Styled.map CreateNoteFormMsgContainer
 
-                EditNotePage noteId note originalNote ->
+                EditItemPage noteId note originalNote ->
                     editNoteView noteId note originalNote |> Html.Styled.map EditNoteFormMsgContainer
     in
     viewPage model page
