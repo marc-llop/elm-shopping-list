@@ -1,39 +1,36 @@
-module ChecklistPage exposing (NotesListMsg(..), notesListView, update)
+module ChecklistPage exposing (ChecklistMsg(..), checklistPageView, update)
 
 import Browser.Dom
 import Css exposing (..)
-import DesignSystem.Colors exposing (neutral)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
-import Html.Styled.Events exposing (onClick, onInput, onSubmit)
 import ItemModel exposing (..)
-import List
-import Model exposing (Model, move, sortItems)
+import Model exposing (Model, sortItems)
 import OpaqueDict exposing (OpaqueDict)
 import Page exposing (..)
 import Task
 import Ui.Checklist exposing (checklistView)
 import Ui.FloatingActionButton exposing (floatingActionButtonView)
-import Ui.Item exposing (ItemProps, itemView)
+import Ui.Item exposing (itemView)
 import Utils exposing (dataTestId)
 
 
-type NotesListMsg
+type ChecklistMsg
     = Tick ItemId
     | Untick ItemId
-    | OpenCreateNote
-    | OpenEditNote ItemId Item
-    | RemoveNote ItemId
+    | OpenCreateItem
+    | OpenEditItem ItemId Item
+    | RemoveItem ItemId
     | NoOp
 
 
-update : NotesListMsg -> Model -> ( Model, Cmd NotesListMsg )
+update : ChecklistMsg -> Model -> ( Model, Cmd ChecklistMsg )
 update msg model =
     case ( msg, model.currentPage ) of
-        ( Tick noteId, ChecklistPage ) ->
+        ( Tick itemId, ChecklistPage ) ->
             let
                 ( newPending, newDone ) =
-                    Model.move noteId model.pending model.done
+                    Model.move itemId model.pending model.done
             in
             ( { model
                 | pending = newPending
@@ -42,10 +39,10 @@ update msg model =
             , Cmd.none
             )
 
-        ( Untick noteId, ChecklistPage ) ->
+        ( Untick itemId, ChecklistPage ) ->
             let
                 ( newDone, newPending ) =
-                    Model.move noteId model.done model.pending
+                    Model.move itemId model.done model.pending
             in
             ( { model
                 | pending = newPending
@@ -54,22 +51,22 @@ update msg model =
             , Cmd.none
             )
 
-        ( OpenCreateNote, ChecklistPage ) ->
+        ( OpenCreateItem, ChecklistPage ) ->
             ( { model
-                | currentPage = CreateItemPage resetNoteForm
+                | currentPage = CreateItemPage resetItemForm
               }
             , Task.attempt (\_ -> NoOp) (Browser.Dom.focus createItemAutofocusId)
             )
 
-        ( OpenEditNote noteId note, ChecklistPage ) ->
-            ( { model | currentPage = EditItemPage noteId note note }
+        ( OpenEditItem itemId item, ChecklistPage ) ->
+            ( { model | currentPage = EditItemPage itemId item item }
             , Task.attempt (\_ -> NoOp) (Browser.Dom.focus editItemAutofocusId)
             )
 
-        ( RemoveNote noteId, ChecklistPage ) ->
+        ( RemoveItem itemId, ChecklistPage ) ->
             ( { model
-                | pending = OpaqueDict.remove noteId model.pending
-                , done = OpaqueDict.remove noteId model.done
+                | pending = OpaqueDict.remove itemId model.pending
+                , done = OpaqueDict.remove itemId model.done
               }
             , Cmd.none
             )
@@ -78,69 +75,67 @@ update msg model =
             ( model, Cmd.none )
 
 
-resetNoteForm : Item
-resetNoteForm =
+resetItemForm : Item
+resetItemForm =
     { title = "" }
 
 
-notesListView : Model -> Html NotesListMsg
-notesListView { pending, done } =
+checklistPageView : Model -> Html ChecklistMsg
+checklistPageView { pending, done } =
     let
-        pendingNotes =
-            noteDictToList pending
+        pendingItems =
+            itemDictToList pending
 
-        doneNotes =
-            noteDictToList done
+        doneItems =
+            itemDictToList done
     in
-    div [ dataTestId "NotesListPage", css [ Css.width (pct 100) ] ]
+    div [ dataTestId "ChecklistPage", css [ Css.width (pct 100) ] ]
         [ checklistView
-            { pending = pendingNotes
-            , done = doneNotes
+            { pending = pendingItems
+            , done = doneItems
             , pendingItemView = pendingItemView
             , doneItemView = doneItemView
             }
-        , createNoteButtonView
+        , createItemButtonView
         ]
 
 
-
--- Returns the (id, note) pairs alphabetically sorted by note title
-
-
-noteDictToList : OpaqueDict ItemId Item -> List IdItemPair
-noteDictToList dict =
+{-| Returns the (id, item) pairs alphabetically sorted by item title
+-}
+itemDictToList : OpaqueDict ItemId Item -> List IdItemPair
+itemDictToList dict =
     OpaqueDict.toList dict
         |> sortItems
 
 
-pendingItemView : ( ItemId, Item ) -> Html NotesListMsg
+pendingItemView : ( ItemId, Item ) -> Html ChecklistMsg
 pendingItemView ( itemId, item ) =
     itemView
         { itemId = itemId
         , item = item
         , state =
             Ui.Item.Pending
-                { onRemove = RemoveNote
-                , onEdit = OpenEditNote
+                { onRemove = RemoveItem
+                , onEdit = OpenEditItem
                 }
         , onTick = Tick
         }
 
 
-doneItemView : ( ItemId, Item ) -> Html NotesListMsg
+doneItemView : ( ItemId, Item ) -> Html ChecklistMsg
 doneItemView ( itemId, item ) =
     itemView
         { itemId = itemId
         , item = item
         , state =
             Ui.Item.Done
-                { onRemove = RemoveNote
-                , onEdit = OpenEditNote
+                { onRemove = RemoveItem
+                , onEdit = OpenEditItem
                 }
         , onTick = Untick
         }
 
 
-createNoteButtonView : Html NotesListMsg
-createNoteButtonView =
-    floatingActionButtonView { onClick = OpenCreateNote, styles = [] }
+createItemButtonView : Html ChecklistMsg
+createItemButtonView =
+    floatingActionButtonView { onClick = OpenCreateItem, styles = [] }

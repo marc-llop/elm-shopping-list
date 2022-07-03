@@ -1,7 +1,7 @@
 module Main exposing (main)
 
 import Browser
-import ChecklistPage exposing (NotesListMsg(..), notesListView)
+import ChecklistPage exposing (ChecklistMsg(..), checklistPageView)
 import CreateItemPage exposing (CreateItemFormMsg(..), createItemView)
 import Css exposing (fixed, fullWidth, height, int, pct, position, property, width, zIndex)
 import EditItemPage exposing (EditItemFormMsg(..), editItemView)
@@ -92,7 +92,7 @@ init json =
 
 
 type Msg
-    = NotesListMsgContainer NotesListMsg
+    = NotesListMsgContainer ChecklistMsg
     | CreateNoteFormMsgContainer CreateItemFormMsg
     | EditNoteFormMsgContainer EditItemFormMsg
 
@@ -160,7 +160,7 @@ view model =
         page =
             case model.currentPage of
                 ChecklistPage ->
-                    notesListView model |> Html.Styled.map NotesListMsgContainer
+                    checklistPageView model |> Html.Styled.map NotesListMsgContainer
 
                 CreateItemPage note ->
                     createItemView model note |> Html.Styled.map CreateNoteFormMsgContainer
