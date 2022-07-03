@@ -13,24 +13,21 @@ whitePolygon pointList =
     polygon [ SvgAttr.fill "white", points pointList ] []
 
 
-
-{- An hexagonal repeatable pattern in X and Y, with the hexagons
-   aligned vertically (two sides in parallel with the viewport's right side),
-   and 11% of horizontal margin between each hexagon (2px if the hex side is 10px).
-   The required shape for the pattern to be repeatable is that of a full
-   hexagon surrounded by two quarters of hexagon at the top, and two at the bottom,
-   as seen in this bad ASCII art:
-       |   |
-      / /\ \
-    / /   \ \
-     |    |
-     |    |
-    \\   /  /
-     \\/  /
-     |   |
+{-| An hexagonal repeatable pattern in X and Y, with the hexagons
+aligned vertically (two sides in parallel with the viewport's right side),
+and 11% of horizontal margin between each hexagon (2px if the hex side is 10px).
+The required shape for the pattern to be repeatable is that of a full
+hexagon surrounded by two quarters of hexagon at the top, and two at the bottom,
+as seen in this bad ASCII art:
+| |
+/ /\\
+/ / \\
+| |
+| |
+\\ / /
+\\/ /
+| |
 -}
-
-
 hexPattern =
     pattern
         [ id patternId
@@ -52,11 +49,9 @@ hexPattern =
         ]
 
 
-
--- A mask that repeats the hexPattern, making the hexagons
--- opaque and the gaps transparent.
-
-
+{-| A mask that repeats the hexPattern, making the hexagons
+opaque and the gaps transparent.
+-}
 hexMask =
     Svg.Styled.mask [ id maskId ]
         [ rect
@@ -82,11 +77,9 @@ idRef id =
     interpolate "url(#{id})" [ ( "id", id ) ]
 
 
-
--- A background of a textured grid of hexagons separated
--- by transparent gaps.
-
-
+{-| A background of a textured grid of hexagons separated
+by transparent gaps.
+-}
 backgroundSvg imgUrl =
     svg
         [ SvgAttr.height "100%"
@@ -110,11 +103,9 @@ backgroundSvg imgUrl =
         ]
 
 
-
--- An artistic gradient background under a hexagon grid textured
--- with imgUrl that fills the screen in all resolutions.
-
-
+{-| An artistic gradient background under a hexagon grid textured
+with imgUrl that fills the screen in all resolutions.
+-}
 background imgUrl =
     div
         [ dataTestId "Background"
@@ -123,7 +114,11 @@ background imgUrl =
             , position fixed
             , zIndex (int -1)
             , Css.width (pct 100)
-            , Css.height (pct 100)
+
+            -- Enough height for most mobile devices. After that, the background will scale up fine,
+            -- but that looks strange in mobile interfaces because onscreen keyboard and header dynamically
+            -- modify the viewport size by appearing and disappearing, and we want the background to be fixed.
+            , Css.height (px 1000)
             , property "background"
                 (interpolate
                     ("radial-gradient(ellipse 110% 40% at bottom right, #3b023a, 50%, transparent),"
