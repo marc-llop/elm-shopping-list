@@ -14,7 +14,7 @@ import Page exposing (..)
 import Task
 import Ui.FloatingActionButton exposing (floatingActionButtonView)
 import Ui.Item exposing (ItemProps, itemView)
-import Ui.NoteList exposing (noteListView)
+import Ui.NoteList exposing (checklistView)
 import Utils exposing (dataTestId)
 
 
@@ -93,11 +93,11 @@ notesListView { pending, done } =
             noteDictToList done
     in
     div [ dataTestId "NotesListPage", css [ Css.width (pct 100) ] ]
-        [ noteListView
+        [ checklistView
             { pending = pendingNotes
             , done = doneNotes
-            , pendingNoteView = pendingNoteView
-            , doneNoteView = doneNoteView
+            , pendingItemView = pendingItemView
+            , doneItemView = doneItemView
             }
         , createNoteButtonView
         ]
@@ -113,11 +113,11 @@ noteDictToList dict =
         |> sortNotes
 
 
-pendingNoteView : ( ItemId, Item ) -> Html NotesListMsg
-pendingNoteView ( noteId, note ) =
+pendingItemView : ( ItemId, Item ) -> Html NotesListMsg
+pendingItemView ( itemId, item ) =
     itemView
-        { noteId = noteId
-        , note = note
+        { itemId = itemId
+        , item = item
         , state =
             Ui.Item.Pending
                 { onRemove = RemoveNote
@@ -127,11 +127,11 @@ pendingNoteView ( noteId, note ) =
         }
 
 
-doneNoteView : ( ItemId, Item ) -> Html NotesListMsg
-doneNoteView ( noteId, note ) =
+doneItemView : ( ItemId, Item ) -> Html NotesListMsg
+doneItemView ( itemId, item ) =
     itemView
-        { noteId = noteId
-        , note = note
+        { itemId = itemId
+        , item = item
         , state =
             Ui.Item.Done
                 { onRemove = RemoveNote

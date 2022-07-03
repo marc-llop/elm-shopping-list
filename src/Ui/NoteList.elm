@@ -4,15 +4,15 @@ import Css exposing (..)
 import Html.Styled exposing (Html)
 import Html.Styled.Attributes exposing (css)
 import Html.Styled.Keyed exposing (ul)
-import ItemModel exposing (IdItemPair, ItemId, itemIdToString)
+import ItemModel exposing (IdItemPair, itemIdToString)
 import Utils exposing (dataTestId)
 
 
-type alias NoteListProps msg =
+type alias ChecklistProps msg =
     { pending : List IdItemPair
     , done : List IdItemPair
-    , pendingNoteView : IdItemPair -> Html msg
-    , doneNoteView : IdItemPair -> Html msg
+    , pendingItemView : IdItemPair -> Html msg
+    , doneItemView : IdItemPair -> Html msg
     }
 
 
@@ -23,8 +23,8 @@ resetUlStyle =
     ]
 
 
-noteListStyle : List Style
-noteListStyle =
+checklistStyle : List Style
+checklistStyle =
     resetUlStyle
         ++ [ displayFlex
            , flexDirection column
@@ -37,14 +37,14 @@ keyedItemView mapper pair =
     ( Tuple.first pair |> itemIdToString, mapper pair )
 
 
-noteListView : NoteListProps msg -> Html msg
-noteListView { pending, done, pendingNoteView, doneNoteView } =
+checklistView : ChecklistProps msg -> Html msg
+checklistView { pending, done, pendingItemView, doneItemView } =
     ul
-        [ dataTestId "NoteList"
-        , css noteListStyle
+        [ dataTestId "Checklist"
+        , css checklistStyle
         ]
         (List.concat
-            [ List.map (keyedItemView pendingNoteView) pending
-            , List.map (keyedItemView doneNoteView) done
+            [ List.map (keyedItemView pendingItemView) pending
+            , List.map (keyedItemView doneItemView) done
             ]
         )

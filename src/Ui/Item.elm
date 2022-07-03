@@ -30,8 +30,8 @@ type alias WriteEvents msg =
 
 
 type alias ItemProps msg =
-    { noteId : ItemId
-    , note : Item
+    { itemId : ItemId
+    , item : Item
     , state : ItemState msg
     , onTick : ItemId -> msg
     }
@@ -67,11 +67,11 @@ iconButtonView evt icon =
 
 
 itemView : ItemProps msg -> Html msg
-itemView { noteId, note, state, onTick } =
+itemView { itemId, item, state, onTick } =
     let
         writeButtonElems { onEdit, onRemove } =
-            [ iconButtonView (onRemove noteId) redTrash
-            , iconButtonView (onEdit noteId note) blueEdit
+            [ iconButtonView (onRemove itemId) redTrash
+            , iconButtonView (onEdit itemId item) blueEdit
             ]
 
         writeButtons =
@@ -88,10 +88,10 @@ itemView { noteId, note, state, onTick } =
     li
         [ dataTestId (stateToDataTestId state)
         , css (itemStyle state)
-        , onClick (onTick noteId)
+        , onClick (onTick itemId)
         ]
         ([ checkboxView state
-         , span [ css [ itemTitleStyle ] ] [ text note.title ]
+         , span [ css [ itemTitleStyle ] ] [ text item.title ]
          ]
             ++ writeButtons
         )
@@ -198,12 +198,12 @@ docs =
             , onEdit = \_ _ -> logAction "Edit clicked"
             }
 
-        ( fakeId, fakeNote ) =
+        ( fakeId, fakeItem ) =
             newFakeItem 42 "Milk"
 
         props =
-            { noteId = fakeId
-            , note = fakeNote
+            { itemId = fakeId
+            , item = fakeItem
             , state = Pending writeEvents
             , onTick = \_ -> logAction "Ticked"
             }
@@ -217,5 +217,5 @@ docs =
         |> renderComponentList
             [ ( "Pending", showcaseNote props )
             , ( "Done", showcaseNote { props | state = Done writeEvents, onTick = \_ -> logAction "Unticked" } )
-            , ( "ToAdd", showcaseNote { props | state = ToAdd, onTick = \_ -> logAction "Added note" } )
+            , ( "ToAdd", showcaseNote { props | state = ToAdd, onTick = \_ -> logAction "Added item" } )
             ]

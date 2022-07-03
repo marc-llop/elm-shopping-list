@@ -15,7 +15,7 @@ import String.Deburr exposing (deburr)
 import Time
 import Ui.Button exposing (ButtonType(..))
 import Ui.Item exposing (itemView)
-import Ui.NoteList exposing (noteListView)
+import Ui.NoteList exposing (checklistView)
 import Utils exposing (dataTestId)
 
 
@@ -122,7 +122,7 @@ datumToNote { id, content, title, dateTime } =
     ( id, { title = title } )
 
 
-notesMatching : String -> Model.NotesInModel a -> List IdItemPair
+notesMatching : String -> Model.ItemsInModel a -> List IdItemPair
 notesMatching newNoteTitle model =
     let
         notesList =
@@ -145,11 +145,11 @@ matchesListView model newNote =
             notesMatching newNote.title model
     in
     div [ dataTestId "MatchesList", css [ Css.width (pct 100) ] ]
-        [ noteListView
+        [ checklistView
             { pending = matches
             , done = []
-            , pendingNoteView = matchedNoteView
-            , doneNoteView = matchedNoteView
+            , pendingItemView = matchedItemView
+            , doneItemView = matchedItemView
             }
         ]
 
@@ -161,11 +161,11 @@ addIcon =
         [ Icons.greenPlus ]
 
 
-matchedNoteView : IdItemPair -> Html CreateNoteFormMsg
-matchedNoteView ( noteId, note ) =
+matchedItemView : IdItemPair -> Html CreateNoteFormMsg
+matchedItemView ( itemId, item ) =
     itemView
-        { noteId = noteId
-        , note = note
+        { itemId = itemId
+        , item = item
         , state = Ui.Item.ToAdd
         , onTick = RetickNote
         }

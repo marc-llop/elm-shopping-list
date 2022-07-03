@@ -57,11 +57,11 @@ decodeModel =
         (D.field "done" decodeDict)
 
 
-type alias NotesInModel a =
+type alias ItemsInModel a =
     { a | pending : OpaqueDict ItemId Item, done : OpaqueDict ItemId Item }
 
 
-allNotes : NotesInModel a -> List IdItemPair
+allNotes : ItemsInModel a -> List IdItemPair
 allNotes { pending, done } =
     List.concat
         [ OpaqueDict.toList pending
