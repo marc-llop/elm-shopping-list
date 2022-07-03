@@ -19,42 +19,42 @@ import Ui.Item exposing (itemView)
 import Utils exposing (dataTestId)
 
 
-type CreateNoteFormMsg
-    = InputNewNoteTitle String
-    | CreateNote Item ItemId
+type CreateItemFormMsg
+    = InputNewItemTitle String
+    | CreateItem Item ItemId
     | RequestId Item
-    | RetickNote ItemId
+    | RetickItem ItemId
     | CancelCreate
 
 
-update : CreateNoteFormMsg -> Model -> ( Model, Cmd CreateNoteFormMsg )
+update : CreateItemFormMsg -> Model -> ( Model, Cmd CreateItemFormMsg )
 update msg model =
     case msg of
-        InputNewNoteTitle title ->
-            ( applyIfCreateNotePage model
-                (\note -> { model | currentPage = CreateItemPage { note | title = title } })
+        InputNewItemTitle title ->
+            ( applyIfCreateItemPage model
+                (\item -> { model | currentPage = CreateItemPage { item | title = title } })
             , Cmd.none
             )
 
-        RequestId note ->
-            ( model, Random.generate (CreateNote note) itemIdGenerator )
+        RequestId item ->
+            ( model, Random.generate (CreateItem item) itemIdGenerator )
 
-        CreateNote note noteId ->
+        CreateItem item itemId ->
             ( { model
                 | currentPage = ChecklistPage
                 , pending =
                     OpaqueDict.insert
-                        noteId
-                        note
+                        itemId
+                        item
                         model.pending
               }
             , Cmd.none
             )
 
-        RetickNote noteId ->
+        RetickItem itemId ->
             let
                 ( newDone, newPending ) =
-                    move noteId model.done model.pending
+                    move itemId model.done model.pending
             in
             ( { model
                 | currentPage = ChecklistPage
@@ -68,39 +68,39 @@ update msg model =
             ( { model | currentPage = ChecklistPage }, Cmd.none )
 
 
-applyIfCreateNotePage : Model -> (Item -> Model) -> Model
-applyIfCreateNotePage model fn =
+applyIfCreateItemPage : Model -> (Item -> Model) -> Model
+applyIfCreateItemPage model fn =
     case model.currentPage of
-        CreateItemPage note ->
-            fn note
+        CreateItemPage item ->
+            fn item
 
         _ ->
             model
 
 
-createNoteView : Model -> Item -> Html CreateNoteFormMsg
-createNoteView model newNote =
+createItemView : Model -> Item -> Html CreateItemFormMsg
+createItemView model newItem =
     Html.Styled.form
-        [ onSubmit (RequestId newNote)
-        , dataTestId "CreateNote"
+        [ onSubmit (RequestId newItem)
+        , dataTestId "CreateItem"
         , css [ Css.width (pct 100) ]
         ]
-        [ input [ onInput InputNewNoteTitle, value newNote.title, id createItemAutofocusId ] []
+        [ input [ onInput InputNewItemTitle, value newItem.title, id createItemAutofocusId ] []
         , Ui.Button.button
             { buttonType = Submit
             , label = "Afegeix l'element"
-            , isEnabled = not (String.isEmpty newNote.title)
+            , isEnabled = not (String.isEmpty newItem.title)
             }
         , Ui.Button.button
             { buttonType = Button CancelCreate
             , label = "Cancel·la"
             , isEnabled = True
             }
-        , matchesListView model newNote
+        , matchesListView model newItem
         ]
 
 
-type alias IndexableNote =
+type alias IndexableItem =
     { id : ItemId
     , content : String
     , title : String
@@ -108,41 +108,41 @@ type alias IndexableNote =
     }
 
 
-noteToDatum : IdItemPair -> IndexableNote
-noteToDatum ( noteId, note ) =
-    { id = noteId
-    , content = deburr note.title
-    , title = note.title
+itemToDatum : IdItemPair -> IndexableItem
+itemToDatum ( itemId, item ) =
+    { id = itemId
+    , content = deburr item.title
+    , title = item.title
     , dateTime = Time.millisToPosix 0
     }
 
 
-datumToNote : IndexableNote -> IdItemPair
-datumToNote { id, content, title, dateTime } =
+datumToItem : IndexableItem -> IdItemPair
+datumToItem { id, content, title, dateTime } =
     ( id, { title = title } )
 
 
-notesMatching : String -> Model.ItemsInModel a -> List IdItemPair
-notesMatching newNoteTitle model =
+itemsMatching : String -> Model.ItemsInModel a -> List IdItemPair
+itemsMatching newItemTitle model =
     let
-        notesList =
-            allNotes model |> List.map noteToDatum
+        items =
+            allNotes model |> List.map itemToDatum
 
-        allMatchedNotes =
+        allMatchedItems =
             Search.search
                 Search.NotCaseSensitive
-                (deburr newNoteTitle)
-                notesList
+                (deburr newItemTitle)
+                items
     in
-    List.map datumToNote allMatchedNotes
+    List.map datumToItem allMatchedItems
         |> sortNotes
 
 
-matchesListView : Model -> Item -> Html CreateNoteFormMsg
-matchesListView model newNote =
+matchesListView : Model -> Item -> Html CreateItemFormMsg
+matchesListView model newItem =
     let
         matches =
-            notesMatching newNote.title model
+            itemsMatching newItem.title model
     in
     div [ dataTestId "MatchesList", css [ Css.width (pct 100) ] ]
         [ checklistView
@@ -161,11 +161,11 @@ addIcon =
         [ Icons.greenPlus ]
 
 
-matchedItemView : IdItemPair -> Html CreateNoteFormMsg
+matchedItemView : IdItemPair -> Html CreateItemFormMsg
 matchedItemView ( itemId, item ) =
     itemView
         { itemId = itemId
         , item = item
         , state = Ui.Item.ToAdd
-        , onTick = RetickNote
+        , onTick = RetickItem
         }
