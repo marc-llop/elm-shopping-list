@@ -76,6 +76,7 @@ token ( name, c ) =
         []
         [ td [ css [ paddingRight (px 20) ] ] [ text name ]
         , td [] [ colorBlock c ]
+        , td [ css [ paddingLeft (px 20) ] ] [ text ("#" ++ c) ]
         ]
 
 
@@ -87,6 +88,13 @@ tokens =
 
 colorTokens =
     [ ( "neutralTextColor", neutralTextColor )
+    , ( "glassButtonGlowingBoxShadowColor", glassButtonGlowingBoxShadowColor )
+    , ( "glassButtonInertBoxShadowColor", glassButtonInertBoxShadowColor )
+    , ( "neutralCardBoxShadowColor", neutralCardBoxShadowColor )
+    , ( "neutralCardTextShadowColor", neutralCardTextShadowColor )
+    , ( "Glassmorphism glassButtonGlowingColor.color", glassButtonGlowingColor.color )
+    , ( "Glassmorphism glassButtonInertColor.color", glassButtonInertColor.color )
+    , ( "Glassmorphism neutralCardColor.color", neutralCardColor.color )
     ]
 
 
