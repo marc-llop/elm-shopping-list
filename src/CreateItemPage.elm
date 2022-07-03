@@ -126,7 +126,7 @@ itemsMatching : String -> Model.ItemsInModel a -> List IdItemPair
 itemsMatching newItemTitle model =
     let
         items =
-            allNotes model |> List.map itemToDatum
+            allItems model |> List.map itemToDatum
 
         allMatchedItems =
             Search.search
@@ -135,7 +135,7 @@ itemsMatching newItemTitle model =
                 items
     in
     List.map datumToItem allMatchedItems
-        |> sortNotes
+        |> sortItems
 
 
 matchesListView : Model -> Item -> Html CreateItemFormMsg

@@ -61,16 +61,16 @@ type alias ItemsInModel a =
     { a | pending : OpaqueDict ItemId Item, done : OpaqueDict ItemId Item }
 
 
-allNotes : ItemsInModel a -> List IdItemPair
-allNotes { pending, done } =
+allItems : ItemsInModel a -> List IdItemPair
+allItems { pending, done } =
     List.concat
         [ OpaqueDict.toList pending
         , OpaqueDict.toList done
         ]
 
 
-sortNotes : List IdItemPair -> List IdItemPair
-sortNotes =
+sortItems : List IdItemPair -> List IdItemPair
+sortItems =
     List.sortBy (Tuple.second >> .title >> String.toLower)
 
 
