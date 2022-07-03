@@ -1,13 +1,8 @@
 module Main exposing (main)
 
 import Browser
-import ChecklistPage exposing (ChecklistMsg(..), checklistPageView)
-import CreateItemPage exposing (CreateItemFormMsg(..), createItemView)
-import Css exposing (fixed, fullWidth, height, int, pct, position, property, width, zIndex)
-import EditItemPage exposing (EditItemFormMsg(..), editItemView)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
-import Html.Styled.Events exposing (onClick, onInput, onSubmit)
 import ItemModel exposing (Item, ItemId, itemIdToString, newFakeItem)
 import Json.Decode as D
 import List
@@ -15,10 +10,11 @@ import LocalStorage exposing (encodeAndStoreModel)
 import Model exposing (..)
 import OpaqueDict exposing (OpaqueDict)
 import Page exposing (..)
-import Tuple
+import Pages.ChecklistPage exposing (ChecklistMsg(..), checklistPageView)
+import Pages.CreateItemPage exposing (CreateItemFormMsg(..), createItemView)
+import Pages.EditItemPage exposing (EditItemFormMsg(..), editItemView)
 import Ui.Background exposing (background)
 import Ui.Button exposing (ButtonType(..))
-import Utils exposing (dataTestId)
 
 
 
@@ -125,13 +121,13 @@ update : UpdateFn Msg
 update msg model =
     case msg of
         ChecklistMsgContainer checklistMsg ->
-            handlePageUpdate ChecklistPage.update ChecklistMsgContainer checklistMsg model
+            handlePageUpdate Pages.ChecklistPage.update ChecklistMsgContainer checklistMsg model
 
         CreateItemFormMsgContainer createItemMsg ->
-            handlePageUpdate CreateItemPage.update CreateItemFormMsgContainer createItemMsg model
+            handlePageUpdate Pages.CreateItemPage.update CreateItemFormMsgContainer createItemMsg model
 
         EditItemFormMsgContainer editItemMsg ->
-            handlePageUpdate EditItemPage.update EditItemFormMsgContainer editItemMsg model
+            handlePageUpdate Pages.EditItemPage.update EditItemFormMsgContainer editItemMsg model
 
 
 

@@ -1,4 +1,4 @@
-module EditItemPage exposing (EditItemFormMsg(..), editItemView, update)
+module Pages.EditItemPage exposing (EditItemFormMsg(..), editItemView, update)
 
 import Css exposing (pct)
 import Html.Styled exposing (Html, form, input)

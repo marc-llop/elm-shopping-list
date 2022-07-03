@@ -1,9 +1,9 @@
 module Tests.CreateItemTest exposing (..)
 
-import CreateItemPage exposing (itemsMatching)
 import Expect
 import ItemModel exposing (IdItemPair, Item, ItemId(..), itemIdToString, newFakeItem)
 import OpaqueDict exposing (OpaqueDict)
+import Pages.CreateItemPage exposing (itemsMatching)
 import Test exposing (..)
 
 

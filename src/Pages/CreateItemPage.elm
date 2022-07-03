@@ -1,4 +1,4 @@
-module CreateItemPage exposing (..)
+module Pages.CreateItemPage exposing (..)
 
 import Css exposing (displayFlex, marginRight, pct, px)
 import DesignSystem.StyledIcons as Icons

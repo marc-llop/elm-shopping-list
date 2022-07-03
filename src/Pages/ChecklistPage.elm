@@ -1,4 +1,4 @@
-module ChecklistPage exposing (ChecklistMsg(..), checklistPageView, update)
+module Pages.ChecklistPage exposing (ChecklistMsg(..), checklistPageView, update)
 
 import Browser.Dom
 import Css exposing (..)
