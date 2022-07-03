@@ -1,4 +1,4 @@
-module Ui.NoteList exposing (..)
+module Ui.Checklist exposing (..)
 
 import Css exposing (..)
 import Html.Styled exposing (Html)

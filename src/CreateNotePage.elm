@@ -14,8 +14,8 @@ import Search
 import String.Deburr exposing (deburr)
 import Time
 import Ui.Button exposing (ButtonType(..))
+import Ui.Checklist exposing (checklistView)
 import Ui.Item exposing (itemView)
-import Ui.NoteList exposing (checklistView)
 import Utils exposing (dataTestId)
 
 

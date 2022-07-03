@@ -12,9 +12,9 @@ import Model exposing (Model, move, sortNotes)
 import OpaqueDict exposing (OpaqueDict)
 import Page exposing (..)
 import Task
+import Ui.Checklist exposing (checklistView)
 import Ui.FloatingActionButton exposing (floatingActionButtonView)
 import Ui.Item exposing (ItemProps, itemView)
-import Ui.NoteList exposing (checklistView)
 import Utils exposing (dataTestId)
 
 
