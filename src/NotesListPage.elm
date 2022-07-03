@@ -13,7 +13,7 @@ import OpaqueDict exposing (OpaqueDict)
 import Page exposing (..)
 import Task
 import Ui.FloatingActionButton exposing (floatingActionButtonView)
-import Ui.ListedNote exposing (ListedNoteProps, listedNoteView)
+import Ui.Item exposing (ItemProps, itemView)
 import Ui.NoteList exposing (noteListView)
 import Utils exposing (dataTestId)
 
@@ -115,11 +115,11 @@ noteDictToList dict =
 
 pendingNoteView : ( NoteId, Note ) -> Html NotesListMsg
 pendingNoteView ( noteId, note ) =
-    listedNoteView
+    itemView
         { noteId = noteId
         , note = note
         , state =
-            Ui.ListedNote.Pending
+            Ui.Item.Pending
                 { onRemove = RemoveNote
                 , onEdit = OpenEditNote
                 }
@@ -129,11 +129,11 @@ pendingNoteView ( noteId, note ) =
 
 doneNoteView : ( NoteId, Note ) -> Html NotesListMsg
 doneNoteView ( noteId, note ) =
-    listedNoteView
+    itemView
         { noteId = noteId
         , note = note
         , state =
-            Ui.ListedNote.Done
+            Ui.Item.Done
                 { onRemove = RemoveNote
                 , onEdit = OpenEditNote
                 }

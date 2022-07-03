@@ -10,8 +10,8 @@ import ElmBook.ThemeOptions
 import Ui.Button
 import Ui.FloatingActionButton
 import Ui.Glassmorphism
+import Ui.Item
 import Ui.ListCard
-import Ui.ListedNote
 import Ui.ProgressBar
 
 
@@ -30,7 +30,7 @@ main =
               )
             , ( "Components"
               , [ Ui.Button.docs
-                , Ui.ListedNote.docs
+                , Ui.Item.docs
                 , Ui.Glassmorphism.docs
                 , Ui.FloatingActionButton.docs
                 , Ui.ProgressBar.docs

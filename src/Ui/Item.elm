@@ -1,4 +1,4 @@
-module Ui.ListedNote exposing (..)
+module Ui.Item exposing (..)
 
 import Css exposing (..)
 import DesignSystem.ColorDecisions exposing (..)
@@ -17,7 +17,7 @@ import Ui.Glassmorphism exposing (glassmorphism)
 import Utils exposing (dataTestId, transparencyBackground)
 
 
-type NoteState msg
+type ItemState msg
     = Pending (WriteEvents msg)
     | Done (WriteEvents msg)
     | ToAdd -- Used in CreateNote search
@@ -29,15 +29,15 @@ type alias WriteEvents msg =
     }
 
 
-type alias ListedNoteProps msg =
+type alias ItemProps msg =
     { noteId : NoteId
     , note : Note
-    , state : NoteState msg
+    , state : ItemState msg
     , onTick : NoteId -> msg
     }
 
 
-checkboxView : NoteState msg -> Html msg
+checkboxView : ItemState msg -> Html msg
 checkboxView state =
     case state of
         Pending _ ->
@@ -66,8 +66,8 @@ iconButtonView evt icon =
         [ icon ]
 
 
-listedNoteView : ListedNoteProps msg -> Html msg
-listedNoteView { noteId, note, state, onTick } =
+itemView : ItemProps msg -> Html msg
+itemView { noteId, note, state, onTick } =
     let
         writeButtonElems { onEdit, onRemove } =
             [ iconButtonView (onRemove noteId) redTrash
@@ -87,17 +87,17 @@ listedNoteView { noteId, note, state, onTick } =
     in
     li
         [ dataTestId (stateToDataTestId state)
-        , css (noteStyle state)
+        , css (itemStyle state)
         , onClick (onTick noteId)
         ]
         ([ checkboxView state
-         , span [ css [ noteTitleStyle ] ] [ text note.title ]
+         , span [ css [ itemTitleStyle ] ] [ text note.title ]
          ]
             ++ writeButtons
         )
 
 
-stateToDataTestId : NoteState msg -> String
+stateToDataTestId : ItemState msg -> String
 stateToDataTestId state =
     case state of
         Pending _ ->
@@ -115,8 +115,8 @@ onClickStopPropagation msg =
     stopPropagationOn "click" <| Json.Decode.succeed ( msg, True )
 
 
-noteStyle : NoteState msg -> List Style
-noteStyle state =
+itemStyle : ItemState msg -> List Style
+itemStyle state =
     let
         { glassColor, glassOpacity, glassBlur, boxShadowColor, textColor, textShadowColor } =
             case state of
@@ -182,8 +182,8 @@ resetLiStyle =
     listStyle none
 
 
-noteTitleStyle : Style
-noteTitleStyle =
+itemTitleStyle : Style
+itemTitleStyle =
     Css.batch
         [ flexGrow (int 1)
         , marginLeft (px 20)
@@ -211,9 +211,9 @@ docs =
         showcaseNote p =
             transparencyBackground
                 { width = 650, height = 80 }
-                (listedNoteView p)
+                (itemView p)
     in
-    chapter "Note"
+    chapter "Item"
         |> renderComponentList
             [ ( "Pending", showcaseNote props )
             , ( "Done", showcaseNote { props | state = Done writeEvents, onTick = \_ -> logAction "Unticked" } )

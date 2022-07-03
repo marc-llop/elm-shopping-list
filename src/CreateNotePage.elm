@@ -14,7 +14,7 @@ import Search
 import String.Deburr exposing (deburr)
 import Time
 import Ui.Button exposing (ButtonType(..))
-import Ui.ListedNote exposing (listedNoteView)
+import Ui.Item exposing (itemView)
 import Ui.NoteList exposing (noteListView)
 import Utils exposing (dataTestId)
 
@@ -163,9 +163,9 @@ addIcon =
 
 matchedNoteView : NoteIdPair -> Html CreateNoteFormMsg
 matchedNoteView ( noteId, note ) =
-    listedNoteView
+    itemView
         { noteId = noteId
         , note = note
-        , state = Ui.ListedNote.ToAdd
+        , state = Ui.Item.ToAdd
         , onTick = RetickNote
         }

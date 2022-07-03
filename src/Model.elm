@@ -5,7 +5,7 @@ import Json.Encode as E
 import Note exposing (..)
 import OpaqueDict exposing (OpaqueDict)
 import Page exposing (Page(..))
-import Ui.ListedNote exposing (NoteState(..))
+import Ui.Item exposing (ItemState(..))
 
 
 type alias Model =
