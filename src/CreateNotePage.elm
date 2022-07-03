@@ -5,8 +5,8 @@ import DesignSystem.StyledIcons as Icons
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onClick, onInput, onSubmit)
+import ItemModel exposing (IdItemPair, Item, ItemId, itemIdGenerator)
 import Model exposing (..)
-import Note exposing (Note, NoteId, NoteIdPair, noteIdGenerator)
 import OpaqueDict exposing (OpaqueDict)
 import Page exposing (Page(..), createNoteAutofocusId)
 import Random
@@ -21,9 +21,9 @@ import Utils exposing (dataTestId)
 
 type CreateNoteFormMsg
     = InputNewNoteTitle String
-    | CreateNote Note NoteId
-    | RequestId Note
-    | RetickNote NoteId
+    | CreateNote Item ItemId
+    | RequestId Item
+    | RetickNote ItemId
     | CancelCreate
 
 
@@ -37,7 +37,7 @@ update msg model =
             )
 
         RequestId note ->
-            ( model, Random.generate (CreateNote note) noteIdGenerator )
+            ( model, Random.generate (CreateNote note) itemIdGenerator )
 
         CreateNote note noteId ->
             ( { model
@@ -68,7 +68,7 @@ update msg model =
             ( { model | currentPage = ListPage }, Cmd.none )
 
 
-applyIfCreateNotePage : Model -> (Note -> Model) -> Model
+applyIfCreateNotePage : Model -> (Item -> Model) -> Model
 applyIfCreateNotePage model fn =
     case model.currentPage of
         CreateNotePage note ->
@@ -78,7 +78,7 @@ applyIfCreateNotePage model fn =
             model
 
 
-createNoteView : Model -> Note -> Html CreateNoteFormMsg
+createNoteView : Model -> Item -> Html CreateNoteFormMsg
 createNoteView model newNote =
     Html.Styled.form
         [ onSubmit (RequestId newNote)
@@ -101,14 +101,14 @@ createNoteView model newNote =
 
 
 type alias IndexableNote =
-    { id : NoteId
+    { id : ItemId
     , content : String
     , title : String
     , dateTime : Time.Posix
     }
 
 
-noteToDatum : NoteIdPair -> IndexableNote
+noteToDatum : IdItemPair -> IndexableNote
 noteToDatum ( noteId, note ) =
     { id = noteId
     , content = deburr note.title
@@ -117,12 +117,12 @@ noteToDatum ( noteId, note ) =
     }
 
 
-datumToNote : IndexableNote -> NoteIdPair
+datumToNote : IndexableNote -> IdItemPair
 datumToNote { id, content, title, dateTime } =
     ( id, { title = title } )
 
 
-notesMatching : String -> Model.NotesInModel a -> List NoteIdPair
+notesMatching : String -> Model.NotesInModel a -> List IdItemPair
 notesMatching newNoteTitle model =
     let
         notesList =
@@ -138,7 +138,7 @@ notesMatching newNoteTitle model =
         |> sortNotes
 
 
-matchesListView : Model -> Note -> Html CreateNoteFormMsg
+matchesListView : Model -> Item -> Html CreateNoteFormMsg
 matchesListView model newNote =
     let
         matches =
@@ -161,7 +161,7 @@ addIcon =
         [ Icons.greenPlus ]
 
 
-matchedNoteView : NoteIdPair -> Html CreateNoteFormMsg
+matchedNoteView : IdItemPair -> Html CreateNoteFormMsg
 matchedNoteView ( noteId, note ) =
     itemView
         { noteId = noteId

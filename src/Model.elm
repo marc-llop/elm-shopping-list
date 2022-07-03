@@ -1,8 +1,8 @@
 module Model exposing (..)
 
+import ItemModel exposing (..)
 import Json.Decode as D
 import Json.Encode as E
-import Note exposing (..)
 import OpaqueDict exposing (OpaqueDict)
 import Page exposing (Page(..))
 import Ui.Item exposing (ItemState(..))
@@ -17,11 +17,11 @@ type alias Model =
 
 
 type alias PendingDict =
-    OpaqueDict NoteId Note
+    OpaqueDict ItemId Item
 
 
 type alias DoneDict =
-    OpaqueDict NoteId Note
+    OpaqueDict ItemId Item
 
 
 initModel : String -> PendingDict -> DoneDict -> Model
@@ -37,7 +37,7 @@ encodeModel : Model -> E.Value
 encodeModel model =
     let
         encodeDict =
-            OpaqueDict.encode noteIdToString encodeNote
+            OpaqueDict.encode itemIdToString encodeItem
     in
     E.object
         [ ( "pending", encodeDict model.pending )
@@ -49,7 +49,7 @@ decodeModel : D.Decoder Model
 decodeModel =
     let
         decodeDict =
-            OpaqueDict.decode decodeNoteIdFromString noteIdToString decodeNote
+            OpaqueDict.decode decodeItemIdFromString itemIdToString decodeItem
     in
     D.map3 initModel
         (D.field "backgroundTextureUrl" D.string)
@@ -58,10 +58,10 @@ decodeModel =
 
 
 type alias NotesInModel a =
-    { a | pending : OpaqueDict NoteId Note, done : OpaqueDict NoteId Note }
+    { a | pending : OpaqueDict ItemId Item, done : OpaqueDict ItemId Item }
 
 
-allNotes : NotesInModel a -> List NoteIdPair
+allNotes : NotesInModel a -> List IdItemPair
 allNotes { pending, done } =
     List.concat
         [ OpaqueDict.toList pending
@@ -69,7 +69,7 @@ allNotes { pending, done } =
         ]
 
 
-sortNotes : List NoteIdPair -> List NoteIdPair
+sortNotes : List IdItemPair -> List IdItemPair
 sortNotes =
     List.sortBy (Tuple.second >> .title >> String.toLower)
 

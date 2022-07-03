@@ -4,8 +4,8 @@ import Css exposing (pct)
 import Html.Styled exposing (Html, form, input)
 import Html.Styled.Attributes exposing (css, id, value)
 import Html.Styled.Events exposing (onInput, onSubmit)
+import ItemModel exposing (Item, ItemId)
 import Model exposing (Model)
-import Note exposing (Note, NoteId)
 import OpaqueDict exposing (OpaqueDict)
 import Page exposing (Page(..), editNoteAutofocusId)
 import Ui.Button exposing (ButtonType(..))
@@ -14,7 +14,7 @@ import Utils exposing (dataTestId)
 
 type EditNoteFormMsg
     = InputEditedNoteTitle String
-    | EditNote NoteId Note
+    | EditNote ItemId Item
     | CancelEdit
 
 
@@ -44,7 +44,7 @@ update msg model =
             ( { model | currentPage = ListPage }, Cmd.none )
 
 
-applyIfEditNotePage : Model -> (NoteId -> Note -> Note -> Model) -> Model
+applyIfEditNotePage : Model -> (ItemId -> Item -> Item -> Model) -> Model
 applyIfEditNotePage model fn =
     case model.currentPage of
         EditNotePage noteId note originalNote ->
@@ -54,12 +54,12 @@ applyIfEditNotePage model fn =
             model
 
 
-editNote : NoteId -> Note -> OpaqueDict NoteId Note -> OpaqueDict NoteId Note
+editNote : ItemId -> Item -> OpaqueDict ItemId Item -> OpaqueDict ItemId Item
 editNote id note =
     OpaqueDict.update id (Maybe.map (always note))
 
 
-editNoteView : NoteId -> Note -> Note -> Html EditNoteFormMsg
+editNoteView : ItemId -> Item -> Item -> Html EditNoteFormMsg
 editNoteView noteId note originalNote =
     form
         [ dataTestId "EditNote"

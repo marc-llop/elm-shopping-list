@@ -11,8 +11,8 @@ import ElmBook.ElmCSS exposing (Chapter)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onClick, stopPropagationOn)
+import ItemModel exposing (Item, ItemId, newFakeItem)
 import Json.Decode
-import Note exposing (Note, NoteId, newFakeNote)
 import Ui.Glassmorphism exposing (glassmorphism)
 import Utils exposing (dataTestId, transparencyBackground)
 
@@ -24,16 +24,16 @@ type ItemState msg
 
 
 type alias WriteEvents msg =
-    { onRemove : NoteId -> msg
-    , onEdit : NoteId -> Note -> msg
+    { onRemove : ItemId -> msg
+    , onEdit : ItemId -> Item -> msg
     }
 
 
 type alias ItemProps msg =
-    { noteId : NoteId
-    , note : Note
+    { noteId : ItemId
+    , note : Item
     , state : ItemState msg
-    , onTick : NoteId -> msg
+    , onTick : ItemId -> msg
     }
 
 
@@ -199,7 +199,7 @@ docs =
             }
 
         ( fakeId, fakeNote ) =
-            newFakeNote 42 "Milk"
+            newFakeItem 42 "Milk"
 
         props =
             { noteId = fakeId

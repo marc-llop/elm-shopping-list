@@ -7,11 +7,11 @@ import EditNotePage exposing (EditNoteFormMsg(..), editNoteView)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onClick, onInput, onSubmit)
+import ItemModel exposing (Item, ItemId, itemIdToString, newFakeItem)
 import Json.Decode as D
 import List
 import LocalStorage exposing (encodeAndStoreModel)
 import Model exposing (..)
-import Note exposing (Note, NoteId, newFakeNote, noteIdToString)
 import NotesListPage exposing (NotesListMsg(..), notesListView)
 import OpaqueDict exposing (OpaqueDict)
 import Page exposing (..)
@@ -38,7 +38,7 @@ main =
 -- MODEL
 
 
-initialNotesList : OpaqueDict NoteId Note
+initialNotesList : OpaqueDict ItemId Item
 initialNotesList =
     [ "ous"
     , "fuet"
@@ -65,8 +65,8 @@ initialNotesList =
     , "arròs"
     , "pasta seca"
     ]
-        |> List.indexedMap (\i note -> newFakeNote i note)
-        |> OpaqueDict.fromList noteIdToString
+        |> List.indexedMap (\i note -> newFakeItem i note)
+        |> OpaqueDict.fromList itemIdToString
 
 
 init :
@@ -81,7 +81,7 @@ init json =
                     (initModel
                         "backgroundTextureUrl not found"
                         initialNotesList
-                        (OpaqueDict.empty Note.noteIdToString)
+                        (OpaqueDict.empty ItemModel.itemIdToString)
                     )
     in
     ( model, Cmd.none )

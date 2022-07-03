@@ -2,14 +2,14 @@ module Tests.CreateNoteTest exposing (..)
 
 import CreateNotePage exposing (notesMatching)
 import Expect
-import Note exposing (Note, NoteId(..), NoteIdPair, newFakeNote, noteIdToString)
+import ItemModel exposing (IdItemPair, Item, ItemId(..), itemIdToString, newFakeItem)
 import OpaqueDict exposing (OpaqueDict)
 import Test exposing (..)
 
 
-dict : List NoteIdPair -> OpaqueDict NoteId Note
+dict : List IdItemPair -> OpaqueDict ItemId Item
 dict ls =
-    OpaqueDict.fromList noteIdToString ls
+    OpaqueDict.fromList itemIdToString ls
 
 
 suite : Test
@@ -20,17 +20,17 @@ suite =
                 \_ ->
                     let
                         model =
-                            { pending = dict [ newFakeNote 1 "Eggs", newFakeNote 2 "Milk" ]
-                            , done = dict [ newFakeNote 3 "Frozen pizza" ]
+                            { pending = dict [ newFakeItem 1 "Eggs", newFakeItem 2 "Milk" ]
+                            , done = dict [ newFakeItem 3 "Frozen pizza" ]
                             }
 
                         actual =
                             notesMatching "" model
 
                         expected =
-                            [ newFakeNote 1 "Eggs"
-                            , newFakeNote 3 "Frozen pizza"
-                            , newFakeNote 2 "Milk"
+                            [ newFakeItem 1 "Eggs"
+                            , newFakeItem 3 "Frozen pizza"
+                            , newFakeItem 2 "Milk"
                             ]
                     in
                     actual |> Expect.equal expected
@@ -38,16 +38,16 @@ suite =
                 \_ ->
                     let
                         model =
-                            { pending = dict [ newFakeNote 1 "Tomatoes", newFakeNote 2 "Tuna" ]
-                            , done = dict [ newFakeNote 3 "Toasts", newFakeNote 4 "Potatoes" ]
+                            { pending = dict [ newFakeItem 1 "Tomatoes", newFakeItem 2 "Tuna" ]
+                            , done = dict [ newFakeItem 3 "Toasts", newFakeItem 4 "Potatoes" ]
                             }
 
                         actual =
                             notesMatching "toes" model
 
                         expected =
-                            [ newFakeNote 4 "Potatoes"
-                            , newFakeNote 1 "Tomatoes"
+                            [ newFakeItem 4 "Potatoes"
+                            , newFakeItem 1 "Tomatoes"
                             ]
                     in
                     actual |> Expect.equal expected
@@ -55,16 +55,16 @@ suite =
                 \_ ->
                     let
                         model =
-                            { pending = dict [ newFakeNote 1 "Tomatoes", newFakeNote 2 "Tuna" ]
-                            , done = dict [ newFakeNote 3 "Toasts", newFakeNote 4 "Rice" ]
+                            { pending = dict [ newFakeItem 1 "Tomatoes", newFakeItem 2 "Tuna" ]
+                            , done = dict [ newFakeItem 3 "Toasts", newFakeItem 4 "Rice" ]
                             }
 
                         actual =
                             notesMatching "to" model
 
                         expected =
-                            [ newFakeNote 3 "Toasts"
-                            , newFakeNote 1 "Tomatoes"
+                            [ newFakeItem 3 "Toasts"
+                            , newFakeItem 1 "Tomatoes"
                             ]
                     in
                     actual |> Expect.equal expected
@@ -72,16 +72,16 @@ suite =
                 \_ ->
                     let
                         model =
-                            { pending = dict [ newFakeNote 1 "Arròs" ]
-                            , done = dict [ newFakeNote 2 "Postres", newFakeNote 3 "Fuet" ]
+                            { pending = dict [ newFakeItem 1 "Arròs" ]
+                            , done = dict [ newFakeItem 2 "Postres", newFakeItem 3 "Fuet" ]
                             }
 
                         actual =
                             notesMatching "ós" model
 
                         expected =
-                            [ newFakeNote 1 "Arròs"
-                            , newFakeNote 2 "Postres"
+                            [ newFakeItem 1 "Arròs"
+                            , newFakeItem 2 "Postres"
                             ]
                     in
                     actual |> Expect.equal expected
@@ -89,16 +89,16 @@ suite =
                 \_ ->
                     let
                         model =
-                            { pending = dict [ newFakeNote 1 "Llet", newFakeNote 2 "Pa" ]
-                            , done = dict [ newFakeNote 3 "Cola", newFakeNote 4 "Formatge", newFakeNote 5 "Calçots" ]
+                            { pending = dict [ newFakeItem 1 "Llet", newFakeItem 2 "Pa" ]
+                            , done = dict [ newFakeItem 3 "Cola", newFakeItem 4 "Formatge", newFakeItem 5 "Calçots" ]
                             }
 
                         actual =
                             notesMatching "ço" model
 
                         expected =
-                            [ newFakeNote 5 "Calçots"
-                            , newFakeNote 3 "Cola"
+                            [ newFakeItem 5 "Calçots"
+                            , newFakeItem 3 "Cola"
                             ]
                     in
                     actual |> Expect.equal expected

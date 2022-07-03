@@ -1,12 +1,12 @@
 module Page exposing (..)
 
-import Note exposing (Note, NoteId)
+import ItemModel exposing (Item, ItemId)
 
 
 type Page
     = ListPage
-    | CreateNotePage Note
-    | EditNotePage NoteId Note Note
+    | CreateNotePage Item
+    | EditNotePage ItemId Item Item
 
 
 createNoteAutofocusId =

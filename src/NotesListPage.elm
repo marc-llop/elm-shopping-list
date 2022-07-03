@@ -6,9 +6,9 @@ import DesignSystem.Colors exposing (neutral)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onClick, onInput, onSubmit)
+import ItemModel exposing (..)
 import List
 import Model exposing (Model, move, sortNotes)
-import Note exposing (..)
 import OpaqueDict exposing (OpaqueDict)
 import Page exposing (..)
 import Task
@@ -19,11 +19,11 @@ import Utils exposing (dataTestId)
 
 
 type NotesListMsg
-    = Tick NoteId
-    | Untick NoteId
+    = Tick ItemId
+    | Untick ItemId
     | OpenCreateNote
-    | OpenEditNote NoteId Note
-    | RemoveNote NoteId
+    | OpenEditNote ItemId Item
+    | RemoveNote ItemId
     | NoOp
 
 
@@ -78,7 +78,7 @@ update msg model =
             ( model, Cmd.none )
 
 
-resetNoteForm : Note
+resetNoteForm : Item
 resetNoteForm =
     { title = "" }
 
@@ -107,13 +107,13 @@ notesListView { pending, done } =
 -- Returns the (id, note) pairs alphabetically sorted by note title
 
 
-noteDictToList : OpaqueDict NoteId Note -> List NoteIdPair
+noteDictToList : OpaqueDict ItemId Item -> List IdItemPair
 noteDictToList dict =
     OpaqueDict.toList dict
         |> sortNotes
 
 
-pendingNoteView : ( NoteId, Note ) -> Html NotesListMsg
+pendingNoteView : ( ItemId, Item ) -> Html NotesListMsg
 pendingNoteView ( noteId, note ) =
     itemView
         { noteId = noteId
@@ -127,7 +127,7 @@ pendingNoteView ( noteId, note ) =
         }
 
 
-doneNoteView : ( NoteId, Note ) -> Html NotesListMsg
+doneNoteView : ( ItemId, Item ) -> Html NotesListMsg
 doneNoteView ( noteId, note ) =
     itemView
         { noteId = noteId
