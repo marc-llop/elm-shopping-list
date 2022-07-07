@@ -21,8 +21,8 @@ import Utils exposing (dataTestId)
 
 type CreateItemFormMsg
     = InputNewItemTitle String
-    | CreateItem Item ItemId
-    | RequestId Item
+    | CreateItem ItemId
+    | SubmitItem
     | RetickItem ItemId
     | CancelCreate
 
@@ -36,18 +36,21 @@ update msg model =
             , Cmd.none
             )
 
-        RequestId item ->
-            ( model, Random.generate (CreateItem item) itemIdGenerator )
+        SubmitItem ->
+            ( model, Random.generate CreateItem itemIdGenerator )
 
-        CreateItem item itemId ->
-            ( { model
-                | currentPage = ChecklistPage
-                , pending =
-                    OpaqueDict.insert
-                        itemId
-                        item
-                        model.pending
-              }
+        CreateItem itemId ->
+            ( applyIfCreateItemPage model
+                (\item ->
+                    { model
+                        | currentPage = ChecklistPage
+                        , pending =
+                            OpaqueDict.insert
+                                itemId
+                                item
+                                model.pending
+                    }
+                )
             , Cmd.none
             )
 
@@ -81,7 +84,7 @@ applyIfCreateItemPage model fn =
 createItemView : Model -> Item -> Html CreateItemFormMsg
 createItemView model newItem =
     Html.Styled.form
-        [ onSubmit (RequestId newItem)
+        [ onSubmit SubmitItem
         , dataTestId "CreateItem"
         , css [ Css.width (pct 100) ]
         ]
