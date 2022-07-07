@@ -6,12 +6,14 @@ import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onClick, onInput, onSubmit)
 import ItemModel exposing (IdItemPair, Item, ItemId, itemIdGenerator)
+import Maybe.Extra
 import Model exposing (..)
 import OpaqueDict exposing (OpaqueDict)
 import Page exposing (Page(..), createItemAutofocusId)
 import Random
 import Search
 import String.Deburr exposing (deburr)
+import Svg.Styled exposing (title)
 import Time
 import Ui.Button exposing (ButtonType(..))
 import Ui.Checklist exposing (checklistView)
@@ -25,6 +27,57 @@ type CreateItemFormMsg
     | SubmitItem
     | RetickItem ItemId
     | CancelCreate
+
+
+findItemByTitle : String -> List IdItemPair -> Maybe ItemId
+findItemByTitle title list =
+    case list of
+        [] ->
+            Nothing
+
+        ( id, item ) :: rest ->
+            if item.title == title then
+                Just id
+
+            else
+                findItemByTitle title rest
+
+
+findItemByTitleInChecklist : String -> PendingDict -> DoneDict -> Maybe ItemId
+findItemByTitleInChecklist title pending done =
+    let
+        findIn =
+            findItemByTitle title
+
+        maybePendingItem =
+            findIn (OpaqueDict.toList pending)
+
+        maybeDoneItem =
+            findIn (OpaqueDict.toList done)
+    in
+    Maybe.Extra.or maybePendingItem maybeDoneItem
+
+
+untickOrAddAsPending :
+    IdItemPair
+    -> { a | pending : PendingDict, done : DoneDict }
+    -> { a | pending : PendingDict, done : DoneDict }
+untickOrAddAsPending ( id, item ) ({ pending, done } as model) =
+    case findItemByTitleInChecklist item.title pending done of
+        Nothing ->
+            { model
+                | pending = OpaqueDict.insert id item pending
+                , done = done
+            }
+
+        Just previousId ->
+            move previousId done pending
+                |> (\( newDone, newPending ) ->
+                        { model
+                            | pending = newPending
+                            , done = newDone
+                        }
+                   )
 
 
 update : CreateItemFormMsg -> Model -> ( Model, Cmd CreateItemFormMsg )
@@ -42,13 +95,12 @@ update msg model =
         CreateItem itemId ->
             ( applyIfCreateItemPage model
                 (\item ->
-                    { model
+                    let
+                        newModel =
+                            untickOrAddAsPending ( itemId, item ) model
+                    in
+                    { newModel
                         | currentPage = ChecklistPage
-                        , pending =
-                            OpaqueDict.insert
-                                itemId
-                                item
-                                model.pending
                     }
                 )
             , Cmd.none
