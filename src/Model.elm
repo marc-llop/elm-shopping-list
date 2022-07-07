@@ -89,3 +89,20 @@ move k dictFrom dictTo =
                 |> Maybe.withDefault dictTo
     in
     ( newFrom, newTo )
+
+
+
+-- FOR TESTS
+
+
+newFakeModel : Page -> List IdItemPair -> List IdItemPair -> Model
+newFakeModel currentPage pendingList doneList =
+    let
+        listToDict =
+            OpaqueDict.fromList itemIdToString
+    in
+    { pending = listToDict pendingList
+    , done = listToDict doneList
+    , currentPage = currentPage
+    , backgroundTextureUrl = ""
+    }

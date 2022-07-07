@@ -1,9 +1,12 @@
 module Tests.CreateItemTest exposing (..)
 
 import Expect
-import ItemModel exposing (IdItemPair, Item, ItemId(..), itemIdToString, newFakeItem)
+import ItemModel exposing (IdItemPair, Item, ItemId(..), itemIdGenerator, itemIdToString, newFakeItem, newFakeItemString)
+import Model exposing (newFakeModel)
 import OpaqueDict exposing (OpaqueDict)
-import Pages.CreateItemPage exposing (itemsMatching)
+import Page exposing (Page(..))
+import Pages.CreateItemPage exposing (CreateItemFormMsg(..), itemsMatching, update)
+import Random
 import Test exposing (..)
 
 
@@ -100,6 +103,100 @@ suite =
                             [ newFakeItem 5 "Calçots"
                             , newFakeItem 3 "Cola"
                             ]
+                    in
+                    actual |> Expect.equal expected
+            ]
+        , describe "update"
+            [ test "should do nothing on submit" <|
+                \_ ->
+                    let
+                        model =
+                            newFakeModel
+                                (CreateItemPage (newFakeItemString "unusedId" "Potatoes" |> Tuple.second))
+                                [ newFakeItemString "a" "Raddish"
+                                , newFakeItemString "b" "Potatoes"
+                                ]
+                                []
+
+                        msg =
+                            SubmitItem
+
+                        ( actual, _ ) =
+                            update msg model
+
+                        expected =
+                            model
+                    in
+                    actual |> Expect.equal expected
+            , test "should send a command on submit" <|
+                \_ ->
+                    let
+                        model =
+                            newFakeModel
+                                (CreateItemPage (newFakeItemString "unusedId" "Potatoes" |> Tuple.second))
+                                [ newFakeItemString "a" "Raddish"
+                                , newFakeItemString "b" "Potatoes"
+                                ]
+                                []
+
+                        msg =
+                            SubmitItem
+
+                        ( _, actual ) =
+                            update msg model
+                    in
+                    actual |> Expect.notEqual Cmd.none
+            , test "should untick an item on submit if the title already exists on done items" <|
+                \_ ->
+                    let
+                        ( fakeId, fakeItem ) =
+                            newFakeItemString "unusedId" "Potatoes"
+
+                        model =
+                            newFakeModel
+                                (CreateItemPage fakeItem)
+                                [ newFakeItemString "a" "Raddish" ]
+                                [ newFakeItemString "b" "Potatoes" ]
+
+                        msg =
+                            CreateItem fakeId
+
+                        actual =
+                            update msg model
+
+                        expected =
+                            ( newFakeModel
+                                ChecklistPage
+                                [ newFakeItemString "a" "Raddish"
+                                , newFakeItemString "b" "Potatoes"
+                                ]
+                                []
+                            , Cmd.none
+                            )
+                    in
+                    actual |> Expect.equal expected
+            , test "should do nothing if the title already exists on pending items" <|
+                \_ ->
+                    let
+                        ( fakeId, fakeItem ) =
+                            newFakeItemString "unusedId" "Potatoes"
+
+                        model =
+                            newFakeModel
+                                (CreateItemPage fakeItem)
+                                [ newFakeItemString "a" "Raddish"
+                                , newFakeItemString "b" "Potatoes"
+                                ]
+                                []
+
+                        msg =
+                            CreateItem fakeId
+
+                        actual =
+                            update msg model
+
+                        expected =
+                            ( { model | currentPage = ChecklistPage }, Cmd.none )
                     in
                     actual |> Expect.equal expected
             ]

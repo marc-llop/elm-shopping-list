@@ -1,4 +1,15 @@
-module ItemModel exposing (IdItemPair, Item, ItemId, decodeItem, decodeItemIdFromString, encodeItem, itemIdGenerator, itemIdToString, newFakeItem)
+module ItemModel exposing
+    ( IdItemPair
+    , Item
+    , ItemId
+    , decodeItem
+    , decodeItemIdFromString
+    , encodeItem
+    , itemIdGenerator
+    , itemIdToString
+    , newFakeItem
+    , newFakeItemString
+    )
 
 import Json.Decode as D
 import Json.Encode as E
@@ -32,11 +43,6 @@ decodeItemIdFromString s =
     Just (ItemId s)
 
 
-newFakeItem : Int -> String -> IdItemPair
-newFakeItem id title =
-    ( ItemId (String.fromInt id), { title = title } )
-
-
 type alias Item =
     { title : String
     }
@@ -54,3 +60,17 @@ decodeItem =
 
 type alias IdItemPair =
     ( ItemId, Item )
+
+
+
+-- FOR TESTS
+
+
+newFakeItem : Int -> String -> IdItemPair
+newFakeItem id title =
+    ( ItemId (String.fromInt id), { title = title } )
+
+
+newFakeItemString : String -> String -> IdItemPair
+newFakeItemString id title =
+    ( ItemId id, { title = title } )
