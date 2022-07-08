@@ -2,6 +2,7 @@ module Ui.Button exposing (ButtonType(..), button, docs)
 
 import Css exposing (..)
 import Css.Transitions exposing (easeOut, transition)
+import DesignSystem.ColorDecisions exposing (activeButtonTextColor)
 import DesignSystem.Colors exposing (..)
 import DesignSystem.Sizes exposing (itemFontSize)
 import ElmBook
@@ -70,8 +71,8 @@ hoverStyles =
 
 
 activeStyles =
-    [ borderColor (hex white)
-    , color (hex white)
+    [ borderColor (hex activeButtonTextColor)
+    , color (hex activeButtonTextColor)
     , property "text-shadow" greenBlueShadow
     , property "box-shadow" greenBlueInsetShadow
     , focus [ outline none ]

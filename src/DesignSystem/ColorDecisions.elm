@@ -39,6 +39,14 @@ glassButtonInertBoxShadowColor =
     translucentDarkGrey
 
 
+activeButtonTextColor =
+    white
+
+
+deleteIconColor =
+    red
+
+
 neutralCardColor : GlassmorphismProps
 neutralCardColor =
     { color = neutral.s750
@@ -92,6 +100,8 @@ colorTokens =
     , ( "glassButtonInertBoxShadowColor", glassButtonInertBoxShadowColor )
     , ( "neutralCardBoxShadowColor", neutralCardBoxShadowColor )
     , ( "neutralCardTextShadowColor", neutralCardTextShadowColor )
+    , ( "activeButtonTextColor", activeButtonTextColor )
+    , ( "deleteIconColor", deleteIconColor )
     , ( "Glassmorphism glassButtonGlowingColor.color", glassButtonGlowingColor.color )
     , ( "Glassmorphism glassButtonInertColor.color", glassButtonInertColor.color )
     , ( "Glassmorphism neutralCardColor.color", neutralCardColor.color )

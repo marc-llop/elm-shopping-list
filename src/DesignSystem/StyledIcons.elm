@@ -1,8 +1,8 @@
 module DesignSystem.StyledIcons exposing (..)
 
 import Css exposing (..)
-import DesignSystem.ColorDecisions exposing (neutralTextColor)
-import DesignSystem.Colors exposing (accentBlue, accentGreen, neutral, red)
+import DesignSystem.ColorDecisions exposing (deleteIconColor, neutralTextColor)
+import DesignSystem.Colors exposing (accentBlue, accentGreen, red)
 import DesignSystem.Icons as Icons
 import ElmBook.Chapter exposing (chapter, renderComponentList)
 import ElmBook.ElmCSS exposing (Chapter)
@@ -35,8 +35,8 @@ greenGlow =
 
 redGlow =
     Css.batch
-        [ svgGlow red
-        , color (hex red)
+        [ svgGlow deleteIconColor
+        , color (hex deleteIconColor)
         ]
 
 
