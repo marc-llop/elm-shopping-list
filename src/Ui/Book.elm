@@ -13,6 +13,7 @@ import Ui.Glassmorphism
 import Ui.Item
 import Ui.ListCard
 import Ui.ProgressBar
+import Ui.TextInput
 
 
 main =
@@ -35,6 +36,7 @@ main =
                 , Ui.FloatingActionButton.docs
                 , Ui.ProgressBar.docs
                 , Ui.ListCard.docs
+                , Ui.TextInput.docs
                 ]
               )
             ]
