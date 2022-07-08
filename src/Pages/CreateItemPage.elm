@@ -31,12 +31,16 @@ type CreateItemFormMsg
 
 findItemByTitle : String -> List IdItemPair -> Maybe ItemId
 findItemByTitle title list =
+    let
+        normalize =
+            String.toLower
+    in
     case list of
         [] ->
             Nothing
 
         ( id, item ) :: rest ->
-            if item.title == title then
+            if normalize item.title == normalize title then
                 Just id
 
             else

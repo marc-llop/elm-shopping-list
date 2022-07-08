@@ -175,6 +175,35 @@ suite =
                             )
                     in
                     actual |> Expect.equal expected
+            , test "should untick an item that has the same title ignoring case" <|
+                \_ ->
+                    let
+                        ( fakeId, fakeItem ) =
+                            newFakeItemString "unusedId" "potaTOES"
+
+                        model =
+                            newFakeModel
+                                (CreateItemPage fakeItem)
+                                [ newFakeItemString "a" "Raddish" ]
+                                [ newFakeItemString "b" "Potatoes" ]
+
+                        msg =
+                            CreateItem fakeId
+
+                        actual =
+                            update msg model
+
+                        expected =
+                            ( newFakeModel
+                                ChecklistPage
+                                [ newFakeItemString "a" "Raddish"
+                                , newFakeItemString "b" "Potatoes"
+                                ]
+                                []
+                            , Cmd.none
+                            )
+                    in
+                    actual |> Expect.equal expected
             , test "should do nothing if the title already exists on pending items" <|
                 \_ ->
                     let
