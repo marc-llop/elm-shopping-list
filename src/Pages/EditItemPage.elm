@@ -9,6 +9,7 @@ import Model exposing (Model)
 import OpaqueDict exposing (OpaqueDict)
 import Page exposing (Page(..), editItemAutofocusId)
 import Ui.Button exposing (ButtonType(..))
+import Ui.TextInput exposing (textInputView)
 import Utils exposing (dataTestId)
 
 
@@ -66,7 +67,11 @@ editItemView itemId item originalItem =
         , onSubmit (EditItem itemId item)
         , css [ Css.width (pct 100) ]
         ]
-        [ input [ onInput InputEditedItemTitle, value item.title, id editItemAutofocusId ] []
+        [ textInputView
+            { onInput = InputEditedItemTitle
+            , value = item.title
+            , attributes = [ id editItemAutofocusId, dataTestId "EditItem-TextInput" ]
+            }
         , Ui.Button.button
             { buttonType = Submit
             , label = "Desa els canvis"

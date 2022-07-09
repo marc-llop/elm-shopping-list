@@ -19,6 +19,7 @@ import Ui.Glassmorphism exposing (glassmorphism)
 type alias TextInputProps msg =
     { value : String
     , onInput : String -> msg
+    , attributes : List (Html.Styled.Attribute msg)
     }
 
 
@@ -45,12 +46,14 @@ textInputStyles =
 
 
 textInputView : TextInputProps msg -> Html msg
-textInputView { value, onInput } =
+textInputView { value, onInput, attributes } =
     input
-        [ css textInputStyles
-        , HtmlEvt.onInput onInput
-        , HtmlAttr.value value
-        ]
+        (attributes
+            ++ [ css textInputStyles
+               , HtmlEvt.onInput onInput
+               , HtmlAttr.value value
+               ]
+        )
         []
 
 
@@ -90,5 +93,6 @@ docs =
                 textInputView
                     { value = textInputModel
                     , onInput = updateStateWith updateChapterState
+                    , attributes = []
                     }
             )

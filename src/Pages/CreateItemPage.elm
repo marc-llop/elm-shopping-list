@@ -18,6 +18,7 @@ import Time
 import Ui.Button exposing (ButtonType(..))
 import Ui.Checklist exposing (checklistView)
 import Ui.Item exposing (itemView)
+import Ui.TextInput exposing (textInputView)
 import Utils exposing (dataTestId)
 
 
@@ -144,7 +145,11 @@ createItemView model newItem =
         , dataTestId "CreateItem"
         , css [ Css.width (pct 100) ]
         ]
-        [ input [ onInput InputNewItemTitle, value newItem.title, id createItemAutofocusId ] []
+        [ textInputView
+            { onInput = InputNewItemTitle
+            , value = newItem.title
+            , attributes = [ id createItemAutofocusId, dataTestId "CreateItem-TextInput" ]
+            }
         , Ui.Button.button
             { buttonType = Submit
             , label = "Afegeix l'element"
