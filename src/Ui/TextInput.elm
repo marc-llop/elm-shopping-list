@@ -1,6 +1,7 @@
 module Ui.TextInput exposing (ChapterModel, TextInputProps, chapterInitialState, docs, textInputView)
 
 import Css exposing (..)
+import Css.Animations as Animations
 import DesignSystem.ColorDecisions exposing (activeButtonTextColor, glassButtonGlowingBoxShadowColor, inputTextColor, inputTextColorGlow)
 import DesignSystem.Colors exposing (..)
 import DesignSystem.Sizes exposing (cardBorderRadius, cardBoxShadow, cardMargins, cardTextShadow, itemFontSize)
@@ -9,6 +10,7 @@ import ElmBook
 import ElmBook.Actions exposing (logAction, updateStateWith)
 import ElmBook.Chapter exposing (chapter, renderComponentList, renderStatefulComponent)
 import ElmBook.ElmCSS exposing (Chapter)
+import Html.Attributes exposing (placeholder)
 import Html.Styled exposing (Html, button, div, input)
 import Html.Styled.Attributes as HtmlAttr exposing (css)
 import Html.Styled.Events as HtmlEvt
@@ -51,16 +53,44 @@ textInputCardStyles =
     ]
 
 
-textInputStyles : List Style
-textInputStyles =
+blinking =
+    Animations.keyframes
+        [ ( 0, [ Animations.opacity (int 1) ] )
+        , ( 50, [ Animations.opacity (int 1) ] )
+        , ( 51, [ Animations.opacity (int 0) ] )
+        , ( 100, [ Animations.opacity (int 0) ] )
+        ]
+
+
+blinkingAnimation : Bool -> Style
+blinkingAnimation isEmpty =
+    Css.batch
+        (if isEmpty then
+            [ animationName blinking
+            , animationDuration (sec 1)
+            , animationIterationCount infinite
+            ]
+
+         else
+            []
+        )
+
+
+textInputStyles : Bool -> List Style
+textInputStyles isEmpty =
     [ displayFlex
     , width (pct 100)
     , fontSize itemFontSize
+    , textIndent (px 2) -- avoid text shadow clipping
     , borderStyle none
     , backgroundColor transparent
     , color (hex inputTextColor)
     , cardTextShadow (hex inputTextColorGlow)
     , outline none
+    , blinkingAnimation isEmpty
+    , pseudoElement "placeholder"
+        [ color (hex inputTextColor)
+        ]
     ]
 
 
@@ -81,15 +111,19 @@ textInputView { value, onInput, attributes } =
     let
         resetInput =
             onInput ""
+
+        isEmpty =
+            value == ""
     in
     widthContainer
         [ div
             (attributes ++ [ css textInputCardStyles ])
             [ blueChevron iconOverInputStyle
             , input
-                [ css textInputStyles
+                [ css (textInputStyles isEmpty)
                 , HtmlEvt.onInput onInput
                 , HtmlAttr.value value
+                , HtmlAttr.placeholder "_"
                 ]
                 []
             , button
