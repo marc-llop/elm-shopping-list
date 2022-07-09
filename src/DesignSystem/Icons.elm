@@ -74,6 +74,27 @@ trash2 styles =
         ]
 
 
+chevronRight : List Style -> Html msg
+chevronRight styles =
+    svgFeatherIcon "chevron-right"
+        styles
+        [ Svg.Styled.polyline [ points "9 18 15 12 9 6" ] []
+        ]
+
+
+x : List Style -> Html msg
+x styles =
+    svgFeatherIcon "x"
+        styles
+        [ Svg.Styled.line [ x1 "18", y1 "6", x2 "6", y2 "18" ] []
+        , Svg.Styled.line [ x1 "6", y1 "6", x2 "18", y2 "18" ] []
+        ]
+
+
+
+-- DOCS
+
+
 docs : Chapter x
 docs =
     chapter "Icons"
@@ -83,4 +104,6 @@ docs =
             , ( "Edit2", edit2 [] )
             , ( "Trash2", trash2 [] )
             , ( "Plus", plus [] )
+            , ( "ChevronRight", chevronRight [] )
+            , ( "X", x [] )
             ]
