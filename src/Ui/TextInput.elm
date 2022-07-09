@@ -4,16 +4,17 @@ import Css exposing (..)
 import DesignSystem.ColorDecisions exposing (activeButtonTextColor, glassButtonGlowingBoxShadowColor, inputTextColor, inputTextColorGlow)
 import DesignSystem.Colors exposing (..)
 import DesignSystem.Sizes exposing (cardBorderRadius, cardBoxShadow, cardMargins, cardTextShadow, itemFontSize)
-import DesignSystem.StyledIcons exposing (blueChevron)
+import DesignSystem.StyledIcons exposing (blueChevron, blueX)
 import ElmBook
 import ElmBook.Actions exposing (logAction, updateStateWith)
 import ElmBook.Chapter exposing (chapter, renderComponentList, renderStatefulComponent)
 import ElmBook.ElmCSS exposing (Chapter)
-import Html.Styled exposing (Html, div, input)
+import Html.Styled exposing (Html, button, div, input)
 import Html.Styled.Attributes as HtmlAttr exposing (css)
 import Html.Styled.Events as HtmlEvt
 import Svg.Styled.Attributes exposing (x)
 import Ui.Glassmorphism exposing (glassmorphism)
+import Ui.StyleResets exposing (resetButtonStyles)
 
 
 type alias TextInputProps msg =
@@ -23,17 +24,13 @@ type alias TextInputProps msg =
     }
 
 
-textInputStyles : List Style
-textInputStyles =
+textInputCardStyles : List Style
+textInputCardStyles =
     [ displayFlex
     , width (pct 100)
     , height (px 30)
-    , padding2 (px 5) (px 5)
-    , cardMargins
-    , textIndent (px 30)
-    , fontSize itemFontSize
+    , alignItems center
     , borderRadius cardBorderRadius
-    , borderStyle none
     , glassmorphism
         { color = accentBlue.s800
         , opacityPct = 0
@@ -41,46 +38,64 @@ textInputStyles =
         , saturationPct = 0
         }
     , cardBoxShadow (hex glassButtonGlowingBoxShadowColor)
+    , cardMargins
+    , padding2 (px 5) (px 10)
+    , pseudoClass "focus-within"
+        [ glassmorphism
+            { color = accentBlue.s750
+            , opacityPct = 50
+            , blurPx = 12
+            , saturationPct = 50
+            }
+        ]
+    ]
+
+
+textInputStyles : List Style
+textInputStyles =
+    [ displayFlex
+    , width (pct 100)
+    , fontSize itemFontSize
+    , borderStyle none
+    , backgroundColor transparent
     , color (hex inputTextColor)
     , cardTextShadow (hex inputTextColorGlow)
+    , outline none
     ]
 
 
-type IconAlignment
-    = Left
-    | Right
+iconOverInputStyle : Style
+iconOverInputStyle =
+    zIndex (int 1)
 
 
-iconOverInputStyle : IconAlignment -> Style
-iconOverInputStyle alignment =
-    [ position absolute
-    , zIndex (int 1)
-    , top (px 5)
-    , (case alignment of
-        Left ->
-            left
-
-        Right ->
-            right
-      )
-        (px 10)
-    ]
-        |> Css.batch
+widthContainer : List (Html msg) -> Html msg
+widthContainer kids =
+    div
+        [ css [ displayFlex, width (pct 100) ] ]
+        kids
 
 
 textInputView : TextInputProps msg -> Html msg
 textInputView { value, onInput, attributes } =
-    div
-        [ css [ displayFlex, width (pct 100) ] ]
-        [ blueChevron (iconOverInputStyle Left)
-        , input
-            (attributes
-                ++ [ css textInputStyles
-                   , HtmlEvt.onInput onInput
-                   , HtmlAttr.value value
-                   ]
-            )
-            []
+    let
+        resetInput =
+            onInput ""
+    in
+    widthContainer
+        [ div
+            (attributes ++ [ css textInputCardStyles ])
+            [ blueChevron iconOverInputStyle
+            , input
+                [ css textInputStyles
+                , HtmlEvt.onInput onInput
+                , HtmlAttr.value value
+                ]
+                []
+            , button
+                [ css (resetButtonStyles ++ [ displayFlex ]), HtmlEvt.onClick resetInput ]
+                [ blueX iconOverInputStyle ]
+            ]
         ]
 
 

@@ -17,6 +17,13 @@ iconSize =
         ]
 
 
+smallIconSize =
+    Css.batch
+        [ width (px 25)
+        , height (px 25)
+        ]
+
+
 svgGlow : String -> Style
 svgGlow color =
     property
@@ -86,6 +93,11 @@ blueChevron style =
     Icons.chevronRight [ shiningBlueGlow, iconSize, style ]
 
 
+blueX : Style -> Html msg
+blueX style =
+    Icons.x [ shiningBlueGlow, smallIconSize, style ]
+
+
 
 -- DOCS
 
@@ -100,4 +112,5 @@ docs =
             , ( "redTrash", redTrash )
             , ( "blueEdit", blueEdit )
             , ( "blueChevron", blueChevron (Css.batch []) )
+            , ( "blueX", blueX (Css.batch []) )
             ]

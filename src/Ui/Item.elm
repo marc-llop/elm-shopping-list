@@ -14,6 +14,7 @@ import Html.Styled.Events exposing (onClick, stopPropagationOn)
 import ItemModel exposing (Item, ItemId, newFakeItem)
 import Json.Decode
 import Ui.Glassmorphism exposing (glassmorphism)
+import Ui.StyleResets exposing (resetButtonStyles)
 import Utils exposing (dataTestId, transparencyBackground)
 
 
@@ -48,14 +49,6 @@ checkboxView state =
 
         ToAdd ->
             greenPlus
-
-
-resetButtonStyles : List Style
-resetButtonStyles =
-    [ borderStyle none
-    , backgroundColor transparent
-    , cursor pointer
-    ]
 
 
 iconButtonView evt icon =
