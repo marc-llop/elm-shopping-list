@@ -19,14 +19,16 @@ and 11% of horizontal margin between each hexagon (2px if the hex side is 10px).
 The required shape for the pattern to be repeatable is that of a full
 hexagon surrounded by two quarters of hexagon at the top, and two at the bottom,
 as seen in this bad ASCII art:
-| |
-/ /\\
-/ / \\
-| |
-| |
-\\ / /
-\\/ /
-| |
+
+           |   |
+          / /\ \
+        / /   \ \
+         |    |
+         |    |
+        \\   /  /
+         \\/  /
+         |   |
+
 -}
 hexPattern =
     pattern

@@ -1,5 +1,31 @@
 module Ui.ProgressBar exposing (ProgressBarProps, docs, progressBarView)
 
+{-| A neon glow gradient progress bar with transparent body.
+
+CSS does not yet allow border gradients, so the common workaround is to make
+an element with gradient background, and cover it with an inner, smaller
+element with opaque background.
+This, however, does not allow a transparent body.
+
+The solution approached here is to divide the progress bar in 5 elements:
+
+1.  Left end semicircle, with color A.
+2.  Top border, a line with gradient A to B.
+3.  Progress line, with gradient A to B, offset so it overlaps with left and right ends.
+4.  Bottom border, with gradient A to B.
+5.  Right end semicircle, with color B.
+
+```
+ _______________________
+|   |_______2______|   |
+| 1 |_______3______| 5 |
+|___|_______4______|___|
+```
+
+Codepen implementation: <https://codepen.io/kwirke/pen/RwMPpzV>
+
+-}
+
 import Css exposing (..)
 import DesignSystem.Colors exposing (ColorPalette, accentBlue, accentGreen, backgroundPurple, neutral)
 import ElmBook
