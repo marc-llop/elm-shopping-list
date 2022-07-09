@@ -93,7 +93,10 @@ textInputView { value, onInput, attributes } =
                 ]
                 []
             , button
-                [ css (resetButtonStyles ++ [ displayFlex ]), HtmlEvt.onClick resetInput ]
+                [ css (resetButtonStyles ++ [ displayFlex ])
+                , HtmlEvt.onClick resetInput
+                , HtmlAttr.type_ "button"
+                ]
                 [ blueX iconOverInputStyle ]
             ]
         ]
