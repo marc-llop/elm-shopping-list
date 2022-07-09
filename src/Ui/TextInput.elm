@@ -117,14 +117,16 @@ textInputView { value, onInput, attributes } =
     in
     widthContainer
         [ div
-            (attributes ++ [ css textInputCardStyles ])
+            [ css textInputCardStyles ]
             [ blueChevron iconOverInputStyle
             , input
-                [ css (textInputStyles isEmpty)
-                , HtmlEvt.onInput onInput
-                , HtmlAttr.value value
-                , HtmlAttr.placeholder "_"
-                ]
+                (attributes
+                    ++ [ css (textInputStyles isEmpty)
+                       , HtmlEvt.onInput onInput
+                       , HtmlAttr.value value
+                       , HtmlAttr.placeholder "_"
+                       ]
+                )
                 []
             , button
                 [ css (resetButtonStyles ++ [ displayFlex ])
