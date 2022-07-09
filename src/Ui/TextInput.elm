@@ -1,4 +1,4 @@
-module Ui.TextInput exposing (TextInputProps, docs, textInputView)
+module Ui.TextInput exposing (ChapterModel, TextInputProps, chapterInitialState, docs, textInputView)
 
 import Css exposing (..)
 import Css.Transitions exposing (easeOut, transition)
@@ -6,12 +6,13 @@ import DesignSystem.ColorDecisions exposing (activeButtonTextColor, glassButtonG
 import DesignSystem.Colors exposing (..)
 import DesignSystem.Sizes exposing (cardBorderRadius, cardBoxShadow, itemFontSize)
 import ElmBook
-import ElmBook.Actions exposing (logAction)
-import ElmBook.Chapter exposing (chapter, renderComponentList)
+import ElmBook.Actions exposing (logAction, updateStateWith)
+import ElmBook.Chapter exposing (chapter, renderComponentList, renderStatefulComponent)
 import ElmBook.ElmCSS exposing (Chapter)
 import Html.Styled exposing (Html, input)
 import Html.Styled.Attributes as HtmlAttr exposing (css)
 import Html.Styled.Events as HtmlEvt
+import Svg.Styled.Attributes exposing (x)
 import Ui.Glassmorphism exposing (glassmorphism)
 
 
@@ -53,7 +54,29 @@ textInputView { value, onInput } =
         []
 
 
-docs : Chapter x
+
+-- DOCS
+
+
+type alias ChapterModel =
+    String
+
+
+type alias SharedState x =
+    { x | textInputModel : ChapterModel }
+
+
+chapterInitialState : ChapterModel
+chapterInitialState =
+    ""
+
+
+updateChapterState : String -> SharedState x -> SharedState x
+updateChapterState val x =
+    { x | textInputModel = val }
+
+
+docs : Chapter (SharedState x)
 docs =
     let
         props =
@@ -62,7 +85,10 @@ docs =
             }
     in
     chapter "TextInput"
-        |> renderComponentList
-            [ ( "Empty", textInputView props )
-            , ( "With text", textInputView { props | value = "Some input" } )
-            ]
+        |> renderStatefulComponent
+            (\{ textInputModel } ->
+                textInputView
+                    { value = textInputModel
+                    , onInput = updateStateWith updateChapterState
+                    }
+            )

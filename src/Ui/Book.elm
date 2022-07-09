@@ -4,8 +4,9 @@ import DesignSystem.ColorDecisions
 import DesignSystem.Colors
 import DesignSystem.Icons
 import DesignSystem.StyledIcons
-import ElmBook exposing (withChapterGroups, withThemeOptions)
-import ElmBook.ElmCSS exposing (Book, Chapter, book)
+import ElmBook exposing (withChapterGroups, withStatefulOptions, withThemeOptions)
+import ElmBook.ElmCSS exposing (Book, book)
+import ElmBook.StatefulOptions
 import ElmBook.ThemeOptions
 import Ui.Button
 import Ui.FloatingActionButton
@@ -16,10 +17,24 @@ import Ui.ProgressBar
 import Ui.TextInput
 
 
+type alias SharedState =
+    { textInputModel : Ui.TextInput.ChapterModel
+    }
+
+
+initialState : SharedState
+initialState =
+    { textInputModel = Ui.TextInput.chapterInitialState
+    }
+
+
 main =
     book "Components"
         |> withThemeOptions
             [ ElmBook.ThemeOptions.preferDarkMode
+            ]
+        |> withStatefulOptions
+            [ ElmBook.StatefulOptions.initialState initialState
             ]
         |> withChapterGroups
             [ ( "Design Tokens"
