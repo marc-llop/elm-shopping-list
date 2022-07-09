@@ -1,15 +1,15 @@
 module Ui.TextInput exposing (ChapterModel, TextInputProps, chapterInitialState, docs, textInputView)
 
 import Css exposing (..)
-import Css.Transitions exposing (easeOut, transition)
-import DesignSystem.ColorDecisions exposing (activeButtonTextColor, glassButtonGlowingBoxShadowColor)
+import DesignSystem.ColorDecisions exposing (activeButtonTextColor, glassButtonGlowingBoxShadowColor, inputTextColor, inputTextColorGlow)
 import DesignSystem.Colors exposing (..)
-import DesignSystem.Sizes exposing (cardBorderRadius, cardBoxShadow, itemFontSize)
+import DesignSystem.Sizes exposing (cardBorderRadius, cardBoxShadow, cardMargins, cardTextShadow, itemFontSize)
+import DesignSystem.StyledIcons exposing (blueChevron)
 import ElmBook
 import ElmBook.Actions exposing (logAction, updateStateWith)
 import ElmBook.Chapter exposing (chapter, renderComponentList, renderStatefulComponent)
 import ElmBook.ElmCSS exposing (Chapter)
-import Html.Styled exposing (Html, input)
+import Html.Styled exposing (Html, div, input)
 import Html.Styled.Attributes as HtmlAttr exposing (css)
 import Html.Styled.Events as HtmlEvt
 import Svg.Styled.Attributes exposing (x)
@@ -29,7 +29,8 @@ textInputStyles =
     , width (pct 100)
     , height (px 30)
     , padding2 (px 5) (px 5)
-    , textIndent (px 5)
+    , cardMargins
+    , textIndent (px 30)
     , fontSize itemFontSize
     , borderRadius cardBorderRadius
     , borderStyle none
@@ -40,21 +41,47 @@ textInputStyles =
         , saturationPct = 0
         }
     , cardBoxShadow (hex glassButtonGlowingBoxShadowColor)
-    , color (hex accentBlue.s200)
-    , textShadow4 zero zero (px 3) (hex accentBlue.s300)
+    , color (hex inputTextColor)
+    , cardTextShadow (hex inputTextColorGlow)
     ]
+
+
+type IconAlignment
+    = Left
+    | Right
+
+
+iconOverInputStyle : IconAlignment -> Style
+iconOverInputStyle alignment =
+    [ position absolute
+    , zIndex (int 1)
+    , top (px 5)
+    , (case alignment of
+        Left ->
+            left
+
+        Right ->
+            right
+      )
+        (px 10)
+    ]
+        |> Css.batch
 
 
 textInputView : TextInputProps msg -> Html msg
 textInputView { value, onInput, attributes } =
-    input
-        (attributes
-            ++ [ css textInputStyles
-               , HtmlEvt.onInput onInput
-               , HtmlAttr.value value
-               ]
-        )
-        []
+    div
+        [ css [ displayFlex, width (pct 100) ] ]
+        [ blueChevron (iconOverInputStyle Left)
+        , input
+            (attributes
+                ++ [ css textInputStyles
+                   , HtmlEvt.onInput onInput
+                   , HtmlAttr.value value
+                   ]
+            )
+            []
+        ]
 
 
 

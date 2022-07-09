@@ -1,11 +1,12 @@
 module DesignSystem.StyledIcons exposing (..)
 
 import Css exposing (..)
-import DesignSystem.ColorDecisions exposing (deleteIconColor, neutralTextColor)
+import DesignSystem.ColorDecisions exposing (deleteIconColor, inputTextColor, inputTextColorGlow, neutralTextColor)
 import DesignSystem.Colors exposing (accentBlue, accentGreen, red)
 import DesignSystem.Icons as Icons
 import ElmBook.Chapter exposing (chapter, renderComponentList)
 import ElmBook.ElmCSS exposing (Chapter)
+import Html.Styled exposing (Html)
 import NamedInterpolate exposing (interpolate)
 
 
@@ -47,6 +48,13 @@ blueGlow =
         ]
 
 
+shiningBlueGlow =
+    Css.batch
+        [ svgGlow inputTextColorGlow
+        , color (hex inputTextColor)
+        ]
+
+
 greenPlus =
     Icons.plus [ greenGlow, iconSize ]
 
@@ -73,6 +81,15 @@ blueEdit =
     Icons.edit2 [ blueGlow, iconSize ]
 
 
+blueChevron : Style -> Html msg
+blueChevron style =
+    Icons.chevronRight [ shiningBlueGlow, iconSize, style ]
+
+
+
+-- DOCS
+
+
 docs : Chapter x
 docs =
     chapter "StyledIcons"
@@ -82,4 +99,5 @@ docs =
             , ( "tickedCheck", tickedCheck )
             , ( "redTrash", redTrash )
             , ( "blueEdit", blueEdit )
+            , ( "blueChevron", blueChevron (Css.batch []) )
             ]

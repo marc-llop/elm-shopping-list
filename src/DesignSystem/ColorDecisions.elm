@@ -13,6 +13,14 @@ neutralTextColor =
     neutral.s300
 
 
+inputTextColor =
+    accentBlue.s200
+
+
+inputTextColorGlow =
+    accentBlue.s300
+
+
 glassButtonGlowingColor : GlassmorphismProps
 glassButtonGlowingColor =
     { color = accentBlue.s500

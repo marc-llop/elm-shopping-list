@@ -3,7 +3,7 @@ module Ui.Item exposing (..)
 import Css exposing (..)
 import DesignSystem.ColorDecisions exposing (..)
 import DesignSystem.Colors exposing (accentBlue, backgroundPurple, neutral)
-import DesignSystem.Sizes exposing (boxShadowOffset, cardBorderRadius, cardBoxShadow, itemFontSize)
+import DesignSystem.Sizes exposing (cardBorderRadius, cardBoxShadow, cardMargins, cardTextShadow, itemFontSize)
 import DesignSystem.StyledIcons exposing (blueEdit, greenPlus, redTrash, tickedCheck, untickedCheck)
 import ElmBook.Actions exposing (logAction)
 import ElmBook.Chapter exposing (chapter, renderComponentList)
@@ -160,12 +160,12 @@ itemStyle state =
     , Css.height (px 60)
     , paddingLeft (px 15)
     , paddingRight (px 15)
-    , margin4 (px 3) (px 7) (px 5) (px 5)
+    , cardMargins
     , borderRadius cardBorderRadius
     , cardBoxShadow (hex boxShadowColor)
+    , cardTextShadow (hex textShadowColor)
     , fontSize itemFontSize
     , color (hex textColor)
-    , textShadow4 zero zero (px 3) (hex textShadowColor)
     , cursor pointer
     , hover
         (if state == ToAdd then
