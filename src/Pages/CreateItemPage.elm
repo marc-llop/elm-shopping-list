@@ -1,6 +1,6 @@
 module Pages.CreateItemPage exposing (..)
 
-import Css exposing (displayFlex, marginRight, pct, px)
+import Css exposing (displayFlex, marginRight, pct, px, vh)
 import DesignSystem.StyledIcons as Icons
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
@@ -138,28 +138,50 @@ applyIfCreateItemPage model fn =
             model
 
 
+pageStyles =
+    [ Css.width (pct 100)
+    , Css.height (vh 100)
+    ]
+
+
+formStyles =
+    [ Css.width (pct 100)
+    , Css.height (px 150)
+    ]
+
+
+matchesListStyles =
+    [ Css.width (pct 100)
+    , Css.height (Css.calc (vh 100) Css.minus (px 150))
+    , Css.overflow Css.scroll
+    ]
+
+
 createItemView : Model -> Item -> Html CreateItemFormMsg
 createItemView model newItem =
-    Html.Styled.form
-        [ onSubmit SubmitItem
-        , dataTestId "CreateItem"
-        , css [ Css.width (pct 100) ]
-        ]
-        [ textInputView
-            { onInput = InputNewItemTitle
-            , value = newItem.title
-            , attributes = [ id createItemAutofocusId, dataTestId "CreateItem-TextInput" ]
-            }
-        , Ui.Button.button
-            { buttonType = Submit
-            , label = "Afegeix l'element"
-            , isEnabled = not (String.isEmpty newItem.title)
-            }
-        , Ui.Button.button
-            { buttonType = Button CancelCreate
-            , label = "Cancel·la"
-            , isEnabled = True
-            }
+    Html.Styled.div
+        [ css pageStyles ]
+        [ Html.Styled.form
+            [ onSubmit SubmitItem
+            , dataTestId "CreateItem"
+            , css formStyles
+            ]
+            [ textInputView
+                { onInput = InputNewItemTitle
+                , value = newItem.title
+                , attributes = [ id createItemAutofocusId, dataTestId "CreateItem-TextInput" ]
+                }
+            , Ui.Button.button
+                { buttonType = Submit
+                , label = "Afegeix l'element"
+                , isEnabled = not (String.isEmpty newItem.title)
+                }
+            , Ui.Button.button
+                { buttonType = Button CancelCreate
+                , label = "Cancel·la"
+                , isEnabled = True
+                }
+            ]
         , matchesListView model newItem
         ]
 
@@ -208,7 +230,7 @@ matchesListView model newItem =
         matches =
             itemsMatching newItem.title model
     in
-    div [ dataTestId "MatchesList", css [ Css.width (pct 100) ] ]
+    div [ dataTestId "MatchesList", css matchesListStyles ]
         [ checklistView
             { pending = matches
             , done = []
