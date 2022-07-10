@@ -34,6 +34,7 @@ import ElmBook.ElmCSS exposing (Chapter)
 import Html.Styled exposing (Html, div)
 import Html.Styled.Attributes exposing (css)
 import NamedInterpolate exposing (interpolate)
+import Utils exposing (transparencyBackground)
 
 
 type alias ProgressBarProps =
@@ -286,14 +287,19 @@ docs =
             , colorLeft = backgroundPurple
             , colorRight = neutral
             }
+
+        barWithBackground p =
+            transparencyBackground
+                { width = 600, height = 60 }
+                (progressBarView p)
     in
     chapter "ProgressBar"
         |> renderComponentList
-            [ ( "100%", progressBarView props )
-            , ( "Purple-Blue", progressBarView { props | colorRight = accentBlue } )
-            , ( "Neutral-Green", progressBarView { props | colorRight = accentGreen, colorLeft = neutral } )
-            , ( "75%", progressBarView { props | progress = 75 } )
-            , ( "25%", progressBarView { props | progress = 25 } )
-            , ( "1%", progressBarView { props | progress = 1 } )
-            , ( "0%", progressBarView { props | progress = 0 } )
+            [ ( "100%", barWithBackground props )
+            , ( "Purple-Blue", barWithBackground { props | colorRight = accentBlue } )
+            , ( "Neutral-Green", barWithBackground { props | colorRight = accentGreen, colorLeft = neutral } )
+            , ( "75%", barWithBackground { props | progress = 75 } )
+            , ( "25%", barWithBackground { props | progress = 25 } )
+            , ( "1%", barWithBackground { props | progress = 1 } )
+            , ( "0%", barWithBackground { props | progress = 0 } )
             ]
