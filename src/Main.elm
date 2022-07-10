@@ -71,12 +71,12 @@ init :
 init json =
     let
         model =
-            D.decodeValue decodeModel json
+            D.decodeValue (decodeModel initialItemsList) json
                 |> Result.toMaybe
                 |> Maybe.withDefault
                     (initModel
                         "backgroundTextureUrl not found"
-                        initialItemsList
+                        (OpaqueDict.empty ItemModel.itemIdToString)
                         (OpaqueDict.empty ItemModel.itemIdToString)
                     )
     in

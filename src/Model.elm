@@ -45,16 +45,19 @@ encodeModel model =
         ]
 
 
-decodeModel : D.Decoder Model
-decodeModel =
+decodeModel : OpaqueDict ItemId Item -> D.Decoder Model
+decodeModel initialPendingDict =
     let
         decodeDict =
             OpaqueDict.decode decodeItemIdFromString itemIdToString decodeItem
+
+        emptyDict =
+            OpaqueDict.empty itemIdToString
     in
     D.map3 initModel
         (D.field "backgroundTextureUrl" D.string)
-        (D.field "pending" decodeDict)
-        (D.field "done" decodeDict)
+        (D.maybe (D.field "pending" decodeDict) |> D.map (Maybe.withDefault initialPendingDict))
+        (D.maybe (D.field "done" decodeDict) |> D.map (Maybe.withDefault emptyDict))
 
 
 type alias ItemsInModel a =
