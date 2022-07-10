@@ -1,6 +1,7 @@
 module Pages.CreateItemPage exposing (..)
 
 import Css exposing (displayFlex, marginRight, pct, px, vh)
+import DesignSystem.Sizes exposing (formHeight)
 import DesignSystem.StyledIcons as Icons
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
@@ -146,13 +147,25 @@ pageStyles =
 
 formStyles =
     [ Css.width (pct 100)
-    , Css.height (px 150)
+    , Css.height formHeight
+    , displayFlex
+    , Css.flexDirection Css.column
+    ]
+
+
+buttonRowStyles =
+    [ displayFlex
+    , Css.height (pct 100)
+    , Css.property "column-gap" "10%"
+    , Css.justifyContent Css.center
+    , Css.paddingTop (px 25)
+    , Css.paddingBottom (px 30)
     ]
 
 
 matchesListStyles =
     [ Css.width (pct 100)
-    , Css.height (Css.calc (vh 100) Css.minus (px 150))
+    , Css.height (Css.calc (vh 100) Css.minus formHeight)
     , Css.overflow Css.scroll
     ]
 
@@ -171,16 +184,19 @@ createItemView model newItem =
                 , value = newItem.title
                 , attributes = [ id createItemAutofocusId, dataTestId "CreateItem-TextInput" ]
                 }
-            , Ui.Button.button
-                { buttonType = Submit
-                , label = "Afegeix l'element"
-                , isEnabled = not (String.isEmpty newItem.title)
-                }
-            , Ui.Button.button
-                { buttonType = Button CancelCreate
-                , label = "Cancel·la"
-                , isEnabled = True
-                }
+            , div
+                [ css buttonRowStyles ]
+                [ Ui.Button.button
+                    { buttonType = Submit
+                    , label = "Afegeix l'element"
+                    , isEnabled = not (String.isEmpty newItem.title)
+                    }
+                , Ui.Button.button
+                    { buttonType = Button CancelCreate
+                    , label = "Cancel·la"
+                    , isEnabled = True
+                    }
+                ]
             ]
         , matchesListView model newItem
         ]

@@ -29,3 +29,7 @@ listFontSize =
 
 cardMargins =
     margin4 (px 3) (px 7) (px 5) (px 5)
+
+
+formHeight =
+    px 150
