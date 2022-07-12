@@ -5,7 +5,7 @@ import DesignSystem.Sizes exposing (formHeight)
 import DesignSystem.StyledIcons as Icons
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
-import Html.Styled.Events exposing (onClick, onInput, onSubmit)
+import Html.Styled.Events exposing (onInput)
 import ItemModel exposing (IdItemPair, Item, ItemId, itemIdGenerator)
 import Maybe.Extra
 import Model exposing (..)
@@ -16,10 +16,9 @@ import Search
 import String.Deburr exposing (deburr)
 import Svg.Styled exposing (title)
 import Time
-import Ui.Button exposing (ButtonType(..))
 import Ui.Checklist exposing (checklistView)
 import Ui.Item exposing (itemView)
-import Ui.TextInput exposing (textInputView)
+import Ui.ItemForm exposing (itemFormView)
 import Utils exposing (dataTestId)
 
 
@@ -145,24 +144,6 @@ pageStyles =
     ]
 
 
-formStyles =
-    [ Css.width (pct 100)
-    , Css.height formHeight
-    , displayFlex
-    , Css.flexDirection Css.column
-    ]
-
-
-buttonRowStyles =
-    [ displayFlex
-    , Css.height (pct 100)
-    , Css.property "column-gap" "10%"
-    , Css.justifyContent Css.center
-    , Css.paddingTop (px 25)
-    , Css.paddingBottom (px 30)
-    ]
-
-
 matchesListStyles =
     [ Css.width (pct 100)
     , Css.height (Css.calc (vh 100) Css.minus formHeight)
@@ -174,30 +155,19 @@ createItemView : Model -> Item -> Html CreateItemFormMsg
 createItemView model newItem =
     Html.Styled.div
         [ css pageStyles ]
-        [ Html.Styled.form
-            [ onSubmit SubmitItem
-            , dataTestId "CreateItem"
-            , css formStyles
-            ]
-            [ textInputView
+        [ itemFormView
+            { submit = SubmitItem
+            , cancel = CancelCreate
+            , dataTestId = "CreateItem"
+            , inputProps =
                 { onInput = InputNewItemTitle
                 , value = newItem.title
                 , attributes = [ id createItemAutofocusId, dataTestId "CreateItem-TextInput" ]
                 }
-            , div
-                [ css buttonRowStyles ]
-                [ Ui.Button.button
-                    { buttonType = Submit
-                    , label = "Afegeix l'element"
-                    , isEnabled = not (String.isEmpty newItem.title)
-                    }
-                , Ui.Button.button
-                    { buttonType = Button CancelCreate
-                    , label = "Cancel·la"
-                    , isEnabled = True
-                    }
-                ]
-            ]
+            , submitButtonLabel = "Afegeix l'element"
+            , cancelButtonLabel = "Cancel·la"
+            , isSubmitEnabled = not (String.isEmpty newItem.title)
+            }
         , matchesListView model newItem
         ]
 
