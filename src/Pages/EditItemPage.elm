@@ -1,15 +1,12 @@
 module Pages.EditItemPage exposing (EditItemFormMsg(..), editItemView, update)
 
-import Css exposing (pct)
-import Html.Styled exposing (Html, form, input)
-import Html.Styled.Attributes exposing (css, id, value)
-import Html.Styled.Events exposing (onInput, onSubmit)
+import Html.Styled exposing (Html)
+import Html.Styled.Attributes exposing (id)
 import ItemModel exposing (Item, ItemId)
 import Model exposing (Model)
 import OpaqueDict exposing (OpaqueDict)
 import Page exposing (Page(..), editItemAutofocusId)
-import Ui.Button exposing (ButtonType(..))
-import Ui.TextInput exposing (textInputView)
+import Ui.ItemForm exposing (itemFormView)
 import Utils exposing (dataTestId)
 
 
@@ -62,26 +59,21 @@ editItem id item =
 
 editItemView : ItemId -> Item -> Item -> Html EditItemFormMsg
 editItemView itemId item originalItem =
-    form
-        [ dataTestId "EditItem"
-        , onSubmit (EditItem itemId item)
-        , css [ Css.width (pct 100) ]
-        ]
-        [ textInputView
+    let
+        isSubmitEnabled =
+            not (String.isEmpty item.title)
+                && (item.title /= originalItem.title)
+    in
+    itemFormView
+        { submit = EditItem itemId item
+        , cancel = CancelEdit
+        , dataTestId = "EditItem"
+        , inputProps =
             { onInput = InputEditedItemTitle
             , value = item.title
             , attributes = [ id editItemAutofocusId, dataTestId "EditItem-TextInput" ]
             }
-        , Ui.Button.button
-            { buttonType = Submit
-            , label = "Desa els canvis"
-            , isEnabled =
-                not (String.isEmpty item.title)
-                    && (item.title /= originalItem.title)
-            }
-        , Ui.Button.button
-            { buttonType = Button CancelEdit
-            , label = "Cancel·la"
-            , isEnabled = True
-            }
-        ]
+        , cancelButtonLabel = "Cancel·la"
+        , submitButtonLabel = "Desa els canvis"
+        , isSubmitEnabled = isSubmitEnabled
+        }
