@@ -1,4 +1,4 @@
-module Ui.Button exposing (ButtonType(..), button, docs)
+module Ui.Button exposing (ButtonProps, ButtonType(..), button, docs)
 
 import Css exposing (..)
 import Css.Transitions exposing (easeOut, transition)
@@ -139,6 +139,13 @@ type ButtonType msg
     | Button msg
 
 
+type alias ButtonProps msg =
+    { label : String
+    , buttonType : ButtonType msg
+    , isEnabled : Bool
+    }
+
+
 stylableButton :
     { label : String
     , buttonType : ButtonType msg
@@ -174,12 +181,7 @@ stylableButton { label, buttonType, isEnabled, customStyle } =
         [ span [] [ text label ] ]
 
 
-button :
-    { label : String
-    , buttonType : ButtonType msg
-    , isEnabled : Bool
-    }
-    -> Html msg
+button : ButtonProps msg -> Html msg
 button { label, buttonType, isEnabled } =
     stylableButton
         { label = label
