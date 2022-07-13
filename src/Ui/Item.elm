@@ -11,7 +11,7 @@ import ElmBook.ElmCSS exposing (Chapter)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onClick, stopPropagationOn)
-import ItemModel exposing (Item, ItemId, newFakeItem)
+import ItemModel exposing (Item, ItemId, ItemStatus(..), itemId, newFakeItem)
 import Json.Decode
 import Ui.Glassmorphism exposing (glassmorphism)
 import Ui.StyleResets exposing (resetButtonStyles)
@@ -31,8 +31,7 @@ type alias WriteEvents msg =
 
 
 type alias ItemProps msg =
-    { itemId : ItemId
-    , item : Item
+    { item : Item
     , state : ItemState msg
     , onTick : ItemId -> msg
     }
@@ -60,11 +59,11 @@ iconButtonView evt icon =
 
 
 itemView : ItemProps msg -> Html msg
-itemView { itemId, item, state, onTick } =
+itemView { item, state, onTick } =
     let
         writeButtonElems { onEdit, onRemove } =
-            [ iconButtonView (onRemove itemId) redTrash
-            , iconButtonView (onEdit itemId item) blueEdit
+            [ iconButtonView (onRemove (itemId item)) redTrash
+            , iconButtonView (onEdit (itemId item) item) blueEdit
             ]
 
         writeButtons =
@@ -81,10 +80,10 @@ itemView { itemId, item, state, onTick } =
     li
         [ dataTestId (stateToDataTestId state)
         , css (itemStyle state)
-        , onClick (onTick itemId)
+        , onClick (onTick (itemId item))
         ]
         ([ checkboxView state
-         , span [ css [ itemTitleStyle ] ] [ text item.title ]
+         , span [ css [ itemTitleStyle ] ] [ text (ItemModel.title item) ]
          ]
             ++ writeButtons
         )
@@ -191,12 +190,11 @@ docs =
             , onEdit = \_ _ -> logAction "Edit clicked"
             }
 
-        ( fakeId, fakeItem ) =
-            newFakeItem 42 "Milk"
+        fakeItem =
+            newFakeItem "Milk" Unticked
 
         props =
-            { itemId = fakeId
-            , item = fakeItem
+            { item = fakeItem
             , state = Pending writeEvents
             , onTick = \_ -> logAction "Ticked"
             }
