@@ -8,10 +8,10 @@ import DesignSystem.Sizes exposing (cardBorderRadius, cardBoxShadow, cardMargins
 import DesignSystem.StyledIcons exposing (blueChevron, blueX)
 import ElmBook
 import ElmBook.Actions exposing (logAction, updateStateWith)
-import ElmBook.Chapter exposing (chapter, renderComponentList, renderStatefulComponent)
+import ElmBook.Chapter exposing (chapter, renderComponent, renderComponentList, renderStatefulComponent, renderStatefulComponentList)
 import ElmBook.ElmCSS exposing (Chapter)
 import Html.Attributes exposing (placeholder)
-import Html.Styled exposing (Html, button, div, input)
+import Html.Styled exposing (Html, a, button, div, input)
 import Html.Styled.Attributes as HtmlAttr exposing (css)
 import Html.Styled.Events as HtmlEvt
 import Svg.Styled.Attributes exposing (x)
@@ -23,33 +23,50 @@ type alias TextInputProps msg =
     { value : String
     , onInput : String -> msg
     , attributes : List (Html.Styled.Attribute msg)
+    , hasError : Bool
     }
 
 
-textInputCardStyles : List Style
-textInputCardStyles =
+cardBackground : Bool -> Style
+cardBackground hasError =
+    let
+        choose : a -> a -> a
+        choose a b =
+            if hasError then
+                a
+
+            else
+                b
+    in
+    Css.batch
+        [ glassmorphism
+            { color = choose red accentBlue.s800
+            , opacityPct = choose 20 0
+            , blurPx = 12
+            , saturationPct = 0
+            }
+        , pseudoClass "focus-within"
+            [ glassmorphism
+                { color = choose red accentBlue.s750
+                , opacityPct = choose 30 50
+                , blurPx = 12
+                , saturationPct = 50
+                }
+            ]
+        ]
+
+
+textInputCardStyles : Style -> List Style
+textInputCardStyles glass =
     [ displayFlex
     , width (pct 100)
     , height (px 30)
     , alignItems center
     , borderRadius cardBorderRadius
-    , glassmorphism
-        { color = accentBlue.s800
-        , opacityPct = 0
-        , blurPx = 12
-        , saturationPct = 0
-        }
     , cardBoxShadow (hex glassButtonGlowingBoxShadowColor)
     , cardMargins
     , padding2 (px 5) (px 10)
-    , pseudoClass "focus-within"
-        [ glassmorphism
-            { color = accentBlue.s750
-            , opacityPct = 50
-            , blurPx = 12
-            , saturationPct = 50
-            }
-        ]
+    , glass
     ]
 
 
@@ -107,17 +124,20 @@ widthContainer kids =
 
 
 textInputView : TextInputProps msg -> Html msg
-textInputView { value, onInput, attributes } =
+textInputView { value, onInput, attributes, hasError } =
     let
         resetInput =
             onInput ""
 
         isEmpty =
             value == ""
+
+        cardStyles =
+            textInputCardStyles (cardBackground hasError)
     in
     widthContainer
         [ div
-            [ css textInputCardStyles ]
+            [ css cardStyles ]
             [ blueChevron iconOverInputStyle
             , input
                 (attributes
@@ -162,18 +182,24 @@ updateChapterState val x =
 
 docs : Chapter (SharedState x)
 docs =
-    let
-        props =
-            { value = ""
-            , onInput = \s -> logAction ("inputted: " ++ s)
-            }
-    in
     chapter "TextInput"
-        |> renderStatefulComponent
-            (\{ textInputModel } ->
-                textInputView
-                    { value = textInputModel
-                    , onInput = updateStateWith updateChapterState
-                    , attributes = []
-                    }
-            )
+        |> renderStatefulComponentList
+            [ ( "Default"
+              , \{ textInputModel } ->
+                    textInputView
+                        { value = textInputModel
+                        , onInput = updateStateWith updateChapterState
+                        , attributes = []
+                        , hasError = False
+                        }
+              )
+            , ( "With error"
+              , \{ textInputModel } ->
+                    textInputView
+                        { value = textInputModel
+                        , onInput = updateStateWith updateChapterState
+                        , attributes = []
+                        , hasError = True
+                        }
+              )
+            ]
