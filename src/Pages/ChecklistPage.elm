@@ -1,10 +1,11 @@
 module Pages.ChecklistPage exposing (ChecklistMsg(..), checklistPageView, update)
 
 import Browser.Dom
+import ChecklistModel exposing (Checklist, remove, tick, untick)
 import Css exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
-import ItemModel exposing (..)
+import ItemModel exposing (Item, ItemId)
 import Model exposing (Model, sortItems)
 import OpaqueDict exposing (OpaqueDict)
 import Page exposing (..)
@@ -19,7 +20,7 @@ type ChecklistMsg
     = Tick ItemId
     | Untick ItemId
     | OpenCreateItem
-    | OpenEditItem ItemId Item
+    | OpenEditItem Item
     | RemoveItem ItemId
     | NoOp
 
@@ -28,25 +29,15 @@ update : ChecklistMsg -> Model -> ( Model, Cmd ChecklistMsg )
 update msg model =
     case ( msg, model.currentPage ) of
         ( Tick itemId, ChecklistPage ) ->
-            let
-                ( newPending, newDone ) =
-                    Model.move itemId model.pending model.done
-            in
             ( { model
-                | pending = newPending
-                , done = newDone
+                | checklist = tick itemId model.checklist
               }
             , Cmd.none
             )
 
         ( Untick itemId, ChecklistPage ) ->
-            let
-                ( newDone, newPending ) =
-                    Model.move itemId model.done model.pending
-            in
             ( { model
-                | pending = newPending
-                , done = newDone
+                | checklist = untick itemId model.checklist
               }
             , Cmd.none
             )
@@ -58,15 +49,14 @@ update msg model =
             , Task.attempt (\_ -> NoOp) (Browser.Dom.focus createItemAutofocusId)
             )
 
-        ( OpenEditItem itemId item, ChecklistPage ) ->
-            ( { model | currentPage = EditItemPage itemId item item }
+        ( OpenEditItem item, ChecklistPage ) ->
+            ( { model | currentPage = EditItemPage item { title = ItemModel.title item } }
             , Task.attempt (\_ -> NoOp) (Browser.Dom.focus editItemAutofocusId)
             )
 
         ( RemoveItem itemId, ChecklistPage ) ->
             ( { model
-                | pending = OpaqueDict.remove itemId model.pending
-                , done = OpaqueDict.remove itemId model.done
+                | checklist = remove itemId model.checklist
               }
             , Cmd.none
             )
@@ -75,24 +65,16 @@ update msg model =
             ( model, Cmd.none )
 
 
-resetItemForm : Item
+resetItemForm : { title : String }
 resetItemForm =
     { title = "" }
 
 
-checklistPageView : Model -> Html ChecklistMsg
-checklistPageView { pending, done } =
-    let
-        pendingItems =
-            itemDictToList pending
-
-        doneItems =
-            itemDictToList done
-    in
+checklistPageView : Checklist -> Html ChecklistMsg
+checklistPageView checklist =
     div [ dataTestId "ChecklistPage", css [ Css.width (pct 100) ] ]
         [ checklistView
-            { pending = pendingItems
-            , done = doneItems
+            { checklist = checklist
             , pendingItemView = pendingItemView
             , doneItemView = doneItemView
             }
@@ -100,19 +82,10 @@ checklistPageView { pending, done } =
         ]
 
 
-{-| Returns the (id, item) pairs alphabetically sorted by item title
--}
-itemDictToList : OpaqueDict ItemId Item -> List IdItemPair
-itemDictToList dict =
-    OpaqueDict.toList dict
-        |> sortItems
-
-
-pendingItemView : ( ItemId, Item ) -> Html ChecklistMsg
-pendingItemView ( itemId, item ) =
+pendingItemView : Item -> Html ChecklistMsg
+pendingItemView item =
     itemView
-        { itemId = itemId
-        , item = item
+        { item = item
         , state =
             Ui.Item.Pending
                 { onRemove = RemoveItem
@@ -122,11 +95,10 @@ pendingItemView ( itemId, item ) =
         }
 
 
-doneItemView : ( ItemId, Item ) -> Html ChecklistMsg
-doneItemView ( itemId, item ) =
+doneItemView : Item -> Html ChecklistMsg
+doneItemView item =
     itemView
-        { itemId = itemId
-        , item = item
+        { item = item
         , state =
             Ui.Item.Done
                 { onRemove = RemoveItem

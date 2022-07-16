@@ -26,7 +26,7 @@ type ItemState msg
 
 type alias WriteEvents msg =
     { onRemove : ItemId -> msg
-    , onEdit : ItemId -> Item -> msg
+    , onEdit : Item -> msg
     }
 
 
@@ -63,7 +63,7 @@ itemView { item, state, onTick } =
     let
         writeButtonElems { onEdit, onRemove } =
             [ iconButtonView (onRemove (itemId item)) redTrash
-            , iconButtonView (onEdit (itemId item) item) blueEdit
+            , iconButtonView (onEdit item) blueEdit
             ]
 
         writeButtons =
@@ -187,7 +187,7 @@ docs =
     let
         writeEvents =
             { onRemove = \_ -> logAction "Removed"
-            , onEdit = \_ _ -> logAction "Edit clicked"
+            , onEdit = \_ -> logAction "Edit clicked"
             }
 
         fakeItem =
