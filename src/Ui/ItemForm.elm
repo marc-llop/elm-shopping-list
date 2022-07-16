@@ -1,7 +1,8 @@
 module Ui.ItemForm exposing (ItemFormProps, ItemFormType(..), Msg(..), docs, itemFormView)
 
 import Css exposing (displayFlex, pct, px)
-import DesignSystem.Sizes exposing (formHeight)
+import DesignSystem.Colors exposing (red)
+import DesignSystem.Sizes exposing (formHeight, itemFontSize)
 import ElmBook
 import ElmBook.Actions exposing (logAction)
 import ElmBook.Chapter exposing (chapter, renderComponentList)
@@ -98,6 +99,11 @@ itemFormView props =
                 ]
             , hasError = hasError props
             }
+        , if hasError props then
+            errorMessage
+
+          else
+            text ""
         , div
             [ css buttonRowStyles ]
             [ Ui.Button.button
@@ -112,6 +118,23 @@ itemFormView props =
                 }
             ]
         ]
+
+
+errorMessage : Html msg
+errorMessage =
+    span
+        [ css errorMessageStyles ]
+        [ text "Ja hi ha una entrada amb aquest nom." ]
+
+
+errorMessageStyles =
+    [ Css.displayFlex
+    , Css.color (Css.hex "#fee")
+    , Css.textShadow4 Css.zero Css.zero (px 3) (Css.hex red)
+    , Css.fontSize itemFontSize
+    , Css.margin4 (px 5) Css.zero Css.zero Css.zero
+    , Css.paddingLeft (px 48)
+    ]
 
 
 formStyles =
