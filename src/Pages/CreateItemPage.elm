@@ -1,17 +1,14 @@
 module Pages.CreateItemPage exposing (..)
 
+import ChecklistModel exposing (Checklist)
 import Css exposing (displayFlex, marginRight, pct, px, vh)
 import DesignSystem.Sizes exposing (formHeight)
 import DesignSystem.StyledIcons as Icons
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
-import Html.Styled.Events exposing (onInput)
-import ItemModel exposing (IdItemPair, Item, ItemId, itemIdGenerator)
-import Maybe.Extra
+import ItemModel exposing (Item, ItemId)
 import Model exposing (..)
-import OpaqueDict exposing (OpaqueDict)
 import Page exposing (Page(..), createItemAutofocusId)
-import Random
 import Search
 import String.Deburr exposing (deburr)
 import Svg.Styled exposing (title)
@@ -24,102 +21,41 @@ import Utils exposing (dataTestId)
 
 type CreateItemFormMsg
     = InputNewItemTitle String
-    | CreateItem ItemId
-    | SubmitItem
+    | CreateItem
     | RetickItem ItemId
     | CancelCreate
-
-
-findItemByTitle : String -> List IdItemPair -> Maybe ItemId
-findItemByTitle title list =
-    let
-        normalize =
-            String.toLower
-    in
-    case list of
-        [] ->
-            Nothing
-
-        ( id, item ) :: rest ->
-            if normalize item.title == normalize title then
-                Just id
-
-            else
-                findItemByTitle title rest
-
-
-findItemByTitleInChecklist : String -> PendingDict -> DoneDict -> Maybe ItemId
-findItemByTitleInChecklist title pending done =
-    let
-        findIn =
-            findItemByTitle title
-
-        maybePendingItem =
-            findIn (OpaqueDict.toList pending)
-
-        maybeDoneItem =
-            findIn (OpaqueDict.toList done)
-    in
-    Maybe.Extra.or maybePendingItem maybeDoneItem
-
-
-untickOrAddAsPending :
-    IdItemPair
-    -> { a | pending : PendingDict, done : DoneDict }
-    -> { a | pending : PendingDict, done : DoneDict }
-untickOrAddAsPending ( id, item ) ({ pending, done } as model) =
-    case findItemByTitleInChecklist item.title pending done of
-        Nothing ->
-            { model
-                | pending = OpaqueDict.insert id item pending
-                , done = done
-            }
-
-        Just previousId ->
-            move previousId done pending
-                |> (\( newDone, newPending ) ->
-                        { model
-                            | pending = newPending
-                            , done = newDone
-                        }
-                   )
 
 
 update : CreateItemFormMsg -> Model -> ( Model, Cmd CreateItemFormMsg )
 update msg model =
     case msg of
-        InputNewItemTitle title ->
+        InputNewItemTitle newTitle ->
             ( applyIfCreateItemPage model
-                (\item -> { model | currentPage = CreateItemPage { item | title = title } })
+                (\_ -> { model | currentPage = CreateItemPage { title = newTitle } })
             , Cmd.none
             )
 
-        SubmitItem ->
-            ( model, Random.generate CreateItem itemIdGenerator )
-
-        CreateItem itemId ->
+        CreateItem ->
             ( applyIfCreateItemPage model
-                (\item ->
+                (\{ title } ->
                     let
-                        newModel =
-                            untickOrAddAsPending ( itemId, item ) model
+                        newChecklist =
+                            ChecklistModel.insert
+                                (ItemModel.newItem title)
+                                model.checklist
                     in
-                    { newModel
+                    { model
                         | currentPage = ChecklistPage
+                        , checklist = newChecklist
                     }
                 )
             , Cmd.none
             )
 
         RetickItem itemId ->
-            let
-                ( newDone, newPending ) =
-                    move itemId model.done model.pending
-            in
             ( { model
                 | currentPage = ChecklistPage
-                , pending = newPending
-                , done = newDone
+                , checklist = ChecklistModel.tick itemId model.checklist
               }
             , Cmd.none
             )
@@ -128,7 +64,7 @@ update msg model =
             ( { model | currentPage = ChecklistPage }, Cmd.none )
 
 
-applyIfCreateItemPage : Model -> (Item -> Model) -> Model
+applyIfCreateItemPage : Model -> ({ title : String } -> Model) -> Model
 applyIfCreateItemPage model fn =
     case model.currentPage of
         CreateItemPage item ->
@@ -161,7 +97,7 @@ createItemView model { title } =
                     InputNewItemTitle s
 
                 Ui.ItemForm.Submit ->
-                    SubmitItem
+                    CreateItem
 
                 Ui.ItemForm.Cancel ->
                     CancelCreate
@@ -189,25 +125,26 @@ type alias IndexableItem =
     }
 
 
-itemToDatum : IdItemPair -> IndexableItem
-itemToDatum ( itemId, item ) =
-    { id = itemId
-    , content = deburr item.title
-    , title = item.title
+itemToDatum : Item -> IndexableItem
+itemToDatum item =
+    { id = ItemModel.itemId item
+    , content = deburr (ItemModel.title item)
+    , title = ItemModel.title item
     , dateTime = Time.millisToPosix 0
     }
 
 
-datumToItem : IndexableItem -> IdItemPair
+datumToItem : IndexableItem -> Item
 datumToItem { id, content, title, dateTime } =
-    ( id, { title = title } )
+    ItemModel.newItem title
 
 
-itemsMatching : String -> Model.ItemsInModel a -> List IdItemPair
-itemsMatching newItemTitle model =
+itemsMatching : String -> Checklist -> Checklist
+itemsMatching newItemTitle checklist =
     let
         items =
-            allItems model |> List.map itemToDatum
+            ChecklistModel.toList checklist
+                |> List.map itemToDatum
 
         allMatchedItems =
             Search.search
@@ -216,19 +153,18 @@ itemsMatching newItemTitle model =
                 items
     in
     List.map datumToItem allMatchedItems
-        |> sortItems
+        |> ChecklistModel.fromList
 
 
-matchesListView : Model -> Item -> Html CreateItemFormMsg
-matchesListView model newItem =
+matchesListView : Model -> String -> Html CreateItemFormMsg
+matchesListView model title =
     let
         matches =
-            itemsMatching newItem.title model
+            itemsMatching title model.checklist
     in
     div [ dataTestId "MatchesList", css matchesListStyles ]
         [ checklistView
-            { pending = matches
-            , done = []
+            { checklist = matches
             , pendingItemView = matchedItemView
             , doneItemView = matchedItemView
             }
@@ -242,11 +178,10 @@ addIcon =
         [ Icons.greenPlus ]
 
 
-matchedItemView : IdItemPair -> Html CreateItemFormMsg
-matchedItemView ( itemId, item ) =
+matchedItemView : Item -> Html CreateItemFormMsg
+matchedItemView item =
     itemView
-        { itemId = itemId
-        , item = item
+        { item = item
         , state = Ui.Item.ToAdd
         , onTick = RetickItem
         }

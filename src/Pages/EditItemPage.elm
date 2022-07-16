@@ -1,38 +1,44 @@
 module Pages.EditItemPage exposing (EditItemFormMsg(..), editItemView, update)
 
+import ChecklistModel exposing (Checklist)
 import Html.Styled exposing (Html)
 import Html.Styled.Attributes exposing (id)
 import ItemModel exposing (Item, ItemId)
 import Model exposing (Model)
-import OpaqueDict exposing (OpaqueDict)
 import Page exposing (Page(..), editItemAutofocusId)
 import Ui.ItemForm exposing (itemFormView)
-import Utils exposing (dataTestId)
 
 
 type EditItemFormMsg
     = InputEditedItemTitle String
-    | EditItem ItemId Item
+    | EditItem
     | CancelEdit
 
 
 update : EditItemFormMsg -> Model -> ( Model, Cmd EditItemFormMsg )
 update msg model =
     case msg of
-        EditItem itemId item ->
-            ( { model
-                | currentPage = ChecklistPage
-                , pending = editItem itemId item model.pending
-                , done = editItem itemId item model.done
-              }
+        EditItem ->
+            let
+                updateModel itemId newItem =
+                    { model
+                        | currentPage = ChecklistPage
+                        , checklist = ChecklistModel.replace itemId newItem model.checklist
+                    }
+            in
+            ( applyIfEditItemPage model
+                (\originalItem { title } ->
+                    ItemModel.editItem originalItem title
+                        |> updateModel (ItemModel.itemId originalItem)
+                )
             , Cmd.none
             )
 
-        InputEditedItemTitle title ->
+        InputEditedItemTitle newTitle ->
             ( applyIfEditItemPage model
-                (\itemId item originalItem ->
+                (\originalItem _ ->
                     { model
-                        | currentPage = EditItemPage itemId { item | title = title } originalItem
+                        | currentPage = EditItemPage originalItem { title = newTitle }
                     }
                 )
             , Cmd.none
@@ -42,21 +48,24 @@ update msg model =
             ( { model | currentPage = ChecklistPage }, Cmd.none )
 
 
-applyIfEditItemPage : Model -> (ItemId -> Item -> Item -> Model) -> Model
+applyIfEditItemPage : Model -> (Item -> { title : String } -> Model) -> Model
 applyIfEditItemPage model fn =
     case model.currentPage of
-        EditItemPage itemId item originalItem ->
-            fn itemId item originalItem
+        EditItemPage originalItem item ->
+            fn originalItem item
 
         _ ->
             model
 
 
-editItemView : ItemId -> { title : String } -> Item -> Html EditItemFormMsg
-editItemView itemId { title } originalItem =
+editItemView : Item -> { title : String } -> Checklist -> Html EditItemFormMsg
+editItemView originalItem { title } checklist =
     let
+        editedItem =
+            ItemModel.editItem originalItem title
+
         itemExists =
-            False
+            ChecklistModel.member editedItem checklist
 
         mapMessage : Ui.ItemForm.Msg -> EditItemFormMsg
         mapMessage msg =
@@ -65,7 +74,7 @@ editItemView itemId { title } originalItem =
                     InputEditedItemTitle s
 
                 Ui.ItemForm.Submit ->
-                    EditItem itemId { title = title }
+                    EditItem
 
                 Ui.ItemForm.Cancel ->
                     CancelEdit

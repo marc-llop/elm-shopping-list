@@ -5,11 +5,13 @@ module ItemModel exposing
     , ItemStatus(..)
     , decodeItem
     , decodeItemId
+    , editItem
     , encodeItem
     , isTicked
     , isUnticked
     , itemId
     , newFakeItem
+    , newItem
     , status
     , tick
     , title
@@ -19,9 +21,6 @@ module ItemModel exposing
 
 import Json.Decode as D
 import Json.Encode as E
-import Random
-import Random.Char
-import Random.String
 
 
 type alias ItemId =
@@ -52,9 +51,12 @@ newItem str =
     Item { title = str, status = Unticked }
 
 
-itemIdGenerator : Random.Generator ItemId
-itemIdGenerator =
-    Random.String.string 5 Random.Char.english
+{-| Generates a new item with different title and ID,
+but with the rest of the attributes unchanged.
+-}
+editItem : Item -> String -> Item
+editItem (Item item) newTitle =
+    Item { item | title = newTitle }
 
 
 itemId : Item -> ItemId

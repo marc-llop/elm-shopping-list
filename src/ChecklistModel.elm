@@ -8,12 +8,13 @@ module ChecklistModel exposing
     , fromList
     , insert
     , isEmpty
+    , member
     , pendingItems
     , remove
+    , replace
     , tick
     , toList
     , untick
-    , update
     )
 
 {-| An Item Dictionary. This custom type provides two benefits:
@@ -42,7 +43,7 @@ empty =
 
 
 {- Inserts an Item into a dictionary.
-   Replaces value when there is a collision.
+   Unticks existing item when there is a collision.
 -}
 
 
@@ -72,9 +73,10 @@ untick id (Checklist dict) =
         |> Checklist
 
 
-update : Item -> Checklist -> Checklist
-update item (Checklist dict) =
-    Dict.update (itemId item) (Maybe.map (always item)) dict
+replace : ItemId -> Item -> Checklist -> Checklist
+replace oldItemId newItem (Checklist dict) =
+    Dict.remove oldItemId dict
+        |> Dict.insert (itemId newItem) newItem
         |> Checklist
 
 
@@ -87,6 +89,11 @@ remove id (Checklist dict) =
 isEmpty : Checklist -> Bool
 isEmpty (Checklist dict) =
     Dict.isEmpty dict
+
+
+member : Item -> Checklist -> Bool
+member item (Checklist dict) =
+    Dict.member (itemId item) dict
 
 
 fromList : List Item -> Checklist

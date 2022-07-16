@@ -5,8 +5,8 @@ import ItemModel exposing (Item, ItemId)
 
 type Page
     = ChecklistPage
-    | CreateItemPage Item
-    | EditItemPage ItemId Item Item
+    | CreateItemPage { title : String }
+    | EditItemPage Item { title : String }
 
 
 createItemAutofocusId =

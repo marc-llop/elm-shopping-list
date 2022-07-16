@@ -1,9 +1,10 @@
 module Main exposing (main)
 
 import Browser
+import ChecklistModel exposing (Checklist)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
-import ItemModel exposing (Item, ItemId, itemIdToString, newFakeItem)
+import ItemModel exposing (Item, ItemId, ItemStatus(..), newFakeItem)
 import Json.Decode as D
 import List
 import LocalStorage exposing (encodeAndStoreModel)
@@ -34,7 +35,7 @@ main =
 -- MODEL
 
 
-initialItemsList : OpaqueDict ItemId Item
+initialItemsList : Checklist
 initialItemsList =
     [ "ous"
     , "fuet"
@@ -61,8 +62,8 @@ initialItemsList =
     , "arròs"
     , "pasta seca"
     ]
-        |> List.indexedMap (\i item -> newFakeItem i item)
-        |> OpaqueDict.fromList itemIdToString
+        |> List.map (\item -> newFakeItem item Unticked)
+        |> ChecklistModel.fromList
 
 
 init :
@@ -76,8 +77,7 @@ init json =
                 |> Maybe.withDefault
                     (initModel
                         "backgroundTextureUrl not found"
-                        (OpaqueDict.empty ItemModel.itemIdToString)
-                        (OpaqueDict.empty ItemModel.itemIdToString)
+                        ChecklistModel.empty
                     )
     in
     ( model, Cmd.none )
@@ -156,12 +156,15 @@ view model =
         page =
             case model.currentPage of
                 ChecklistPage ->
-                    checklistPageView model |> Html.Styled.map ChecklistMsgContainer
+                    checklistPageView model.checklist
+                        |> Html.Styled.map ChecklistMsgContainer
 
                 CreateItemPage item ->
-                    createItemView model item |> Html.Styled.map CreateItemFormMsgContainer
+                    createItemView model item
+                        |> Html.Styled.map CreateItemFormMsgContainer
 
-                EditItemPage itemId item originalItem ->
-                    editItemView itemId item originalItem |> Html.Styled.map EditItemFormMsgContainer
+                EditItemPage originalItem item ->
+                    editItemView originalItem item model.checklist
+                        |> Html.Styled.map EditItemFormMsgContainer
     in
     viewPage model page

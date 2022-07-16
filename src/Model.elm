@@ -1,33 +1,23 @@
 module Model exposing (..)
 
-import ItemModel exposing (..)
+import ChecklistModel exposing (Checklist, decodeChecklist, encodeChecklist, fromList)
+import ItemModel exposing (Item, title)
 import Json.Decode as D
 import Json.Encode as E
-import OpaqueDict exposing (OpaqueDict)
 import Page exposing (Page(..))
 import Ui.Item exposing (ItemState(..))
 
 
 type alias Model =
-    { pending : PendingDict
-    , done : DoneDict
+    { checklist : Checklist
     , currentPage : Page
     , backgroundTextureUrl : String
     }
 
 
-type alias PendingDict =
-    OpaqueDict ItemId Item
-
-
-type alias DoneDict =
-    OpaqueDict ItemId Item
-
-
-initModel : String -> PendingDict -> DoneDict -> Model
-initModel backgroundTextureUrl pending done =
-    { pending = pending
-    , done = done
+initModel : String -> Checklist -> Model
+initModel backgroundTextureUrl checklist =
+    { checklist = checklist
     , currentPage = ChecklistPage
     , backgroundTextureUrl = backgroundTextureUrl
     }
@@ -35,77 +25,38 @@ initModel backgroundTextureUrl pending done =
 
 encodeModel : Model -> E.Value
 encodeModel model =
-    let
-        encodeDict =
-            OpaqueDict.encode itemIdToString encodeItem
-    in
     E.object
-        [ ( "pending", encodeDict model.pending )
-        , ( "done", encodeDict model.done )
+        [ ( "checklist", encodeChecklist model.checklist )
         ]
 
 
-decodeModel : OpaqueDict ItemId Item -> D.Decoder Model
-decodeModel initialPendingDict =
+decodeModel : Checklist -> D.Decoder Model
+decodeModel initialChecklist =
     let
-        decodeDict =
-            OpaqueDict.decode decodeItemIdFromString itemIdToString decodeItem
+        checklistField =
+            D.field "checklist" decodeChecklist
 
-        emptyDict =
-            OpaqueDict.empty itemIdToString
+        decodeWithDefaultFrom decoder =
+            D.maybe decoder
+                |> D.map (Maybe.withDefault initialChecklist)
     in
-    D.map3 initModel
+    D.map2 initModel
         (D.field "backgroundTextureUrl" D.string)
-        (D.maybe (D.field "pending" decodeDict) |> D.map (Maybe.withDefault initialPendingDict))
-        (D.maybe (D.field "done" decodeDict) |> D.map (Maybe.withDefault emptyDict))
+        (decodeWithDefaultFrom checklistField)
 
 
-type alias ItemsInModel a =
-    { a | pending : OpaqueDict ItemId Item, done : OpaqueDict ItemId Item }
-
-
-allItems : ItemsInModel a -> List IdItemPair
-allItems { pending, done } =
-    List.concat
-        [ OpaqueDict.toList pending
-        , OpaqueDict.toList done
-        ]
-
-
-sortItems : List IdItemPair -> List IdItemPair
+sortItems : List Item -> List Item
 sortItems =
-    List.sortBy (Tuple.second >> .title >> String.toLower)
-
-
-move : k -> OpaqueDict k v -> OpaqueDict k v -> ( OpaqueDict k v, OpaqueDict k v )
-move k dictFrom dictTo =
-    let
-        elem =
-            OpaqueDict.get k dictFrom
-
-        newFrom =
-            OpaqueDict.remove k dictFrom
-
-        newTo =
-            elem
-                |> Maybe.map (\e -> OpaqueDict.insert k e dictTo)
-                |> Maybe.withDefault dictTo
-    in
-    ( newFrom, newTo )
+    List.sortBy (title >> String.toLower)
 
 
 
 -- FOR TESTS
 
 
-newFakeModel : Page -> List IdItemPair -> List IdItemPair -> Model
-newFakeModel currentPage pendingList doneList =
-    let
-        listToDict =
-            OpaqueDict.fromList itemIdToString
-    in
-    { pending = listToDict pendingList
-    , done = listToDict doneList
+newFakeModel : Page -> List Item -> Model
+newFakeModel currentPage itemList =
+    { checklist = fromList itemList
     , currentPage = currentPage
     , backgroundTextureUrl = ""
     }
