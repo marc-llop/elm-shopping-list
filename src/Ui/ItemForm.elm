@@ -68,14 +68,18 @@ isSubmitEnabled { value, formType } =
             hasContent && hasChangedFrom originalValue && not itemExists
 
 
-hasError : ItemFormType -> Bool
-hasError formType =
+hasError : ItemFormProps -> Bool
+hasError { value, formType } =
+    let
+        hasChangedFrom original =
+            value /= original
+    in
     case formType of
         CreateItem ->
             False
 
-        EditItem itemExists _ ->
-            itemExists
+        EditItem itemExists original ->
+            itemExists && hasChangedFrom original
 
 
 itemFormView : ItemFormProps -> Html Msg
@@ -92,7 +96,7 @@ itemFormView props =
                 [ id props.autoFocusId
                 , dataTestId (props.dataTestId ++ "++TextInput")
                 ]
-            , hasError = hasError props.formType
+            , hasError = hasError props
             }
         , div
             [ css buttonRowStyles ]
