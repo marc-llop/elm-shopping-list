@@ -12,6 +12,7 @@ import Ui.Button
 import Ui.FloatingActionButton
 import Ui.Glassmorphism
 import Ui.Item
+import Ui.ItemForm
 import Ui.ListCard
 import Ui.ProgressBar
 import Ui.TextInput
@@ -52,6 +53,7 @@ main =
                 , Ui.ProgressBar.docs
                 , Ui.ListCard.docs
                 , Ui.TextInput.docs
+                , Ui.ItemForm.docs
                 ]
               )
             ]

@@ -151,24 +151,33 @@ matchesListStyles =
     ]
 
 
-createItemView : Model -> Item -> Html CreateItemFormMsg
-createItemView model newItem =
+createItemView : Model -> { title : String } -> Html CreateItemFormMsg
+createItemView model { title } =
+    let
+        mapMessage : Ui.ItemForm.Msg -> CreateItemFormMsg
+        mapMessage msg =
+            case msg of
+                Ui.ItemForm.Input s ->
+                    InputNewItemTitle s
+
+                Ui.ItemForm.Submit ->
+                    SubmitItem
+
+                Ui.ItemForm.Cancel ->
+                    CancelCreate
+
+        createItemFormMsg props =
+            Html.Styled.map mapMessage (itemFormView props)
+    in
     Html.Styled.div
         [ css pageStyles ]
-        [ itemFormView
-            { submit = SubmitItem
-            , cancel = CancelCreate
-            , dataTestId = "CreateItem"
-            , inputProps =
-                { onInput = InputNewItemTitle
-                , value = newItem.title
-                , attributes = [ id createItemAutofocusId, dataTestId "CreateItem-TextInput" ]
-                }
-            , submitButtonLabel = "Afegeix l'element"
-            , cancelButtonLabel = "Cancel·la"
-            , isSubmitEnabled = not (String.isEmpty newItem.title)
+        [ createItemFormMsg
+            { dataTestId = "CreateItem"
+            , autoFocusId = createItemAutofocusId
+            , value = title
+            , formType = Ui.ItemForm.CreateItem
             }
-        , matchesListView model newItem
+        , matchesListView model title
         ]
 
 

@@ -52,28 +52,30 @@ applyIfEditItemPage model fn =
             model
 
 
-editItem : ItemId -> Item -> OpaqueDict ItemId Item -> OpaqueDict ItemId Item
-editItem id item =
-    OpaqueDict.update id (Maybe.map (always item))
-
-
-editItemView : ItemId -> Item -> Item -> Html EditItemFormMsg
-editItemView itemId item originalItem =
+editItemView : ItemId -> { title : String } -> Item -> Html EditItemFormMsg
+editItemView itemId { title } originalItem =
     let
-        isSubmitEnabled =
-            not (String.isEmpty item.title)
-                && (item.title /= originalItem.title)
+        itemExists =
+            False
+
+        mapMessage : Ui.ItemForm.Msg -> EditItemFormMsg
+        mapMessage msg =
+            case msg of
+                Ui.ItemForm.Input s ->
+                    InputEditedItemTitle s
+
+                Ui.ItemForm.Submit ->
+                    EditItem itemId { title = title }
+
+                Ui.ItemForm.Cancel ->
+                    CancelEdit
+
+        editItemFormView props =
+            Html.Styled.map mapMessage (itemFormView props)
     in
-    itemFormView
-        { submit = EditItem itemId item
-        , cancel = CancelEdit
-        , dataTestId = "EditItem"
-        , inputProps =
-            { onInput = InputEditedItemTitle
-            , value = item.title
-            , attributes = [ id editItemAutofocusId, dataTestId "EditItem-TextInput" ]
-            }
-        , cancelButtonLabel = "Cancel·la"
-        , submitButtonLabel = "Desa els canvis"
-        , isSubmitEnabled = isSubmitEnabled
+    editItemFormView
+        { dataTestId = "EditItem"
+        , autoFocusId = editItemAutofocusId
+        , value = title
+        , formType = Ui.ItemForm.EditItem itemExists (ItemModel.title originalItem)
         }
