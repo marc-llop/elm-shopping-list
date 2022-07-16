@@ -114,4 +114,58 @@ suite =
                     in
                     actual |> Expect.equal expected
             ]
+        , describe "member"
+            [ test "should return true if the item exists with the same name" <|
+                \_ ->
+                    let
+                        checklist =
+                            fromList [ newFakeItem "Carbassó" Unticked ]
+
+                        actual =
+                            member (newFakeItem "Carbassó" Ticked) checklist
+
+                        expected =
+                            True
+                    in
+                    actual |> Expect.equal expected
+            , test "should return true if the item exists with different caps" <|
+                \_ ->
+                    let
+                        checklist =
+                            fromList [ newFakeItem "Carbassó" Unticked ]
+
+                        actual =
+                            member (newFakeItem "carbassó" Ticked) checklist
+
+                        expected =
+                            True
+                    in
+                    actual |> Expect.equal expected
+            , test "should return false if the item exists with different accents" <|
+                \_ ->
+                    let
+                        checklist =
+                            fromList [ newFakeItem "Bóta" Unticked ]
+
+                        actual =
+                            member (newFakeItem "Bota" Ticked) checklist
+
+                        expected =
+                            False
+                    in
+                    actual |> Expect.equal expected
+            , test "should return false if the item does not exist" <|
+                \_ ->
+                    let
+                        checklist =
+                            fromList [ newFakeItem "Bóta" Unticked ]
+
+                        actual =
+                            member (newFakeItem "Carbassó" Ticked) checklist
+
+                        expected =
+                            False
+                    in
+                    actual |> Expect.equal expected
+            ]
         ]
