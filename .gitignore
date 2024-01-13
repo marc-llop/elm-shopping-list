@@ -1,6 +1,5 @@
 elm-stuff/
 node_modules/
 .parcel-cache/
-dist/
 .DS_Store
 /index.html
