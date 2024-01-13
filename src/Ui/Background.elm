@@ -84,7 +84,10 @@ by transparent gaps.
 -}
 backgroundSvg imgUrl =
     svg
-        [ SvgAttr.height "100%"
+        [ SvgAttr.css
+            [ Css.minHeight (vh 100)
+            , Css.minWidth (pct 100)
+            ]
         , SvgAttr.viewBox "0 0 660 660"
         ]
         [ defs []
