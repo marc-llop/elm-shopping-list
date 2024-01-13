@@ -31,13 +31,13 @@
   },
   "homepage": "https://github.com/marc-llop/shopping-list-elm#readme",
   "devDependencies": {
-    "@parcel/transformer-elm": "^2.4.1",
-    "elm": "^0.19.1-5",
-    "elm-format": "^0.8.5",
+    "@parcel/transformer-elm": "^2.11.0",
+    "elm": "^0.19.1-6",
+    "elm-format": "^0.8.7",
     "elm-live": "^4.0.2",
-    "elm-test": "^0.19.1-revision7",
-    "husky": "^8.0.1",
-    "lint-staged": "^13.0.0",
-    "parcel": "^2.4.1"
+    "elm-test": "^0.19.1-revision9",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.3.0",
+    "parcel": "^2.11.0"
   }
 }
