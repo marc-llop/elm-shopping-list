@@ -1,43 +1,44 @@
 {
-  "name": "shopping-list-elm",
-  "version": "1.0.0",
-  "description": "A shopping list app written in Elm.",
-  "scripts": {
-    "start": "PARCEL_ELM_NO_DEBUG=1 parcel src/index.html",
-    "build": "npm run test && parcel build src/index.html",
-    "test": "elm-test src/**/*Test.elm",
-    "lint": "lint-staged",
-    "elmbook": "elm-live src/Ui/Book.elm --pushstate --open"
-  },
-  "lint-staged": {
-    "*.elm": [
-      "elm-format --yes src/",
-      "git add"
-    ]
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/marc-llop/shopping-list-elm.git"
-  },
-  "keywords": [
-    "elm",
-    "shopping",
-    "list"
-  ],
-  "author": "marc-llop",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/marc-llop/shopping-list-elm/issues"
-  },
-  "homepage": "https://github.com/marc-llop/shopping-list-elm#readme",
-  "devDependencies": {
-    "@parcel/transformer-elm": "^2.11.0",
-    "elm": "^0.19.1-6",
-    "elm-format": "^0.8.7",
-    "elm-live": "^4.0.2",
-    "elm-test": "^0.19.1-revision9",
-    "husky": "^8.0.3",
-    "lint-staged": "^13.3.0",
-    "parcel": "^2.11.0"
-  }
+    "name": "shopping-list-elm",
+    "version": "1.0.0",
+    "description": "A shopping list app written in Elm.",
+    "scripts": {
+        "start": "PARCEL_ELM_NO_DEBUG=1 parcel src/index.html",
+        "build": "npm run test && parcel build src/index.html",
+        "test": "elm-test src/**/*Test.elm",
+        "lint": "lint-staged",
+        "elmbook": "elm-live src/Ui/Book.elm --pushstate --open",
+        "build:elmbook": "parcel build src/elmbook.html"
+    },
+    "lint-staged": {
+        "*.elm": [
+            "elm-format --yes src/",
+            "git add"
+        ]
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/marc-llop/shopping-list-elm.git"
+    },
+    "keywords": [
+        "elm",
+        "shopping",
+        "list"
+    ],
+    "author": "marc-llop",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/marc-llop/shopping-list-elm/issues"
+    },
+    "homepage": "https://github.com/marc-llop/shopping-list-elm#readme",
+    "devDependencies": {
+        "@parcel/transformer-elm": "^2.11.0",
+        "elm": "^0.19.1-6",
+        "elm-format": "^0.8.7",
+        "elm-live": "^4.0.2",
+        "elm-test": "^0.19.1-revision9",
+        "husky": "^8.0.3",
+        "lint-staged": "^13.3.0",
+        "parcel": "^2.11.0"
+    }
 }
