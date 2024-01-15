@@ -1,5 +1,5 @@
 import { Elm } from './Ui/Book.elm'
 
-Elm.Main.init({
+Elm.Ui.Book.init({
     node: document.getElementById('root'),
 })
